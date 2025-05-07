@@ -1,0 +1,89 @@
+import type { AspidaClient, BasicHeaders } from 'aspida';
+import { dataToURLString } from 'aspida';
+import type { Methods as Methods_30uj97 } from './WeatherForecast';
+import type { Methods as Methods_9wu66v } from './api/v1/auth/login';
+import type { Methods as Methods_1eq60rt } from './api/v1/auth/refresh-token';
+import type { Methods as Methods_1p8w04r } from './api/v1/auth/register';
+import type { Methods as Methods_r5qu0t } from './api/v1/users';
+import type { Methods as Methods_lejw6y } from './api/v1/users/_userId@string';
+
+const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
+  const prefix = (baseURL === undefined ? '' : baseURL).replace(/\/$/, '');
+  const PATH0 = '/WeatherForecast';
+  const PATH1 = '/api/v1/auth/login';
+  const PATH2 = '/api/v1/auth/refresh-token';
+  const PATH3 = '/api/v1/auth/register';
+  const PATH4 = '/api/v1/users';
+  const GET = 'GET';
+  const POST = 'POST';
+  const DELETE = 'DELETE';
+
+  return {
+    WeatherForecast: {
+      /**
+       * @returns OK
+       */
+      get: (option?: { config?: T | undefined } | undefined) =>
+        fetch<Methods_30uj97['get']['resBody'], BasicHeaders, Methods_30uj97['get']['status']>(prefix, PATH0, GET, option).json(),
+      /**
+       * @returns OK
+       */
+      $get: (option?: { config?: T | undefined } | undefined) =>
+        fetch<Methods_30uj97['get']['resBody'], BasicHeaders, Methods_30uj97['get']['status']>(prefix, PATH0, GET, option).json().then(r => r.body),
+      $path: () => `${prefix}${PATH0}`,
+    },
+    api: {
+      v1: {
+        auth: {
+          login: {
+            post: (option: { body: Methods_9wu66v['post']['reqBody'], config?: T | undefined }) =>
+              fetch<void, BasicHeaders, Methods_9wu66v['post']['status']>(prefix, PATH1, POST, option).send(),
+            $post: (option: { body: Methods_9wu66v['post']['reqBody'], config?: T | undefined }) =>
+              fetch<void, BasicHeaders, Methods_9wu66v['post']['status']>(prefix, PATH1, POST, option).send().then(r => r.body),
+            $path: () => `${prefix}${PATH1}`,
+          },
+          refresh_token: {
+            post: (option: { body: Methods_1eq60rt['post']['reqBody'], config?: T | undefined }) =>
+              fetch<void, BasicHeaders, Methods_1eq60rt['post']['status']>(prefix, PATH2, POST, option).send(),
+            $post: (option: { body: Methods_1eq60rt['post']['reqBody'], config?: T | undefined }) =>
+              fetch<void, BasicHeaders, Methods_1eq60rt['post']['status']>(prefix, PATH2, POST, option).send().then(r => r.body),
+            $path: () => `${prefix}${PATH2}`,
+          },
+          register: {
+            post: (option: { body: Methods_1p8w04r['post']['reqBody'], config?: T | undefined }) =>
+              fetch<void, BasicHeaders, Methods_1p8w04r['post']['status']>(prefix, PATH3, POST, option).send(),
+            $post: (option: { body: Methods_1p8w04r['post']['reqBody'], config?: T | undefined }) =>
+              fetch<void, BasicHeaders, Methods_1p8w04r['post']['status']>(prefix, PATH3, POST, option).send().then(r => r.body),
+            $path: () => `${prefix}${PATH3}`,
+          },
+        },
+        users: {
+          _userId: (val3: string) => {
+            const prefix3 = `${PATH4}/${val3}`;
+
+            return {
+              get: (option?: { config?: T | undefined } | undefined) =>
+                fetch<void, BasicHeaders, Methods_lejw6y['get']['status']>(prefix, prefix3, GET, option).send(),
+              $get: (option?: { config?: T | undefined } | undefined) =>
+                fetch<void, BasicHeaders, Methods_lejw6y['get']['status']>(prefix, prefix3, GET, option).send().then(r => r.body),
+              delete: (option?: { config?: T | undefined } | undefined) =>
+                fetch<void, BasicHeaders, Methods_lejw6y['delete']['status']>(prefix, prefix3, DELETE, option).send(),
+              $delete: (option?: { config?: T | undefined } | undefined) =>
+                fetch<void, BasicHeaders, Methods_lejw6y['delete']['status']>(prefix, prefix3, DELETE, option).send().then(r => r.body),
+              $path: () => `${prefix}${prefix3}`,
+            };
+          },
+          get: (option?: { query?: Methods_r5qu0t['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+            fetch<void, BasicHeaders, Methods_r5qu0t['get']['status']>(prefix, PATH4, GET, option).send(),
+          $get: (option?: { query?: Methods_r5qu0t['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+            fetch<void, BasicHeaders, Methods_r5qu0t['get']['status']>(prefix, PATH4, GET, option).send().then(r => r.body),
+          $path: (option?: { method?: 'get' | undefined; query: Methods_r5qu0t['get']['query'] } | undefined) =>
+            `${prefix}${PATH4}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
+        },
+      },
+    },
+  };
+};
+
+export type ApiInstance = ReturnType<typeof api>;
+export default api;

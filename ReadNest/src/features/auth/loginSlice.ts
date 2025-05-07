@@ -1,0 +1,3 @@
+type LoginState = {
+  isAuthenticated: boolean;
+};

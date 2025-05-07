@@ -1,6 +1,19 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import type { DetailError } from "@/lib/api/base/types";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
+}
+
+export function mapDetailErrorsToFieldState(
+  detailErrorList: DetailError[]
+): Record<string, string> {
+  const obj: Record<string, string> = {};
+  if (!detailErrorList) return obj;
+  detailErrorList.forEach((detailError: DetailError) => {
+    if (detailError.field) obj[detailError.field] = detailError.message;
+  });
+
+  return obj;
 }

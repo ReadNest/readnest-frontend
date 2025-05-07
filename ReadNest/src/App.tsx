@@ -1,5 +1,5 @@
+import { toast, Toaster } from "sonner";
 import "./App.css";
-import { Button } from "@/components/ui/button";
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <div className="text-2xl font-semibold text-gray-600 p-4">
         Hello from Tailwind + TypeScript!
       </div>
-      <Button>Button</Button>
+      <Toaster position="top-right" duration={4000} />
     </>
   );
 }
