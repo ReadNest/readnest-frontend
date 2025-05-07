@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import type { LoginRequest, TokenResponse } from "@/api/@types";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null,
   isAuthenticated: false,
   loading: false,
-  errorState: {},
-  initState: {},
+  userName: "",
+  password: "",
 };
 
 const authSlice = createSlice({
@@ -14,23 +14,24 @@ const authSlice = createSlice({
   reducers: {
     loginRequest: (state) => {
       state.loading = true;
-      state.errorState = {};
     },
-    loginSuccess: (state, action) => {
-      state.user = action.payload;
+    loginSuccess: (state, action: PayloadAction<TokenResponse>) => {
       state.isAuthenticated = true;
       state.loading = false;
+      localStorage.setItem("access_token", action.payload.accessToken ?? "");
+      localStorage.setItem("refresh_token", action.payload.refreshToken ?? "");
     },
-    loginFailure: (state, action) => {
+    loginFailure: (state) => {
       state.loading = false;
-      state.errorState = action.payload.errors;
-    },
-    setInitState: (state, action) => {
-      state.initState = action.payload;
     },
     logout: (state) => {
-      state.user = null;
       state.isAuthenticated = false;
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+    },
+    setInitialState: (state, action: PayloadAction<LoginRequest>) => {
+      state.userName = action.payload.userName ?? "";
+      state.password = action.payload.password ?? "";
     },
   },
 });
@@ -39,8 +40,8 @@ export const {
   loginRequest,
   loginSuccess,
   loginFailure,
-  setInitState,
   logout,
+  setInitialState,
 } = authSlice.actions;
 
 export default authSlice.reducer;
