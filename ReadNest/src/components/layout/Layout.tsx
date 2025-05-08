@@ -20,10 +20,8 @@ export const Layout = ({
       <Header isAuthenticated={isAuthenticated} isLoginForm={isLoginForm} />
 
       <div className="flex flex-1">
-        {/* Điều kiện hiển thị Sidebar */}
         {showSidebar && <Sidebar />}
 
-        {/* Main sẽ chiếm full chiều rộng nếu không có Sidebar */}
         <main className={`flex-1 ${!showSidebar ? "w-full" : "p-4"}`}>
           {children}
         </main>
