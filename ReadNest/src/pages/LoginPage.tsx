@@ -1,70 +1,62 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import TestimonialCard from "@/components/ui/testimonial-card";
 import LoginForm from "@/features/auth/components/LoginForm";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { CheckCircle } from "lucide-react";
+import { Check } from "lucide-react";
 
-export default function LoginPage() {
-  const navigate = useNavigate();
+export default function Login() {
+  const benefits = [
+    "Truy cập hơn 1 triệu cuốn sách và bài viết",
+    "Nhận gợi ý đọc cá nhân hóa",
+    "Tham gia nhóm đọc và thảo luận",
+    "Theo dõi tiến độ đọc của bạn",
+  ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="flex max-w-4xl w-full shadow-lg overflow-hidden">
-        {/* Left section - Form */}
-        <div className="flex-1 p-10">
-          <h2 className="text-2xl font-bold mb-1 text-center">
-            Tham gia ReadNest ngay
-          </h2>
-          <p className="text-sm text-muted-foreground text-center mb-6">
-            Đăng nhập và tiếp tục hành trình đọc của bạn
-          </p>
-
-          <LoginForm />
-
-          {/* Register link */}
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Chưa có tài khoản?{" "}
-            <Link to="/register" className="text-indigo-600 hover:underline">
-              Đăng ký
-            </Link>
+    <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
+      <Card className="w-full max-w-5xl shadow-lg">
+        {/* Header */}
+        <div className="text-center py-10 px-4">
+          <h1 className="text-3xl font-bold">Tham gia ReadNest ngay</h1>
+          <p className="text-sm text-gray-600 mt-2">
+            Tạo tài khoản và bắt đầu hành trình đọc của bạn
           </p>
         </div>
-        <div className="hidden md:flex flex-col flex-1 bg-blue-50 p-8 space-y-4 justify-center rounded-r-md">
-          <h3 className="text-lg font-semibold">
-            Lợi ích khi tham gia ReadNest
-          </h3>
 
-          <ul className="space-y-3 text-sm text-muted-foreground">
-            {[
-              "Truy cập hơn 1 triệu cuốn sách và bài viết",
-              "Nhận gợi ý đọc cá nhân hóa",
-              "Tham gia nhóm đọc và thảo luận",
-              "Theo dõi tiến độ đọc của bạn",
-            ].map((item, index) => (
-              <li key={index} className="flex items-start gap-2">
-                <CheckCircle className="text-green-600 w-5 h-5 mt-0.5" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+        {/* Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* Login Form */}
+          <CardContent className="p-8 flex items-center justify-center">
+            <LoginForm />
+          </CardContent>
 
-          <div className="bg-white p-4 rounded shadow mt-6">
-            <div className="flex items-center gap-3">
-              <img
-                src="https://randomuser.me/api/portraits/women/68.jpg"
-                alt="avatar"
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <p className="font-medium text-sm">Sarah Johnson</p>
-                <p className="text-xs text-muted-foreground">Active Reader</p>
-              </div>
-            </div>
-            <p className="text-sm mt-2 text-gray-600 italic">
-              "ReadNest đã thay đổi thói quen đọc sách của tôi. Các đề xuất cực
-              kỳ chính xác và mình rất thích cộng đồng ở đây!"
-            </p>
+          {/* Benefits */}
+          <div className="bg-indigo-50 p-8 flex flex-col space-y-4 rounded-xl w-full max-w-[400px] mx-auto">
+            <h2 className="text-left text-lg font-bold mb-2">
+              Lợi ích khi tham gia ReadNest
+            </h2>
+            <ul className="space-y-3">
+              {benefits.map((benefit: string, index: number) => (
+                <li key={index} className="flex items-start space-x-2">
+                  <Check className="w-5 h-5 text-indigo-600 mt-1" />
+                  <span className="text-sm text-gray-800">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+            <TestimonialCard />
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center py-6">
+          <p className="text-sm text-gray-600">
+            Chưa có tài khoản?{" "}
+            <a
+              href="/register"
+              className="text-indigo-600 font-medium hover:underline"
+            >
+              Đăng ký
+            </a>
+          </p>
         </div>
       </Card>
     </div>

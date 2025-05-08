@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { setInitialState } from "../authSlice";
 import { Link } from "react-router-dom";
+
 import type { LoginRequest } from "@/api/@types";
 import type { RootState } from "@/store";
+import SocialLoginButtons from "./SocialLoginButtons";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -32,74 +34,84 @@ export default function LoginForm() {
   }, [errorMessage]);
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-md flex flex-col">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        {/* Username */}
-        <div className="space-y-1">
-          <Label htmlFor="userName" className="block text-left">
-            Địa chỉ Email
-          </Label>
-          <Input
-            id="userName"
-            placeholder="Nhập địa chỉ Email của bạn"
-            {...register("userName", { required: "Email không được để trống" })}
-            className={
-              errors.userName || errorFields["userName"] ? "border-red-500" : ""
-            }
-          />
-          {errors.userName && (
-            <p className="text-sm text-red-500">{errors.userName.message}</p>
-          )}
-          {errorFields["userName"] && (
-            <p className="text-sm text-red-500">{errorFields["userName"]}</p>
-          )}
-        </div>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full max-w-sm space-y-5"
+    >
+      <div className="space-y-1">
+        <Label htmlFor="userName" className="block text-left p-1">
+          Địa chỉ Email
+        </Label>
+        <Input
+          id="userName"
+          placeholder="Nhập địa chỉ Email của bạn"
+          {...register("userName", { required: "Email không được để trống" })}
+          className={
+            errors.userName || errorFields["userName"] ? "border-red-500" : ""
+          }
+        />
+        {errors.userName && (
+          <p className="text-sm text-red-500">{errors.userName.message}</p>
+        )}
+        {errorFields["userName"] && (
+          <p className="text-sm text-red-500">{errorFields["userName"]}</p>
+        )}
+      </div>
 
-        {/* Password */}
-        <div className="space-y-1">
-          <Label htmlFor="password" className="block text-left">
-            Mật khẩu
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Nhập mật khẩu"
-            {...register("password", {
-              required: "Mật khẩu không được để trống",
-            })}
-            className={
-              errors.password || errorFields["password"] ? "border-red-500" : ""
-            }
-          />
-          {errors.password && (
-            <p className="text-sm text-red-500">{errors.password.message}</p>
-          )}
-          {errorFields["password"] && (
-            <p className="text-sm text-red-500">{errorFields["password"]}</p>
-          )}
-        </div>
+      <div className="space-y-1">
+        <Label htmlFor="password" className="block text-left p-1">
+          Mật khẩu
+        </Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="Nhập mật khẩu"
+          {...register("password", {
+            required: "Mật khẩu không được để trống",
+          })}
+          className={
+            errors.password || errorFields["password"] ? "border-red-500" : ""
+          }
+        />
+        {errors.password && (
+          <p className="text-sm text-red-500">{errors.password.message}</p>
+        )}
+        {errorFields["password"] && (
+          <p className="text-sm text-red-500">{errorFields["password"]}</p>
+        )}
+      </div>
 
-        {/* Forgot password */}
-        <div className="text-left text-sm">
-          <p>
-            Quên mật khẩu?{" "}
-            <Link
-              to="/forgot-password"
-              className="text-indigo-600 hover:underline"
-            >
-              Ấn vào
-            </Link>
-          </p>
-        </div>
+      <div className="text-left text-sm">
+        <p>
+          Quên mật khẩu?{" "}
+          <Link
+            to="/forgot-password"
+            className="text-indigo-600 hover:underline"
+          >
+            Ấn vào
+          </Link>
+        </p>
+      </div>
 
-        {/* Submit button */}
-        <Button
-          type="submit"
-          className="w-full text-white bg-indigo-600 hover:bg-indigo-700"
-        >
-          Đăng nhập
-        </Button>
-      </form>
-    </div>
+      <Button
+        type="submit"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
+      >
+        Đăng nhập
+      </Button>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-sm text-muted-foreground">
+          <span className="bg-white px-2 text-gray-500">
+            Hoặc đăng nhập với
+          </span>
+        </div>
+      </div>
+
+      <SocialLoginButtons />
+    </form>
   );
 }
