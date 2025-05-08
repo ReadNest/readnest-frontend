@@ -12,22 +12,22 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    loginStart: (_state, _action: PayloadAction<LoginRequest>) => {},
     loginRequest: (state) => {
       state.loading = true;
     },
     loginSuccess: (state, action: PayloadAction<TokenResponse>) => {
       state.isAuthenticated = true;
       state.loading = false;
-      localStorage.setItem("access_token", action.payload.accessToken ?? "");
-      localStorage.setItem("refresh_token", action.payload.refreshToken ?? "");
+      localStorage.setItem("token", JSON.stringify(action.payload));
     },
     loginFailure: (state) => {
       state.loading = false;
     },
     logout: (state) => {
       state.isAuthenticated = false;
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("token");
     },
     setInitialState: (state, action: PayloadAction<LoginRequest>) => {
       state.userName = action.payload.userName ?? "";
@@ -37,6 +37,7 @@ const authSlice = createSlice({
 });
 
 export const {
+  loginStart,
   loginRequest,
   loginSuccess,
   loginFailure,

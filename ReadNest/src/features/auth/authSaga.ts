@@ -1,5 +1,10 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { loginFailure, loginRequest, loginSuccess } from "./authSlice";
+import {
+  loginFailure,
+  loginRequest,
+  loginStart,
+  loginSuccess,
+} from "./authSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { LoginRequest, TokenResponseApiResponse } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
@@ -15,7 +20,9 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
         .then((r) => r.body)
     );
 
-    yield put(setMessage(res.message ?? ""));
+    yield put(
+      setMessage({ message: res.message ?? "", messageId: res.messageId ?? "" })
+    );
 
     if (res.success && res.data?.accessToken) {
       yield put(loginSuccess(res.data));
@@ -25,10 +32,18 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    yield put(setMessage(error.message));
+    const errBody = error?.response.data || {};
+    yield put(
+      setMessage({
+        message: errBody.message ?? "",
+        messageId: errBody.messageId ?? "",
+      })
+    );
+    yield put(setDetailErrors(errBody.listDetailError ?? []));
+    yield put(loginFailure());
   }
 }
 
 export default function* authSaga() {
-  yield takeLatest(loginRequest.type, handleLogin);
+  yield takeLatest(loginStart.type, handleLogin);
 }

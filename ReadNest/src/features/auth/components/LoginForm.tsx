@@ -5,12 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { setInitialState } from "../authSlice";
 import { Link } from "react-router-dom";
 
 import type { LoginRequest } from "@/api/@types";
 import type { RootState } from "@/store";
 import SocialLoginButtons from "./SocialLoginButtons";
+import { loginStart } from "../authSlice";
+import { clearErrors } from "@/store/error/errorSlice";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -18,67 +25,125 @@ export default function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    clearErrors: clearFormErrors,
   } = useForm<LoginRequest>();
 
   const errorFields = useSelector(
     (state: RootState) => state.error.detailErrors
   );
-  const errorMessage = useSelector((state: RootState) => state.error.message);
+  const errorMessage = useSelector((state: RootState) => state.error);
 
   const onSubmit = (data: LoginRequest) => {
-    dispatch(setInitialState(data));
+    dispatch(clearErrors());
+    dispatch(loginStart(data));
+  };
+
+  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue("userName", e.target.value);
+
+    clearFormErrors("userName");
+
+    if (errorFields["userName"]) {
+      dispatch(clearErrors());
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue("password", e.target.value);
+
+    clearFormErrors("password");
+
+    if (errorFields["password"]) {
+      dispatch(clearErrors());
+    }
   };
 
   useEffect(() => {
-    if (errorMessage) toast.error(errorMessage);
+    if (errorMessage.messageId.startsWith("I"))
+      toast.success(errorMessage.message);
+    else if (errorMessage.messageId.startsWith("E"))
+      toast.error(errorMessage.message);
+    else if (errorMessage.messageId.startsWith("W"))
+      toast.warning(errorMessage.message);
   }, [errorMessage]);
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full max-w-sm space-y-5"
+      className="w-full max-w-sm space-y-4"
     >
-      <div className="space-y-1">
+      <div
+        className={`space-y-1 relative ${
+          errors.userName || errorFields["userName"] ? "mb-8" : ""
+        }`}
+      >
         <Label htmlFor="userName" className="block text-left p-1">
           Địa chỉ Email
         </Label>
-        <Input
-          id="userName"
-          placeholder="Nhập địa chỉ Email của bạn"
-          {...register("userName", { required: "Email không được để trống" })}
-          className={
-            errors.userName || errorFields["userName"] ? "border-red-500" : ""
-          }
-        />
-        {errors.userName && (
-          <p className="text-sm text-red-500">{errors.userName.message}</p>
-        )}
-        {errorFields["userName"] && (
-          <p className="text-sm text-red-500">{errorFields["userName"]}</p>
-        )}
+        <TooltipProvider>
+          <Tooltip open={!!(errors.userName || errorFields["userName"])}>
+            <TooltipTrigger asChild>
+              <Input
+                id="userName"
+                placeholder="Nhập địa chỉ Email của bạn"
+                {...register("userName", {
+                  required: "Email không được để trống",
+                })}
+                onChange={handleUserNameChange}
+                className={
+                  errors.userName || errorFields["userName"]
+                    ? "border-red-500"
+                    : ""
+                }
+              />
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              align="start"
+              className="bg-red-500 text-white border-red-500"
+            >
+              {errors.userName?.message || errorFields["userName"]}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
-      <div className="space-y-1">
+      <div
+        className={`space-y-1 relative ${
+          errors.password || errorFields["password"] ? "mb-8" : ""
+        }`}
+      >
         <Label htmlFor="password" className="block text-left p-1">
           Mật khẩu
         </Label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="Nhập mật khẩu"
-          {...register("password", {
-            required: "Mật khẩu không được để trống",
-          })}
-          className={
-            errors.password || errorFields["password"] ? "border-red-500" : ""
-          }
-        />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
-        {errorFields["password"] && (
-          <p className="text-sm text-red-500">{errorFields["password"]}</p>
-        )}
+        <TooltipProvider>
+          <Tooltip open={!!(errors.password || errorFields["password"])}>
+            <TooltipTrigger asChild>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Nhập mật khẩu"
+                {...register("password", {
+                  required: "Mật khẩu không được để trống",
+                })}
+                onChange={handlePasswordChange}
+                className={
+                  errors.password || errorFields["password"]
+                    ? "border-red-500"
+                    : ""
+                }
+              />
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              align="start"
+              className="bg-red-500 text-white border-red-500"
+            >
+              {errors.password?.message || errorFields["password"]}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       <div className="text-left text-sm">
@@ -99,17 +164,6 @@ export default function LoginForm() {
       >
         Đăng nhập
       </Button>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-sm text-muted-foreground">
-          <span className="bg-white px-2 text-gray-500">
-            Hoặc đăng nhập với
-          </span>
-        </div>
-      </div>
 
       <SocialLoginButtons />
     </form>

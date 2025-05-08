@@ -17,3 +17,7 @@ export function mapDetailErrorsToFieldState(
 
   return obj;
 }
+
+export function normalizeFieldName(field: string): string {
+  return field.charAt(0).toLowerCase() + field.slice(1);
+}
