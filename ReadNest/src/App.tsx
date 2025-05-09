@@ -4,6 +4,15 @@ import LoginPage from "./pages/LoginPage";
 import "./App.css";
 
 import { Layout } from "./components/layout/Layout";
+import { Header } from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import Sidebar from "./components/layout/Sidebar";
+
+const defaultLayout = {
+  header: <Header isAuthenticated={false} isLoginForm={true} />,
+  footer: <Footer />,
+  sidebar: <Sidebar />,
+};
 
 function App() {
   return (
@@ -14,9 +23,11 @@ function App() {
           path="/"
           element={
             <Layout
+              options={{ header: true, sidebar: false, footer: false }}
               isAuthenticated={false}
               isLoginForm={true}
               children={<LoginPage />}
+              {...defaultLayout}
             />
           }
         />
