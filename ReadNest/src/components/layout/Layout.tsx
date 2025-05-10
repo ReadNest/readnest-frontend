@@ -12,34 +12,25 @@ interface LayoutProps {
   footer?: React.ReactNode;
   children: React.ReactNode;
   isAuthenticated: boolean;
-  isLoginForm: boolean;
   showSidebar?: boolean;
 }
 
-export const Layout = ({
-  options,
-  header,
-  footer,
-  sidebar,
-  children,
-  isAuthenticated = false,
-  isLoginForm = true,
-}: LayoutProps) => {
+export const Layout = ({ ...props }: LayoutProps) => {
   return (
     <div className="flex flex-col min-h-screen">
-      {options.header && header}
+      {props.options.header && props.header}
 
       <div className="flex flex-1">
-        {options.sidebar && (
+        {props.options.sidebar && (
           <aside className="w-64 bg-gray-100 p-4 hidden md:block">
-            {sidebar}
+            {props.sidebar}
           </aside>
         )}
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">{props.children}</main>
       </div>
 
-      {options.footer && footer}
+      {props.options.footer && props.footer}
     </div>
   );
 };

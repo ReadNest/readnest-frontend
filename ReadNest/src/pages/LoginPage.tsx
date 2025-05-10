@@ -3,7 +3,7 @@ import TestimonialCard from "@/components/ui/testimonial-card";
 import LoginForm from "@/features/auth/components/LoginForm";
 import { Check } from "lucide-react";
 
-export default function Login() {
+export default function LoginPage() {
   const benefits = [
     "Truy cập hơn 1 triệu cuốn sách và bài viết",
     "Nhận gợi ý đọc cá nhân hóa",
