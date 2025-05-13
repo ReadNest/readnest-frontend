@@ -47,6 +47,9 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem("token");
     },
+    resetInitialRegisterState(state) {
+      state.isRegisterSuccess = false;
+    },
     setInitialState: (state, action: PayloadAction<LoginRequest>) => {
       state.userName = action.payload.userName ?? "";
       state.password = action.payload.password ?? "";
@@ -65,6 +68,7 @@ export const {
   registerFailure,
   logout,
   setInitialState,
+  resetInitialRegisterState,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -10,9 +10,11 @@ import FormDateField from "@/components/ui/form-date-field";
 import { showToastMessage } from "@/lib/utils";
 import { registerStart } from "@/features/auth/authSlice";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -47,8 +49,10 @@ export default function RegisterForm() {
     if (isRegisterSuccess) {
       reset();
       setDateOfBirth(new Date());
+      navigate("/login");
+      dispatch(clearErrors());
     }
-  }, [isRegisterSuccess, reset]);
+  }, [isRegisterSuccess, reset, navigate, dispatch]);
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

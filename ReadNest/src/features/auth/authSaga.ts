@@ -8,6 +8,7 @@ import {
   registerRequest,
   registerStart,
   registerSuccess,
+  resetInitialRegisterState,
 } from "./authSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type {
@@ -35,6 +36,7 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
 
     if (res.success && res.data?.accessToken) {
       yield put(loginSuccess(res.data));
+      yield put(resetInitialRegisterState());
     } else {
       yield put(loginFailure());
       yield put(setDetailErrors(res.listDetailError ?? []));
