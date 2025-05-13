@@ -7,6 +7,7 @@ import { PublicRoute } from "@/components/routes/PublicRoute";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
+import ProfilePage from "@/pages/profile/ProfilePage";
 
 const defaultLayout = {
   options: {
@@ -55,6 +56,13 @@ const routeConfigs = [
     element: <RegisterPage />,
     layout: defaultLayout,
     allowedRoles: [],
+  },
+  {
+    path: ROUTE_PATHS.PROFILE,
+    isPrivate: true,
+    // allowedRoles: ["user", "admin"],
+    element: <ProfilePage />,
+    layout: defaultLayout,
   },
 ];
 
