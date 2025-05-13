@@ -7,6 +7,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuthenticated: false,
+  isRegisterSuccess: false,
   loading: false,
   userName: "",
   password: "",
@@ -36,9 +37,11 @@ const authSlice = createSlice({
     },
     registerSuccess: (state) => {
       state.loading = false;
+      state.isRegisterSuccess = true;
     },
     registerFailure: (state) => {
       state.loading = false;
+      state.isRegisterSuccess = false;
     },
     logout: (state) => {
       state.isAuthenticated = false;

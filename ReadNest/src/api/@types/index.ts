@@ -57,6 +57,7 @@ export type RegisterRequest = {
   email?: string | null | undefined;
   password?: string | null | undefined;
   confirmPassword?: string | null | undefined;
+  fullName?: string | null | undefined;
   address?: string | null | undefined;
   dateOfBirth?: string | undefined;
 }
@@ -85,11 +86,4 @@ export type TokenResponseApiResponse = {
   message?: string | null | undefined;
   data?: TokenResponse | undefined;
   listDetailError?: DetailError[] | null | undefined;
-}
-
-export type WeatherForecast = {
-  date?: string | undefined;
-  temperatureC?: number | undefined;
-  temperatureF?: number | undefined;
-  summary?: string | null | undefined;
 }

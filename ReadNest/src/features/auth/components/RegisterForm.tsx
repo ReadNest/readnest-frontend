@@ -10,15 +10,21 @@ import FormDateField from "@/components/ui/form-date-field";
 import { showToastMessage } from "@/lib/utils";
 import { registerStart } from "@/features/auth/authSlice";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<RegisterRequest>();
 
+  const isRegisterSuccess = useSelector(
+    (state: RootState) => state.auth.isRegisterSuccess
+  );
   const errorFields = useSelector(
     (state: RootState) => state.error.detailErrors
   );
@@ -28,7 +34,6 @@ export default function RegisterForm() {
 
   const onSubmit = (data: RegisterRequest) => {
     dispatch(clearErrors());
-
     const formattedDate = format(dateOfBirth ?? "", "yyyy-MM-dd");
     dispatch(registerStart({ ...data, dateOfBirth: formattedDate }));
   };
@@ -40,6 +45,13 @@ export default function RegisterForm() {
     });
   }, [errorMessage]);
 
+  useEffect(() => {
+    if (isRegisterSuccess) {
+      reset();
+      setDateOfBirth(new Date());
+      navigate("/login");
+    }
+  }, [isRegisterSuccess, navigate, reset]);
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -47,8 +59,8 @@ export default function RegisterForm() {
     >
       <FormField
         id="userName"
-        label="Họ và tên"
-        placeholder="Nhập họ và tên"
+        label="Username"
+        placeholder="Nhập username"
         error={errors.userName?.message || errorFields["userName"]}
         register={register}
       />
@@ -58,6 +70,14 @@ export default function RegisterForm() {
         label="Email"
         placeholder="Nhập email"
         error={errors.email?.message || errorFields["email"]}
+        register={register}
+      />
+
+      <FormField
+        id="fullName"
+        label="Họ và tên"
+        placeholder="Nhập họ và tên"
+        error={errors.fullName?.message || errorFields["fullName"]}
         register={register}
       />
 

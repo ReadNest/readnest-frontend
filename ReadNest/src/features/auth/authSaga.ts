@@ -57,10 +57,12 @@ function* handleRegister(action: PayloadAction<RegisterRequest>) {
   try {
     yield put(registerRequest());
 
-    const res: StringApiResponse = yield call(() => {
-      client.api.v1.auth.register
-        .post({ body: action.payload })
-        .then((r) => r.body);
+    const res: StringApiResponse = yield call(async () => {
+      const response = await client.api.v1.auth.register.post({
+        body: action.payload,
+      });
+
+      return response.body;
     });
 
     yield put(
@@ -76,7 +78,7 @@ function* handleRegister(action: PayloadAction<RegisterRequest>) {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    const errBody = error?.response.data || {};
+    const errBody = error?.response?.data || {};
     yield put(
       setMessage({
         message: errBody.message ?? "",
@@ -84,7 +86,7 @@ function* handleRegister(action: PayloadAction<RegisterRequest>) {
       })
     );
     yield put(setDetailErrors(errBody.listDetailError ?? []));
-    yield put(loginFailure());
+    yield put(registerFailure());
   }
 }
 

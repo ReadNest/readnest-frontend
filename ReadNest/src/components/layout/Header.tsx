@@ -123,12 +123,22 @@ export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
             className="pl-8 pr-2 py-2 w-40 md:w-60"
           />
         </div>
-        <Link to="/login">
-          <Button {...getButtonProps("login", isLoginForm)}>Đăng nhập</Button>
-        </Link>
-        <Link to="/register">
-          <Button {...getButtonProps("register", isLoginForm)}>Đăng ký</Button>
-        </Link>
+        {!isAuthenticated ? (
+          <>
+            <Link to="/login">
+              <Button {...getButtonProps("login", isLoginForm)}>
+                Đăng nhập
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button {...getButtonProps("register", isLoginForm)}>
+                Đăng ký
+              </Button>
+            </Link>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </header>
   );
