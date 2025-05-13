@@ -5,6 +5,7 @@ import type { RootState } from "@/store";
 import { Check } from "lucide-react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
@@ -64,12 +65,13 @@ export default function LoginPage() {
         <div className="text-center py-6">
           <p className="text-sm text-gray-600">
             Chưa có tài khoản?{" "}
-            <a
-              href="/register"
+            <Link
+              to={"/register"}
               className="text-indigo-600 font-medium hover:underline"
             >
+              {" "}
               Đăng ký
-            </a>
+            </Link>
           </p>
         </div>
       </Card>
