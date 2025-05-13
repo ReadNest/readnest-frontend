@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
 import type { LoginRequest } from "@/api/@types";
@@ -18,6 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { showToastMessage } from "@/lib/utils";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -60,12 +60,10 @@ export default function LoginForm() {
   };
 
   useEffect(() => {
-    if (errorMessage.messageId.startsWith("I"))
-      toast.success(errorMessage.message);
-    else if (errorMessage.messageId.startsWith("E"))
-      toast.error(errorMessage.message);
-    else if (errorMessage.messageId.startsWith("W"))
-      toast.warning(errorMessage.message);
+    showToastMessage({
+      message: errorMessage.message ?? "",
+      messageId: errorMessage.messageId,
+    });
   }, [errorMessage]);
 
   return (

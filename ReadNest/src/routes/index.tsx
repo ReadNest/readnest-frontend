@@ -5,7 +5,8 @@ import Sidebar from "@/components/layout/Sidebar";
 import { ProtectedRoute } from "@/components/routes/ProtectedRoute";
 import { PublicRoute } from "@/components/routes/PublicRoute";
 import { ROUTE_PATHS } from "@/constants/routePaths";
-import LoginPage from "@/pages/LoginPage";
+import LoginPage from "@/pages/auth/LoginPage";
+import RegisterPage from "@/pages/auth/RegisterPage";
 
 const defaultLayout = {
   options: {
@@ -44,6 +45,14 @@ const routeConfigs = [
     isPrivate: false,
     publicOnly: true,
     element: <LoginPage />,
+    layout: defaultLayout,
+    allowedRoles: [],
+  },
+  {
+    path: ROUTE_PATHS.REGISTER,
+    isPrivate: false,
+    publicOnly: true,
+    element: <RegisterPage />,
     layout: defaultLayout,
     allowedRoles: [],
   },

@@ -1,9 +1,23 @@
 import { Card, CardContent } from "@/components/ui/card";
 import TestimonialCard from "@/components/ui/testimonial-card";
-import LoginForm from "@/features/auth/components/LoginForm";
+import RegisterForm from "@/features/auth/components/RegisterForm";
+import type { RootState } from "@/store";
 import { Check } from "lucide-react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-export default function LoginPage() {
+export default function RegisterPage() {
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isAuthenticated && navigate("/home");
+  }, [isAuthenticated, navigate]);
+
   const benefits = [
     "Truy cập hơn 1 triệu cuốn sách và bài viết",
     "Nhận gợi ý đọc cá nhân hóa",
@@ -13,7 +27,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
-      <Card className="w-full max-w-5xl shadow-lg">
+      <Card className="w-full max-w-5xl shadow-lg my-5">
         {/* Header */}
         <div className="text-center py-10 px-4">
           <h1 className="text-3xl font-bold">Tham gia ReadNest ngay</h1>
@@ -24,9 +38,9 @@ export default function LoginPage() {
 
         {/* Content */}
         <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Login Form */}
+          {/* Register Form */}
           <CardContent className="p-8 flex items-center justify-center">
-            <LoginForm />
+            <RegisterForm />
           </CardContent>
 
           {/* Benefits */}
