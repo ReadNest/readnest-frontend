@@ -8,6 +8,7 @@ import { ROUTE_PATHS } from "@/constants/routePaths";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
+import SearchPage from "@/pages/search/SearchPage";
 
 const defaultLayout = {
   options: {
@@ -62,6 +63,13 @@ const routeConfigs = [
     isPrivate: true,
     // allowedRoles: ["user", "admin"],
     element: <ProfilePage />,
+    layout: defaultLayout,
+  },
+  {
+    path: ROUTE_PATHS.SEARCH,
+    isPrivate: true,
+    // allowedRoles: ["user", "admin"],
+    element: <SearchPage />,
     layout: defaultLayout,
   },
 ];

@@ -4,4 +4,5 @@ export const ROUTE_PATHS = {
   ADMIN: "/admin",
   LOGIN: "/login",
   REGISTER: "/register",
+  SEARCH: "/search",
 };
