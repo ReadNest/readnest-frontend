@@ -7,6 +7,7 @@ import { PublicRoute } from "@/components/routes/PublicRoute";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
+import BookDetailPage from "@/pages/book/bookDetailPage";
 import FavoriteBooksPage from "@/pages/favouriteBooks/FavouriteBooksPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 
@@ -76,7 +77,7 @@ const routeConfigs = [
     path: ROUTE_PATHS.BOOK_DETAIL,
     isPrivate: true,
     // allowedRoles: ["user", "admin"],
-    element: <FavoriteBooksPage />,
+    element: <BookDetailPage />,
     layout: defaultLayout,
   },
 ];
