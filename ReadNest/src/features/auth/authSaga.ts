@@ -9,9 +9,11 @@ import {
   registerStart,
   registerSuccess,
   resetInitialRegisterState,
+  setUser,
 } from "./authSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type {
+  GetUserResponseApiResponse,
   LoginRequest,
   RegisterRequest,
   StringApiResponse,
@@ -19,6 +21,7 @@ import type {
 } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
 import { setDetailErrors, setMessage } from "@/store/error/errorSlice";
+import { jwtDecode } from "jwt-decode";
 
 function* handleLogin(action: PayloadAction<LoginRequest>) {
   try {
@@ -37,6 +40,21 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
     if (res.success && res.data?.accessToken) {
       yield put(loginSuccess(res.data));
       yield put(resetInitialRegisterState());
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const token: any = jwtDecode(res.data?.accessToken);
+      const nameIdentifier =
+        token[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ];
+
+      const profile: GetUserResponseApiResponse = yield call(() =>
+        client.api.v1.users._userId(nameIdentifier ?? "").$get()
+      );
+
+      if (profile.success) {
+        setUser(profile.data ?? {});
+      }
     } else {
       yield put(loginFailure());
       yield put(setDetailErrors(res.listDetailError ?? []));

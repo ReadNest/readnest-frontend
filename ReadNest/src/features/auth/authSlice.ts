@@ -1,4 +1,5 @@
 import type {
+  GetUserResponse,
   LoginRequest,
   RegisterRequest,
   TokenResponse,
@@ -11,6 +12,7 @@ const initialState = {
   loading: false,
   userName: "",
   password: "",
+  user: {},
 };
 
 const authSlice = createSlice({
@@ -30,7 +32,8 @@ const authSlice = createSlice({
     loginSuccess: (state, action: PayloadAction<TokenResponse>) => {
       state.isAuthenticated = true;
       state.loading = false;
-      localStorage.setItem("token", JSON.stringify(action.payload));
+      localStorage.setItem("access_token", action.payload.accessToken ?? "");
+      localStorage.setItem("refresh_token", action.payload.refreshToken ?? "");
     },
     loginFailure: (state) => {
       state.loading = false;
@@ -45,7 +48,7 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.isAuthenticated = false;
-      localStorage.removeItem("token");
+      localStorage.clear();
     },
     resetInitialRegisterState(state) {
       state.isRegisterSuccess = false;
@@ -53,6 +56,9 @@ const authSlice = createSlice({
     setInitialState: (state, action: PayloadAction<LoginRequest>) => {
       state.userName = action.payload.userName ?? "";
       state.password = action.payload.password ?? "";
+    },
+    setUser: (state, action: PayloadAction<GetUserResponse>) => {
+      state.user = action.payload;
     },
   },
 });
@@ -69,6 +75,7 @@ export const {
   logout,
   setInitialState,
   resetInitialRegisterState,
+  setUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;
