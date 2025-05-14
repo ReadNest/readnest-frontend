@@ -7,6 +7,7 @@ import { PublicRoute } from "@/components/routes/PublicRoute";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
+import FavoriteBooksPage from "@/pages/favouriteBooks/FavouriteBooksPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 
 const defaultLayout = {
@@ -62,6 +63,13 @@ const routeConfigs = [
     isPrivate: true,
     // allowedRoles: ["user", "admin"],
     element: <ProfilePage />,
+    layout: defaultLayout,
+  },
+  {
+    path: ROUTE_PATHS.FAVOURITE,
+    isPrivate: true,
+    // allowedRoles: ["user", "admin"],
+    element: <FavoriteBooksPage />,
     layout: defaultLayout,
   },
 ];
