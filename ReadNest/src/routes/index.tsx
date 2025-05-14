@@ -10,73 +10,79 @@ import RegisterPage from "@/pages/auth/RegisterPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import SearchPage from "@/pages/search/SearchPage";
 
-const defaultLayout = {
-  options: {
-    header: true,
-    sidebar: false,
-    footer: true,
-  },
-  header: <Header isAuthenticated={false} isLoginForm={true} />,
-  footer: <Footer />,
-  sidebar: <Sidebar />,
-};
-
-const routeConfigs = [
-  {
-    path: ROUTE_PATHS.HOME,
-    isPrivate: false,
-    element: <LoginPage />,
-    layout: defaultLayout,
-  },
-  //   {
-  //     path: ROUTE_PATHS.PROFILE,
-  //     isPrivate: true,
-  //     allowedRoles: ["user", "admin"],
-  //     element: <Profile />,
-  //     layout: defaultLayout,
-  //   },
-  //   {
-  //     path: ROUTE_PATHS.ADMIN,
-  //     isPrivate: true,
-  //     allowedRoles: ["admin"],
-  //     element: <AdminDashboard />,
-  //     layout: defaultLayout,
-  //   },
-  {
-    path: ROUTE_PATHS.LOGIN,
-    isPrivate: false,
-    publicOnly: true,
-    element: <LoginPage />,
-    layout: defaultLayout,
-    allowedRoles: [],
-  },
-  {
-    path: ROUTE_PATHS.REGISTER,
-    isPrivate: false,
-    publicOnly: true,
-    element: <RegisterPage />,
-    layout: defaultLayout,
-    allowedRoles: [],
-  },
-  {
-    path: ROUTE_PATHS.PROFILE,
-    isPrivate: true,
-    // allowedRoles: ["user", "admin"],
-    element: <ProfilePage />,
-    layout: defaultLayout,
-  },
-  {
-    path: ROUTE_PATHS.SEARCH,
-    isPrivate: true,
-    // allowedRoles: ["user", "admin"],
-    element: <SearchPage />,
-    layout: defaultLayout,
-  },
-];
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const appRoutes = (user: any) =>
-  routeConfigs.map(
+export const appRoutes = (user: any) => {
+  const defaultLayout = {
+    options: {
+      header: true,
+      sidebar: false,
+      footer: true,
+    },
+    header: (
+      <Header
+        isAuthenticated={user.isAuthenticated}
+        user={{ name: user.fullName }}
+        isLoginForm={true}
+      />
+    ),
+    footer: <Footer />,
+    sidebar: <Sidebar />,
+  };
+
+  const routeConfigs = [
+    {
+      path: ROUTE_PATHS.HOME,
+      isPrivate: false,
+      element: <LoginPage />,
+      layout: defaultLayout,
+    },
+    //   {
+    //     path: ROUTE_PATHS.PROFILE,
+    //     isPrivate: true,
+    //     allowedRoles: ["user", "admin"],
+    //     element: <Profile />,
+    //     layout: defaultLayout,
+    //   },
+    //   {
+    //     path: ROUTE_PATHS.ADMIN,
+    //     isPrivate: true,
+    //     allowedRoles: ["admin"],
+    //     element: <AdminDashboard />,
+    //     layout: defaultLayout,
+    //   },
+    {
+      path: ROUTE_PATHS.LOGIN,
+      isPrivate: false,
+      publicOnly: true,
+      element: <LoginPage />,
+      layout: defaultLayout,
+      allowedRoles: [],
+    },
+    {
+      path: ROUTE_PATHS.REGISTER,
+      isPrivate: false,
+      publicOnly: true,
+      element: <RegisterPage />,
+      layout: defaultLayout,
+      allowedRoles: [],
+    },
+    {
+      path: ROUTE_PATHS.PROFILE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <ProfilePage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.SEARCH,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <SearchPage />,
+      layout: defaultLayout,
+    },
+  ];
+
+  return routeConfigs.map(
     ({ path, element, layout, isPrivate, allowedRoles, publicOnly }) => {
       const content = layout ? (
         <Layout {...layout} isAuthenticated={!!user}>
@@ -102,3 +108,4 @@ export const appRoutes = (user: any) =>
       };
     }
   );
+};

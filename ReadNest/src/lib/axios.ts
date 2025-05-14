@@ -25,10 +25,17 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem("refresh_token");
       if (refreshToken) {
-        const newToken = await refreshAccessToken(refreshToken);
-        localStorage.setItem("access_token", newToken);
-        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-        return axiosInstance(originalRequest);
+        try {
+          const newToken = await refreshAccessToken(refreshToken);
+          localStorage.setItem("access_token", newToken);
+          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+          return axiosInstance(originalRequest);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          localStorage.clear();
+          window.location.href = "/login";
+          return Promise.reject(error);
+        }
       }
     }
     return Promise.reject(error);

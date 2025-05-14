@@ -1,5 +1,6 @@
 import type { DetailError } from "@/lib/api/base/types";
 import { clsx, type ClassValue } from "clsx";
+import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
@@ -33,4 +34,15 @@ export function showToastMessage({
   if (messageId.startsWith("I")) toast.success(message);
   else if (messageId.startsWith("E")) toast.error(message);
   else if (messageId.startsWith("W")) toast.warning(message);
+}
+
+export function isTokenValid(token: string): boolean {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decoded: any = jwtDecode(token);
+    const now = Date.now() / 1000;
+    return decoded.exp > now;
+  } catch {
+    return false;
+  }
 }
