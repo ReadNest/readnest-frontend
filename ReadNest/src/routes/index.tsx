@@ -72,6 +72,13 @@ const routeConfigs = [
     element: <FavoriteBooksPage />,
     layout: defaultLayout,
   },
+  {
+    path: ROUTE_PATHS.BOOK_DETAIL,
+    isPrivate: true,
+    // allowedRoles: ["user", "admin"],
+    element: <FavoriteBooksPage />,
+    layout: defaultLayout,
+  },
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
