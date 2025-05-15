@@ -106,7 +106,7 @@ export const appRoutes = (user: any) => {
     {
       path: ROUTE_PATHS.HOME,
       isPrivate: false,
-      element: <LoginPage />,
+      element: <HomePage />,
       layout: defaultLayout,
     },
     //   {

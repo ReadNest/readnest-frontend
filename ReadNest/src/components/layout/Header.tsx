@@ -5,6 +5,7 @@ import { Button, buttonVariants } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import type { VariantProps } from "class-variance-authority";
+import { NavLink } from "react-router-dom";
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -41,25 +42,46 @@ export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
   };
 
   return (
-    <header className="w-full px-6 py-4 shadow-md bg-white flex items-center justify-between">
+    <header className="w-full px-6 py-4 shadow-md bg-white flex items-center justify-between fixed">
       <div className="flex items-center gap-2">
         <img src={bookIcon} alt="Logo" className="w-8 h-8" />
         <span className="text-xl font-bold">ReadNest</span>
       </div>
 
       <nav className="hidden md:flex gap-6 text-sm font-medium">
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600"
+          }
+        >
           Trang chủ
-        </Link>
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        </NavLink>
+        <NavLink
+          to="/explore"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600"
+          }
+        >
           Khám phá
-        </Link>
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        </NavLink>
+
+        <NavLink
+          to="/trade"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600"
+          }
+        >
           Trao đổi
-        </Link>
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        </NavLink>
+        <NavLink
+          to="/community"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600"
+          }
+        >
           Cộng đồng
-        </Link>
+        </NavLink>
       </nav>
 
       <button
@@ -137,7 +159,9 @@ export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
             </Link>
           </>
         ) : (
-          <></>
+          <>
+            <Button>Đăng xuất</Button>
+          </>
         )}
       </div>
     </header>
