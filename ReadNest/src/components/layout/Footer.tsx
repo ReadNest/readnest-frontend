@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import bookIcon from "@/assets/book-svgrepo-com.svg";
+import readnestLogo from "@/assets/readnest_logo.svg";
 import facebookIcon from "@/assets/facebook-color-svgrepo-com.svg";
 import twitterIcon from "@/assets/twitter-color-svgrepo-com.svg";
 import instagramIcon from "@/assets/instagram-1-svgrepo-com.svg";
@@ -7,12 +7,16 @@ import linkedinIcon from "@/assets/linkedin-svgrepo-com.svg";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0F172A] text-gray-400 py-12 px-4 sm:px-12">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-[#0F172A] text-gray-400 py-12">
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Logo + Mô tả */}
         <div>
           <div className="flex items-center mb-4">
-            <img src={bookIcon} alt="ReadNest Icon" className="w-6 h-6 mr-2" />
+            <img
+              src={readnestLogo}
+              alt="ReadNest Icon"
+              className="w-6 h-6 mr-2 rounded-full bg-white p-1"
+            />
             <span className="text-white text-lg font-semibold">ReadNest</span>
           </div>
           <p className="text-sm leading-relaxed">
@@ -110,6 +114,9 @@ export default function Footer() {
             </a>
           </div>
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 mt-12 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+        © 2025 ReadNest. All rights reserved.
       </div>
     </footer>
   );

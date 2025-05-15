@@ -18,7 +18,9 @@ interface LayoutProps {
 export const Layout = ({ ...props }: LayoutProps) => {
   return (
     <div className="flex flex-col min-h-screen">
-      {props.options.header && props.header}
+      {props.options.header && (
+        <div className="sticky top-0 z-50">{props.header}</div>
+      )}
 
       <div className="flex flex-1">
         {props.options.sidebar && (
@@ -27,7 +29,7 @@ export const Layout = ({ ...props }: LayoutProps) => {
           </aside>
         )}
 
-        <main className="flex-1">{props.children}</main>
+        <main className="flex-1 py-2">{props.children}</main>
       </div>
 
       {props.options.footer && props.footer}

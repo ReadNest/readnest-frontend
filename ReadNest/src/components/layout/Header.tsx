@@ -1,4 +1,4 @@
-import bookIcon from "@/assets/book-svgrepo-com.svg";
+import readnestLogo from "@/assets/readnest_logo.svg";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
@@ -42,9 +42,9 @@ export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
   };
 
   return (
-    <header className="w-full px-6 py-4 shadow-md bg-white flex items-center justify-between fixed">
+    <header className="w-full px-6 py-4 shadow-md bg-white flex items-center justify-between z-10">
       <div className="flex items-center gap-2">
-        <img src={bookIcon} alt="Logo" className="w-8 h-8" />
+        <img src={readnestLogo} alt="Logo" className="w-8 h-8" />
         <span className="text-xl font-bold">ReadNest</span>
       </div>
 
