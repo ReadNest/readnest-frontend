@@ -9,6 +9,7 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import BookDetailPage from "@/pages/book/bookDetailPage";
 import FavoriteBooksPage from "@/pages/favouriteBooks/FavouriteBooksPage";
+import HomePage from "@/pages/home/HomePage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import SearchPage from "@/pages/search/SearchPage";
 
