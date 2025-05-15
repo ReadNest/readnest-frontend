@@ -1,3 +1,4 @@
+import type { GetUserResponse } from "@/api/@types";
 import Footer from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Layout } from "@/components/layout/Layout";
@@ -13,87 +14,103 @@ import HomePage from "@/pages/home/HomePage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import SearchPage from "@/pages/search/SearchPage";
 
-const defaultLayout = {
-  options: {
-    header: true,
-    sidebar: false,
-    footer: true,
-  },
-  header: <Header isAuthenticated={false} isLoginForm={true} />,
-  footer: <Footer />,
-  sidebar: <Sidebar />,
-};
+import { useLocation } from "react-router-dom";
 
-const routeConfigs = [
-  {
-    path: ROUTE_PATHS.HOME,
-    isPrivate: false,
-    element: <HomePage />,
-    layout: defaultLayout,
-  },
-  //   {
-  //     path: ROUTE_PATHS.PROFILE,
-  //     isPrivate: true,
-  //     allowedRoles: ["user", "admin"],
-  //     element: <Profile />,
-  //     layout: defaultLayout,
-  //   },
-  //   {
-  //     path: ROUTE_PATHS.ADMIN,
-  //     isPrivate: true,
-  //     allowedRoles: ["admin"],
-  //     element: <AdminDashboard />,
-  //     layout: defaultLayout,
-  //   },
-  {
-    path: ROUTE_PATHS.LOGIN,
-    isPrivate: false,
-    publicOnly: true,
-    element: <LoginPage />,
-    layout: defaultLayout,
-    allowedRoles: [],
-  },
-  {
-    path: ROUTE_PATHS.REGISTER,
-    isPrivate: false,
-    publicOnly: true,
-    element: <RegisterPage />,
-    layout: defaultLayout,
-    allowedRoles: [],
-  },
-  {
-    path: ROUTE_PATHS.PROFILE,
-    isPrivate: true,
-    // allowedRoles: ["user", "admin"],
-    element: <ProfilePage />,
-    layout: defaultLayout,
-  },
-  {
-    path: ROUTE_PATHS.SEARCH,
-    isPrivate: true,
-    // allowedRoles: ["user", "admin"],
-    element: <SearchPage />,
-    layout: defaultLayout,
-  },
-  {
-    path: ROUTE_PATHS.FAVOURITE,
-    isPrivate: true,
-    // allowedRoles: ["user", "admin"],
-    element: <FavoriteBooksPage />,
-    layout: defaultLayout,
-  },
-  {
-    path: ROUTE_PATHS.BOOK_DETAIL,
-    isPrivate: true,
-    // allowedRoles: ["user", "admin"],
-    element: <BookDetailPage />,
-    layout: defaultLayout,
-  },
-];
+export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const location = useLocation();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const appRoutes = (user: any) =>
-  routeConfigs.map(
+  const defaultLayout = {
+    options: {
+      header: true,
+      sidebar: false,
+      footer: true,
+    },
+    header: (
+      <Header
+        isAuthenticated={isAuthenticated}
+        user={{ name: user.userName ?? "", avatar: "" }}
+        isLoginForm={location.pathname === ROUTE_PATHS.LOGIN}
+      />
+    ),
+    footer: <Footer />,
+    sidebar: <Sidebar />,
+  };
+
+  const routeConfigs = [
+    {
+      path: ROUTE_PATHS.DEFAULT,
+      isPrivate: false,
+      element: <HomePage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.HOME,
+      isPrivate: false,
+      element: <HomePage />,
+      layout: defaultLayout,
+    },
+    //   {
+    //     path: ROUTE_PATHS.PROFILE,
+    //     isPrivate: true,
+    //     allowedRoles: ["user", "admin"],
+    //     element: <Profile />,
+    //     layout: defaultLayout,
+    //   },
+    //   {
+    //     path: ROUTE_PATHS.ADMIN,
+    //     isPrivate: true,
+    //     allowedRoles: ["admin"],
+    //     element: <AdminDashboard />,
+    //     layout: defaultLayout,
+    //   },
+    {
+      path: ROUTE_PATHS.LOGIN,
+      isPrivate: false,
+      publicOnly: true,
+      element: <LoginPage />,
+      layout: defaultLayout,
+      allowedRoles: [],
+    },
+    {
+      path: ROUTE_PATHS.REGISTER,
+      isPrivate: false,
+      publicOnly: true,
+      element: <RegisterPage />,
+      layout: defaultLayout,
+      allowedRoles: [],
+    },
+    {
+      path: ROUTE_PATHS.PROFILE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <ProfilePage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.SEARCH,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <SearchPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.FAVOURITE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <FavoriteBooksPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.BOOK_DETAIL,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <BookDetailPage />,
+      layout: defaultLayout,
+    },
+  ];
+
+  return routeConfigs.map(
     ({ path, element, layout, isPrivate, allowedRoles, publicOnly }) => {
       const content = layout ? (
         <Layout {...layout} isAuthenticated={!!user}>
@@ -104,7 +121,10 @@ export const appRoutes = (user: any) =>
       );
 
       const wrappedElement = isPrivate ? (
-        <ProtectedRoute user={user} allowedRoles={allowedRoles}>
+        <ProtectedRoute
+          user={{ ...user, roleName: user.roleName ?? "" }}
+          allowedRoles={allowedRoles}
+        >
           {content}
         </ProtectedRoute>
       ) : publicOnly ? (
@@ -119,3 +139,4 @@ export const appRoutes = (user: any) =>
       };
     }
   );
+};

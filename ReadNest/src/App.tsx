@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 
 function App() {
-  const user = useSelector((state: RootState) => state.auth);
+  const auth = useSelector((state: RootState) => state.auth);
 
-  const routes = appRoutes(user);
+  const routes = appRoutes(auth.user, auth.isAuthenticated);
   return (
     <>
       <Routes>

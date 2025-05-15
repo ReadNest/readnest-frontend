@@ -1,11 +1,13 @@
 import readnestLogo from "@/assets/readnest_logo.svg";
 import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import type { VariantProps } from "class-variance-authority";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "@/features/auth/authSlice";
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -35,10 +37,17 @@ const getButtonProps = (
 };
 
 export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const onLogout = () => {
+    dispatch(logout());
+    navigate("/");
   };
 
   return (
@@ -160,7 +169,12 @@ export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
           </>
         ) : (
           <>
-            <Button>Đăng xuất</Button>
+            <Button
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
+              onClick={onLogout}
+            >
+              Đăng xuất
+            </Button>
           </>
         )}
       </div>

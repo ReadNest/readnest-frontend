@@ -1,5 +1,6 @@
 export const ROUTE_PATHS = {
-  HOME: "/",
+  DEFAULT: "/",
+  HOME: "/home",
   PROFILE: "/profile",
   ADMIN: "/admin",
   LOGIN: "/login",

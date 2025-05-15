@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import type { LoginRequest } from "@/api/@types";
 import type { RootState } from "@/store";
@@ -18,8 +18,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { showToastMessage } from "@/lib/utils";
+import { RoleEnum } from "@/constants/enum";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     register,
@@ -29,6 +31,7 @@ export default function LoginForm() {
     clearErrors: clearFormErrors,
   } = useForm<LoginRequest>();
 
+  const auth = useSelector((state: RootState) => state.auth);
   const errorFields = useSelector(
     (state: RootState) => state.error.detailErrors
   );
@@ -65,6 +68,14 @@ export default function LoginForm() {
       messageId: errorMessage.messageId,
     });
   }, [errorMessage]);
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      if (auth.user.roleName === RoleEnum.ADMIN) navigate("/dashboard");
+      else if (auth.user.roleName === RoleEnum.USER) navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.isAuthenticated]);
 
   return (
     <form

@@ -6,7 +6,14 @@ import type {
 } from "@/api/@types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export const initialState = {
+export const initialState: {
+  isAuthenticated: boolean;
+  isRegisterSuccess: boolean;
+  loading: boolean;
+  userName: string;
+  password: string;
+  user: GetUserResponse;
+} = {
   isAuthenticated: false,
   isRegisterSuccess: false,
   loading: false,
