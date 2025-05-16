@@ -1,5 +1,6 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import {
+  fetchUserLoginStart,
   loginFailure,
   loginRequest,
   loginStart,
@@ -41,20 +42,10 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
       yield put(loginSuccess(res.data));
       yield put(resetInitialRegisterState());
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const token: any = jwtDecode(res.data?.accessToken);
-      const nameIdentifier =
-        token[
-          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-        ];
-
-      const profile: GetUserResponseApiResponse = yield call(() =>
-        client.api.v1.users._userId(nameIdentifier ?? "").$get()
-      );
-
-      if (profile.success) {
-        setUser(profile.data ?? {});
-      }
+      yield call(fetchUserLogin, {
+        type: fetchUserLoginStart.type,
+        payload: res.data.accessToken,
+      });
     } else {
       yield put(loginFailure());
       yield put(setDetailErrors(res.listDetailError ?? []));
@@ -110,7 +101,30 @@ function* handleRegister(action: PayloadAction<RegisterRequest>) {
   }
 }
 
+function* fetchUserLogin(action: PayloadAction<string>) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const token: any = jwtDecode(action.payload);
+    const nameIdentifier =
+      token[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+      ];
+
+    const profile: GetUserResponseApiResponse = yield call(() =>
+      client.api.v1.users._userId(nameIdentifier ?? "").$get()
+    );
+
+    if (profile.success) {
+      yield put(setUser(profile.data ?? {}));
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
 export default function* authSaga() {
   yield takeLatest(loginStart.type, handleLogin);
   yield takeLatest(registerStart.type, handleRegister);
+  yield takeLatest(fetchUserLoginStart.type, fetchUserLogin);
 }

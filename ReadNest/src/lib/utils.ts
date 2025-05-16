@@ -46,3 +46,9 @@ export function isTokenValid(token: string): boolean {
     return false;
   }
 }
+
+export function getInitials(fullName: string) {
+  const parts = fullName.trim().split(" ");
+  const lastTwo = parts.slice(-2);
+  return lastTwo.map((word) => word[0]?.toUpperCase() ?? "").join("");
+}

@@ -8,10 +8,12 @@ export type DetailError = {
 
 export type GetUserResponse = {
   userId?: string | undefined;
+  fullName?: string | null | undefined;
   userName?: string | null | undefined;
   email?: string | null | undefined;
   address?: string | null | undefined;
   dateOfBirth?: string | undefined;
+  avatarUrl?: string | null | undefined;
   roleId?: string | undefined;
   roleName?: string | null | undefined;
 }

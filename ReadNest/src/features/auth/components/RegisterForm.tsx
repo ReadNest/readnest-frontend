@@ -60,8 +60,8 @@ export default function RegisterForm() {
     >
       <FormField
         id="userName"
-        label="Username"
-        placeholder="Nhập username"
+        label="Tên đăng nhập"
+        placeholder="Nhập tên đăng nhập"
         error={errors.userName?.message || errorFields["userName"]}
         register={register}
       />

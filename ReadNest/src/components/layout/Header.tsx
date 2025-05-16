@@ -1,6 +1,6 @@
 import readnestLogo from "@/assets/readnest_logo.svg";
 import { Search } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
@@ -8,13 +8,13 @@ import type { VariantProps } from "class-variance-authority";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/auth/authSlice";
+import UserDropDown from "../ui/user-dropdown";
 
 interface HeaderProps {
   isAuthenticated: boolean;
-  isLoginForm: boolean;
   user?: {
-    name: string;
-    avatar?: string;
+    fullName: string;
+    avatarUrl?: string;
   };
 }
 
@@ -23,22 +23,30 @@ type ButtonType = "login" | "register";
 
 const getButtonProps = (
   type: ButtonType,
-  isLoginForm?: boolean
+  currentPath: string
 ): { variant: ButtonVariant; className: string } => {
-  const isActive =
-    (type === "login" && isLoginForm) || (type === "register" && !isLoginForm);
+  let isActive;
+
+  if (currentPath === "/login") {
+    isActive = type === "login";
+  } else if (currentPath === "/register") {
+    isActive = type === "register";
+  } else {
+    isActive = false;
+  }
 
   return {
     variant: isActive ? "default" : "outline",
     className: isActive
-      ? "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
-      : "w-full font-semibold",
+      ? "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-full"
+      : "w-full font-semibold rounded-full",
   };
 };
 
-export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
+export const Header = ({ isAuthenticated, user }: HeaderProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -157,24 +165,23 @@ export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
         {!isAuthenticated ? (
           <>
             <Link to="/login">
-              <Button {...getButtonProps("login", isLoginForm)}>
+              <Button {...getButtonProps("login", location.pathname)}>
                 Đăng nhập
               </Button>
             </Link>
             <Link to="/register">
-              <Button {...getButtonProps("register", isLoginForm)}>
+              <Button {...getButtonProps("register", location.pathname)}>
                 Đăng ký
               </Button>
             </Link>
           </>
         ) : (
           <>
-            <Button
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
-              onClick={onLogout}
-            >
-              Đăng xuất
-            </Button>
+            <UserDropDown
+              fullName={user?.fullName ?? ""}
+              avatarUrl={user?.avatarUrl}
+              onClickLogout={onLogout}
+            />
           </>
         )}
       </div>

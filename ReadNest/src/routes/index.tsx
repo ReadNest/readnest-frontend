@@ -14,12 +14,7 @@ import HomePage from "@/pages/home/HomePage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import SearchPage from "@/pages/search/SearchPage";
 
-import { useLocation } from "react-router-dom";
-
 export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const location = useLocation();
-
   const defaultLayout = {
     options: {
       header: true,
@@ -29,8 +24,10 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     header: (
       <Header
         isAuthenticated={isAuthenticated}
-        user={{ name: user.userName ?? "", avatar: "" }}
-        isLoginForm={location.pathname === ROUTE_PATHS.LOGIN}
+        user={{
+          fullName: user.fullName ?? "",
+          avatarUrl: user.avatarUrl ?? "",
+        }}
       />
     ),
     footer: <Footer />,

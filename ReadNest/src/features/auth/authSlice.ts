@@ -30,6 +30,8 @@ const authSlice = createSlice({
     loginStart: (_state, _action: PayloadAction<LoginRequest>) => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     registerStart: (_state, _action: PayloadAction<RegisterRequest>) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    fetchUserLoginStart: (_state, _action: PayloadAction<string>) => {},
     loginRequest: (state) => {
       state.loading = true;
     },
@@ -73,6 +75,7 @@ const authSlice = createSlice({
 export const {
   loginStart,
   registerStart,
+  fetchUserLoginStart,
   loginRequest,
   registerRequest,
   loginSuccess,

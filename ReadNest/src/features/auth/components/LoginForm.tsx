@@ -88,16 +88,16 @@ export default function LoginForm() {
         }`}
       >
         <Label htmlFor="userName" className="block text-left p-1">
-          Địa chỉ Email
+          Tên đăng nhập
         </Label>
         <TooltipProvider>
           <Tooltip open={!!(errors.userName || errorFields["userName"])}>
             <TooltipTrigger asChild>
               <Input
                 id="userName"
-                placeholder="Nhập địa chỉ Email của bạn"
+                placeholder="Nhập tên đăng nhập"
                 {...register("userName", {
-                  required: "Email không được để trống",
+                  required: "Tên đăng nhập không được để trống",
                 })}
                 onChange={handleUserNameChange}
                 className={

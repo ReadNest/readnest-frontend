@@ -414,6 +414,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
           "userName": {
             "type": "string",
             "nullable": true
@@ -429,6 +433,10 @@
           "dateOfBirth": {
             "type": "string",
             "format": "date-time"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
           },
           "roleId": {
             "type": "string",
