@@ -1,5 +1,5 @@
 import readnestLogo from "@/assets/readnest_logo.svg";
-import { Search } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
 import { Input } from "../ui/input";
@@ -69,7 +69,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            isActive ? "text-indigo-700" : "text-gray-600"
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
           }
         >
           Trang chủ
@@ -77,7 +77,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
         <NavLink
           to="/explore"
           className={({ isActive }) =>
-            isActive ? "text-indigo-700" : "text-gray-600"
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
           }
         >
           Khám phá
@@ -86,7 +86,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
         <NavLink
           to="/trade"
           className={({ isActive }) =>
-            isActive ? "text-indigo-700" : "text-gray-600"
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
           }
         >
           Trao đổi
@@ -94,7 +94,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
         <NavLink
           to="/community"
           className={({ isActive }) =>
-            isActive ? "text-indigo-700" : "text-gray-600"
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
           }
         >
           Cộng đồng
@@ -155,13 +155,16 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
       )}
 
       <div className="flex items-center gap-4">
-        <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="relative h-10">
+          <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </div>
           <Input
             placeholder="Tìm kiếm sách..."
-            className="pl-8 pr-2 py-2 w-40 md:w-60"
+            className="pl-8 pr-2 py-2 w-40 md:w-60 h-full"
           />
         </div>
+
         {!isAuthenticated ? (
           <>
             <Link to="/login">
@@ -177,6 +180,17 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
           </>
         ) : (
           <>
+            <Link to="/posts">
+              <Button
+                variant="default"
+                className="w-full font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white"
+              >
+                Tạo bài viết
+              </Button>
+            </Link>
+            <Link to="/notifications">
+              <Bell className="h-5 w-5 hover:animate-shake transition-transform" />
+            </Link>
             <UserDropDown
               fullName={user?.fullName ?? ""}
               avatarUrl={user?.avatarUrl}
