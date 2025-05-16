@@ -16,7 +16,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    isAuthenticated && navigate("/home");
+    isAuthenticated && navigate("/");
   }, [isAuthenticated, navigate]);
 
   const benefits = [

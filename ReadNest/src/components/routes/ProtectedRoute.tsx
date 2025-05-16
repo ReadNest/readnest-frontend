@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -12,7 +12,7 @@ export const ProtectedRoute = ({
   allowedRoles,
   children,
 }: ProtectedRouteProps) => {
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user?.roleName) return <Navigate to="/login" replace />;
 
   if (allowedRoles && !allowedRoles.includes(user.roleName)) {
     return <Navigate to="/unauthorized" replace />;

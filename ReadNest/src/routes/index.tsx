@@ -41,12 +41,6 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       element: <HomePage />,
       layout: defaultLayout,
     },
-    {
-      path: ROUTE_PATHS.HOME,
-      isPrivate: false,
-      element: <HomePage />,
-      layout: defaultLayout,
-    },
     //   {
     //     path: ROUTE_PATHS.PROFILE,
     //     isPrivate: true,
@@ -116,7 +110,6 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       ) : (
         element
       );
-
       const wrappedElement = isPrivate ? (
         <ProtectedRoute
           user={{ ...user, roleName: user.roleName ?? "" }}
