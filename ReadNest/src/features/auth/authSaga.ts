@@ -10,6 +10,7 @@ import {
   registerStart,
   registerSuccess,
   resetInitialRegisterState,
+  setLoading,
   setUser,
 } from "./authSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -103,6 +104,7 @@ function* handleRegister(action: PayloadAction<RegisterRequest>) {
 
 function* fetchUserLogin(action: PayloadAction<string>) {
   try {
+    yield put(setLoading(true));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const token: any = jwtDecode(action.payload);
     const nameIdentifier =
@@ -116,6 +118,7 @@ function* fetchUserLogin(action: PayloadAction<string>) {
 
     if (profile.success) {
       yield put(setUser(profile.data ?? {}));
+      yield put(setLoading(false));
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

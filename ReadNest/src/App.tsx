@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "./store";
 import { fetchUserLoginStart } from "./features/auth/authSlice";
 import { useEffect } from "react";
+import { UserLoader } from "./components/ui/user-loader";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,12 +25,13 @@ function App() {
 
   return (
     <>
-      <Routes>
-        {routes.map(({ path, element }) => (
-          <Route key={path} path={path} element={element} />
-        ))}
-      </Routes>
-
+      <UserLoader loading={auth.loading}>
+        <Routes>
+          {routes.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+        </Routes>
+      </UserLoader>
       <Toaster position="top-right" duration={4000} />
     </>
   );

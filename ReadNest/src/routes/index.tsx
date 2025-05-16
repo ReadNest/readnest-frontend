@@ -5,6 +5,7 @@ import { Layout } from "@/components/layout/Layout";
 import Sidebar from "@/components/layout/Sidebar";
 import { ProtectedRoute } from "@/components/routes/ProtectedRoute";
 import { PublicRoute } from "@/components/routes/PublicRoute";
+import { RoleEnum } from "@/constants/enum";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
@@ -74,7 +75,7 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     {
       path: ROUTE_PATHS.PROFILE,
       isPrivate: true,
-      // allowedRoles: ["user", "admin"],
+      allowedRoles: [RoleEnum.ADMIN, RoleEnum.USER],
       element: <ProfilePage />,
       layout: defaultLayout,
     },
@@ -110,9 +111,11 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       ) : (
         element
       );
+
       const wrappedElement = isPrivate ? (
         <ProtectedRoute
-          user={{ ...user, roleName: user.roleName ?? "" }}
+          isAuthenticated={isAuthenticated}
+          user={user}
           allowedRoles={allowedRoles}
         >
           {content}
