@@ -26,6 +26,7 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       <Header
         isAuthenticated={isAuthenticated}
         user={{
+          username: user.userName ?? "",
           fullName: user.fullName ?? "",
           avatarUrl: user.avatarUrl ?? "",
         }}

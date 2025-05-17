@@ -12,16 +12,17 @@ import { getInitials } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
 interface UserDropDownProps {
+  username: string;
   fullName: string;
   avatarUrl?: string;
   onClickLogout: () => void;
 }
 
-const dropDownItems = [
+const getDropDownItems = (username: string) => [
   {
     icon: <User className="mr-2 h-4 w-4" />,
     content: "Thông tin cá nhân",
-    to: "/profile",
+    to: `/${username}`,
   },
   {
     icon: <BookMarked className="mr-2 h-4 w-4" />,
@@ -42,6 +43,7 @@ const dropDownItems = [
 
 function UserDropDown({ ...props }: UserDropDownProps) {
   return (
+    console.log("UserDropDown", props.username),
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
@@ -69,7 +71,7 @@ function UserDropDown({ ...props }: UserDropDownProps) {
 
         <DropdownMenuSeparator />
 
-        {dropDownItems.map((item, index) => (
+        {getDropDownItems(props.username).map((item, index) => (
           <DropdownMenuItem key={index} asChild>
             <Link to={item.to} className="flex items-center cursor-pointer">
               {item.icon}
