@@ -10,9 +10,11 @@ import { ROUTE_PATHS } from "@/constants/routePaths";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import BookDetailPage from "@/pages/book/BookDetailPage";
+import BookExchangePage from "@/pages/book/BookExchangePage";
 import FavoriteBooksPage from "@/pages/favouriteBooks/FavouriteBooksPage";
 import HomePage from "@/pages/home/HomePage";
 import ProfilePage from "@/pages/profile/ProfilePage";
+import CommunityRanking from "@/pages/rank/CommunityRanking";
 import SearchPage from "@/pages/search/SearchPage";
 
 export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
@@ -98,6 +100,20 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       // allowedRoles: ["user", "admin"],
       element: <BookDetailPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.RANK,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CommunityRanking />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.BOOK_EXCHANGE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <BookExchangePage />,
       layout: defaultLayout,
     },
   ];

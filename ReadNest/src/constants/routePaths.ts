@@ -5,6 +5,8 @@ export const ROUTE_PATHS = {
   LOGIN: "/login",
   REGISTER: "/register",
   SEARCH: "/search",
-  FAVOURITE: "/favourite",
+  FAVOURITE: "/favorites",
   BOOK_DETAIL: "/book-detail",
+  RANK: "/community-rank",
+  BOOK_EXCHANGE: "/book-exchange",
 };
