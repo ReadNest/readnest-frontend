@@ -1,17 +1,20 @@
-import bookIcon from "@/assets/book-svgrepo-com.svg";
-import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import readnestLogo from "@/assets/readnest_logo.svg";
+import { Bell, Search } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import type { VariantProps } from "class-variance-authority";
+import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "@/features/auth/authSlice";
+import UserDropDown from "../ui/user-dropdown";
 
 interface HeaderProps {
   isAuthenticated: boolean;
-  isLoginForm: boolean;
   user?: {
-    name: string;
-    avatar?: string;
+    fullName: string;
+    avatarUrl?: string;
   };
 }
 
@@ -20,46 +23,82 @@ type ButtonType = "login" | "register";
 
 const getButtonProps = (
   type: ButtonType,
-  isLoginForm?: boolean
+  currentPath: string
 ): { variant: ButtonVariant; className: string } => {
-  const isActive =
-    (type === "login" && isLoginForm) || (type === "register" && !isLoginForm);
+  let isActive;
+
+  if (currentPath === "/login") {
+    isActive = type === "login";
+  } else if (currentPath === "/register") {
+    isActive = type === "register";
+  } else {
+    isActive = false;
+  }
 
   return {
     variant: isActive ? "default" : "outline",
     className: isActive
-      ? "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
-      : "w-full font-semibold",
+      ? "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-full"
+      : "w-full font-semibold rounded-full",
   };
 };
 
-export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
+export const Header = ({ isAuthenticated, user }: HeaderProps) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const onLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
   return (
-    <header className="w-full px-6 py-4 shadow-md bg-white flex items-center justify-between">
+    <header className="w-full px-6 py-4 shadow-md bg-white flex items-center justify-between z-10">
       <div className="flex items-center gap-2">
-        <img src={bookIcon} alt="Logo" className="w-8 h-8" />
+        <img src={readnestLogo} alt="Logo" className="w-8 h-8" />
         <span className="text-xl font-bold">ReadNest</span>
       </div>
 
       <nav className="hidden md:flex gap-6 text-sm font-medium">
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
+          }
+        >
           Trang chủ
-        </Link>
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        </NavLink>
+        <NavLink
+          to="/explore"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
+          }
+        >
           Khám phá
-        </Link>
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        </NavLink>
+
+        <NavLink
+          to="/trade"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
+          }
+        >
           Trao đổi
-        </Link>
-        <Link to="/" className="hover:text-indigo-600 transition-colors">
+        </NavLink>
+        <NavLink
+          to="/community"
+          className={({ isActive }) =>
+            isActive ? "text-indigo-700" : "text-gray-600 hover:text-indigo-600"
+          }
+        >
           Cộng đồng
-        </Link>
+        </NavLink>
       </nav>
 
       <button
@@ -116,19 +155,49 @@ export const Header = ({ isAuthenticated, user, isLoginForm }: HeaderProps) => {
       )}
 
       <div className="flex items-center gap-4">
-        <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="relative h-10">
+          <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </div>
           <Input
             placeholder="Tìm kiếm sách..."
-            className="pl-8 pr-2 py-2 w-40 md:w-60"
+            className="pl-8 pr-2 py-2 w-40 md:w-60 h-full"
           />
         </div>
-        <Link to="/login">
-          <Button {...getButtonProps("login", isLoginForm)}>Đăng nhập</Button>
-        </Link>
-        <Link to="/register">
-          <Button {...getButtonProps("register", isLoginForm)}>Đăng ký</Button>
-        </Link>
+
+        {!isAuthenticated ? (
+          <>
+            <Link to="/login">
+              <Button {...getButtonProps("login", location.pathname)}>
+                Đăng nhập
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button {...getButtonProps("register", location.pathname)}>
+                Đăng ký
+              </Button>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link to="/posts">
+              <Button
+                variant="default"
+                className="w-full font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white"
+              >
+                Tạo bài viết
+              </Button>
+            </Link>
+            <Link to="/notifications">
+              <Bell className="h-5 w-5 hover:animate-shake transition-transform" />
+            </Link>
+            <UserDropDown
+              fullName={user?.fullName ?? ""}
+              avatarUrl={user?.avatarUrl}
+              onClickLogout={onLogout}
+            />
+          </>
+        )}
       </div>
     </header>
   );

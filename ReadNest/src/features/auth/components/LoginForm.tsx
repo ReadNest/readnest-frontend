@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import type { LoginRequest } from "@/api/@types";
 import type { RootState } from "@/store";
@@ -18,8 +17,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { showToastMessage } from "@/lib/utils";
+import { RoleEnum } from "@/constants/enum";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     register,
@@ -29,6 +31,7 @@ export default function LoginForm() {
     clearErrors: clearFormErrors,
   } = useForm<LoginRequest>();
 
+  const auth = useSelector((state: RootState) => state.auth);
   const errorFields = useSelector(
     (state: RootState) => state.error.detailErrors
   );
@@ -60,13 +63,19 @@ export default function LoginForm() {
   };
 
   useEffect(() => {
-    if (errorMessage.messageId.startsWith("I"))
-      toast.success(errorMessage.message);
-    else if (errorMessage.messageId.startsWith("E"))
-      toast.error(errorMessage.message);
-    else if (errorMessage.messageId.startsWith("W"))
-      toast.warning(errorMessage.message);
+    showToastMessage({
+      message: errorMessage.message ?? "",
+      messageId: errorMessage.messageId,
+    });
   }, [errorMessage]);
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      if (auth.user.roleName === RoleEnum.ADMIN) navigate("/dashboard");
+      else if (auth.user.roleName === RoleEnum.USER) navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.isAuthenticated]);
 
   return (
     <form
@@ -79,16 +88,16 @@ export default function LoginForm() {
         }`}
       >
         <Label htmlFor="userName" className="block text-left p-1">
-          Địa chỉ Email
+          Tên đăng nhập
         </Label>
         <TooltipProvider>
           <Tooltip open={!!(errors.userName || errorFields["userName"])}>
             <TooltipTrigger asChild>
               <Input
                 id="userName"
-                placeholder="Nhập địa chỉ Email của bạn"
+                placeholder="Nhập tên đăng nhập"
                 {...register("userName", {
-                  required: "Email không được để trống",
+                  required: "Tên đăng nhập không được để trống",
                 })}
                 onChange={handleUserNameChange}
                 className={

@@ -1,11 +1,25 @@
-import type { LoginRequest, TokenResponse } from "@/api/@types";
+import type {
+  GetUserResponse,
+  LoginRequest,
+  RegisterRequest,
+  TokenResponse,
+} from "@/api/@types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+export const initialState: {
+  isAuthenticated: boolean;
+  isRegisterSuccess: boolean;
+  loading: boolean;
+  userName: string;
+  password: string;
+  user: GetUserResponse;
+} = {
   isAuthenticated: false,
+  isRegisterSuccess: false,
   loading: false,
   userName: "",
   password: "",
+  user: {},
 };
 
 const authSlice = createSlice({
@@ -14,35 +28,68 @@ const authSlice = createSlice({
   reducers: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loginStart: (_state, _action: PayloadAction<LoginRequest>) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    registerStart: (_state, _action: PayloadAction<RegisterRequest>) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    fetchUserLoginStart: (_state, _action: PayloadAction<string>) => {},
     loginRequest: (state) => {
+      state.loading = true;
+    },
+    registerRequest: (state) => {
       state.loading = true;
     },
     loginSuccess: (state, action: PayloadAction<TokenResponse>) => {
       state.isAuthenticated = true;
       state.loading = false;
-      localStorage.setItem("token", JSON.stringify(action.payload));
+      localStorage.setItem("access_token", action.payload.accessToken ?? "");
+      localStorage.setItem("refresh_token", action.payload.refreshToken ?? "");
     },
     loginFailure: (state) => {
       state.loading = false;
     },
+    registerSuccess: (state) => {
+      state.loading = false;
+      state.isRegisterSuccess = true;
+    },
+    registerFailure: (state) => {
+      state.loading = false;
+      state.isRegisterSuccess = false;
+    },
     logout: (state) => {
       state.isAuthenticated = false;
-      localStorage.removeItem("token");
+      localStorage.clear();
+    },
+    resetInitialRegisterState(state) {
+      state.isRegisterSuccess = false;
     },
     setInitialState: (state, action: PayloadAction<LoginRequest>) => {
       state.userName = action.payload.userName ?? "";
       state.password = action.payload.password ?? "";
+    },
+    setUser: (state, action: PayloadAction<GetUserResponse>) => {
+      state.user = action.payload;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
   },
 });
 
 export const {
   loginStart,
+  registerStart,
+  fetchUserLoginStart,
   loginRequest,
+  registerRequest,
   loginSuccess,
   loginFailure,
+  registerSuccess,
+  registerFailure,
   logout,
   setInitialState,
+  resetInitialRegisterState,
+  setUser,
+  setLoading,
 } = authSlice.actions;
 
 export default authSlice.reducer;

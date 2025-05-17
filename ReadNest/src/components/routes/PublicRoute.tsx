@@ -9,6 +9,7 @@ interface PublicRouteProps {
 }
 
 export const PublicRoute = ({ user, children }: PublicRouteProps) => {
-  if (user.isAuthenticated) return <Navigate to={ROUTE_PATHS.HOME} replace />;
+  if (user.isAuthenticated)
+    return <Navigate to={ROUTE_PATHS.DEFAULT} replace />;
   return <>{children}</>;
 };
