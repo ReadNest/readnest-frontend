@@ -1,0 +1,57 @@
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { fetchUserProfileFailure, fetchUserProfileRequested, fetchUserProfileStart, fetchUserProfileSuccess } from "./profileSlice";
+import { call, put, takeLatest } from "redux-saga/effects";
+import type { GetUserProfileResponseApiResponse } from "@/api/@types";
+import client from "@/lib/api/axiosClient";
+import { setDetailErrors, setMessage } from "@/store/error/errorSlice";
+import { updateProfileFailure, updateProfileRequested, updateProfileStart, updateProfileSuccess } from "./profileSlice";
+import type { UpdateUserRequest } from "@/api/@types";
+
+function* fetchUserProfile(action: PayloadAction<string>) {
+    try {
+        const userName = action.payload;
+        yield put(fetchUserProfileStart());
+        const response: GetUserProfileResponseApiResponse = yield call(() =>
+            client.api.v1.users.username._userName(userName).$get()
+        );
+        yield put(fetchUserProfileSuccess(response));
+    } catch (error: any) {
+        const errBody = error?.response.data || {};
+        yield put(
+            setMessage({
+                message: errBody.message ?? "",
+                messageId: errBody.messageId ?? "",
+            })
+        );
+        yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(fetchUserProfileFailure());
+    }
+}
+
+function* updateProfile(action: PayloadAction<UpdateUserRequest>) {
+    try {
+        yield put(updateProfileStart());
+        const response: { data: string; success: boolean } = yield call(() =>
+            client.api.v1.users.profile.$put({ body: action.payload })
+        );
+        if (response.success) {
+            yield put(updateProfileSuccess(action.payload));
+        }
+    } catch (error: any) {
+        const errBody = error?.response?.data || {};
+        yield put(
+            setMessage({
+                message: errBody.message ?? "",
+                messageId: errBody.messageId ?? "",
+            })
+        );
+        yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(updateProfileFailure());
+    }
+}
+
+
+export default function* profileSaga() {
+    yield takeLatest(fetchUserProfileRequested.type, fetchUserProfile);
+    yield takeLatest(updateProfileRequested.type, updateProfile);
+}

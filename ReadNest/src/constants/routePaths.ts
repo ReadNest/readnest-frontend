@@ -1,6 +1,6 @@
 export const ROUTE_PATHS = {
   DEFAULT: "/",
-  PROFILE: "/profile",
+  PROFILE: "/profile/:username",
   ADMIN: "/admin",
   LOGIN: "/login",
   REGISTER: "/register",
@@ -9,6 +9,7 @@ export const ROUTE_PATHS = {
   BOOK_DETAIL: "/book-detail",
   RANK: "/community-rank",
   BOOK_EXCHANGE: "/book-exchange",
+  NOT_FOUND: "/404",
   BOOK: "/books",
   MANAGE_BOOK: "/books/new",
   AFFILIATE: "/affiliate-links",

@@ -13,6 +13,7 @@ import UserDropDown from "../ui/user-dropdown";
 interface HeaderProps {
   isAuthenticated: boolean;
   user?: {
+    username: string;
     fullName: string;
     avatarUrl?: string;
   };
@@ -192,6 +193,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
               <Bell className="h-5 w-5 hover:animate-shake transition-transform" />
             </Link>
             <UserDropDown
+              username={user?.username ?? ""}
               fullName={user?.fullName ?? ""}
               avatarUrl={user?.avatarUrl}
               onClickLogout={onLogout}
