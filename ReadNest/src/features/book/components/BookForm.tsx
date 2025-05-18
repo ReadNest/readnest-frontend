@@ -17,9 +17,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, uploadFileToCloudinary } from "@/lib/utils";
+import { cn, showToastMessage, uploadFileToCloudinary } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import { clearErrors } from "@/store/error/errorSlice";
 
 interface BookFormProps {
   defaultValues?: Partial<CreateBookRequest>;
@@ -47,13 +50,32 @@ export default function BookForm({
     control,
     watch,
     reset,
+    clearErrors: clearFormErrors,
   } = useForm<CreateBookRequest>({
-    defaultValues,
+    defaultValues: {
+      title: "",
+      author: "",
+      rating: 1,
+      isbn: "",
+      language: "",
+      categoryIds: [],
+      imageUrl: "",
+      description: "",
+      ...defaultValues,
+    },
   });
+
+  const dispatch = useDispatch();
+  const errorFields = useSelector(
+    (state: RootState) => state.error.detailErrors
+  );
+  const errorMessage = useSelector((state: RootState) => state.error);
 
   const [isUploading, setIsUploading] = useState(false);
 
   const handleUploadImage = async (file: File) => {
+    dispatch(clearErrors());
+
     try {
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Kích thước file không được vượt quá 5MB");
@@ -65,19 +87,69 @@ export default function BookForm({
       const response = await uploadFileToCloudinary(file);
 
       setValue("imageUrl", response);
-    } catch (error) {
-      console.error("Upload error", error);
+    } catch {
+      toast.error("Lỗi trong quá trình upload file ảnh");
     } finally {
       setIsUploading(false);
     }
   };
 
   useEffect(() => {
-    if (defaultValues) reset(defaultValues);
+    if (defaultValues) {
+      reset(defaultValues);
+    }
   }, [defaultValues, reset]);
 
   const handleFormSubmit = (data: CreateBookRequest) => {
     onSubmit(data);
+    reset();
+  };
+
+  useEffect(() => {
+    showToastMessage({
+      message: errorMessage.message ?? "",
+      messageId: errorMessage.messageId,
+    });
+  }, [errorMessage]);
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue("title", e.target.value);
+    clearFormErrors("title");
+    if (errorFields["title"]) {
+      dispatch(clearErrors());
+    }
+  };
+
+  const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue("author", e.target.value);
+    clearFormErrors("author");
+    if (errorFields["author"]) {
+      dispatch(clearErrors());
+    }
+  };
+
+  // const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setValue("description", e.target.value);
+  //   clearFormErrors("description");
+  //   if (errorFields["description"]) {
+  //     dispatch(clearErrors());
+  //   }
+  // };
+
+  const handleISBNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue("isbn", e.target.value);
+    clearFormErrors("isbn");
+    if (errorFields["iSBN"]) {
+      dispatch(clearErrors());
+    }
+  };
+
+  const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue("imageUrl", e.target.value);
+    clearFormErrors("imageUrl");
+    if (errorFields["imageUrl"]) {
+      dispatch(clearErrors());
+    }
   };
 
   return (
@@ -91,19 +163,20 @@ export default function BookForm({
           id="title"
           label="Tiêu đề"
           placeholder="Nhập tiêu đề"
-          error={errors.title?.message}
+          error={errors.title?.message || errorFields["title"]}
           register={register}
+          onChange={handleTitleChange}
         />
         <FormField
           id="author"
           label="Tác giả"
           placeholder="Nhập tên tác giả"
-          error={errors.author?.message}
+          error={errors.author?.message || errorFields["author"]}
           register={register}
+          onChange={handleAuthorChange}
         />
       </div>
 
-      {/* Rating & ISBN */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="text-sm font-medium text-gray-700 mb-1 block">
@@ -132,12 +205,12 @@ export default function BookForm({
           id="isbn"
           label="ISBN"
           placeholder="Nhập ISBN"
-          error={errors.isbn?.message}
+          error={errors.isbn?.message || errorFields["iSBN"]}
           register={register}
+          onChange={handleISBNChange}
         />
       </div>
 
-      {/* Language & Category */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="text-sm font-medium text-gray-700 mb-1 block">
@@ -215,17 +288,16 @@ export default function BookForm({
         </div>
       </div>
 
-      {/* Image Upload */}
       <FormImageUpload
         label="Ảnh bìa"
         onUpload={handleUploadImage}
-        error={errors.imageUrl?.message}
+        error={errors.imageUrl?.message || errorFields["imageUrl"]}
         imageUrl={watch("imageUrl") ?? ""}
         disabled={isSubmitting}
         isUploading={isUploading}
+        onChange={handleImageUrlChange}
       />
 
-      {/* RichTextEditor for Description */}
       <div>
         <label className="text-sm font-medium text-gray-700 mb-1 block">
           Mô tả
@@ -242,7 +314,6 @@ export default function BookForm({
         />
       </div>
 
-      {/* Submit */}
       <Button
         type="submit"
         className="w-full bg-indigo-600 text-white hover:bg-indigo-700"

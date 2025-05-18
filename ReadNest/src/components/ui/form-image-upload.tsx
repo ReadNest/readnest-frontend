@@ -17,6 +17,7 @@ interface FormImageUploadProps {
   disabled?: boolean;
   imageUrl?: string;
   isUploading?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function FormImageUpload({
