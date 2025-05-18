@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 interface AffiliateLinksFormProps {
   bookId: string;
   initialAffiliateLinks: AffiliateLink[];
+  onSubmit: (links: AffiliateLink[]) => void;
+  onCancel?: () => void;
 }
 
 export type AffiliateLink = {
   id: number;
   partnerName: string;
-  link: string;
+  affiliateLink: string;
 };
 
 const dummyPartners = ["Amazon", "Tiki", "Fahasa"];
@@ -19,15 +21,17 @@ const dummyPartners = ["Amazon", "Tiki", "Fahasa"];
 export default function AffiliateLinksForm({
   bookId,
   initialAffiliateLinks,
+  onSubmit,
+  onCancel,
 }: AffiliateLinksFormProps) {
   const [links, setLinks] = useState<AffiliateLink[]>([
-    { id: Date.now(), partnerName: "", link: "" },
+    { id: Date.now(), partnerName: "", affiliateLink: "" },
   ]);
 
   const addLink = () => {
     setLinks((prev) => [
       ...prev,
-      { id: Date.now(), partnerName: "", link: "" },
+      { id: Date.now(), partnerName: "", affiliateLink: "" },
     ]);
   };
 
@@ -50,11 +54,11 @@ export default function AffiliateLinksForm({
       const formattedLinks = initialAffiliateLinks.map((link, index) => ({
         id: Date.now() + index,
         partnerName: link.partnerName,
-        link: link.link,
+        affiliateLink: link.affiliateLink,
       }));
       setLinks(formattedLinks);
     } else {
-      setLinks([{ id: Date.now(), partnerName: "", link: "" }]);
+      setLinks([{ id: Date.now(), partnerName: "", affiliateLink: "" }]);
     }
   }, [initialAffiliateLinks, bookId]);
 
@@ -90,8 +94,10 @@ export default function AffiliateLinksForm({
             <Input
               type="url"
               placeholder="https://"
-              value={link.link}
-              onChange={(e) => updateLink(link.id, "link", e.target.value)}
+              value={link.affiliateLink}
+              onChange={(e) =>
+                updateLink(link.id, "affiliateLink", e.target.value)
+              }
             />
           </div>
 
@@ -120,15 +126,17 @@ export default function AffiliateLinksForm({
       <div className="flex justify-end gap-2 pt-4">
         <Button
           variant="outline"
-          onClick={() =>
-            setLinks([{ id: Date.now(), partnerName: "", link: "" }])
-          }
+          onClick={() => {
+            setLinks([{ id: Date.now(), partnerName: "", affiliateLink: "" }]);
+            onCancel?.();
+          }}
         >
           Cancel
         </Button>
         <Button
-          type="submit"
-          className=" bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
+          type="button"
+          onClick={() => onSubmit(links)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
         >
           Save Affiliate Links
         </Button>

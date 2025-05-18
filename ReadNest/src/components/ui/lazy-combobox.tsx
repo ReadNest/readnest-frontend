@@ -24,6 +24,7 @@ type LazyComboboxProps<T> = {
   pageIndex: number;
   pageSize: number;
   totalItems: number;
+  placeholder: string;
 };
 
 export function LazyCombobox<T>({
@@ -36,6 +37,7 @@ export function LazyCombobox<T>({
   pageIndex,
   pageSize,
   totalItems,
+  placeholder,
 }: LazyComboboxProps<T>) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -74,7 +76,7 @@ export function LazyCombobox<T>({
                     displayField
                   ]
                 )
-              : "Chọn giá trị..."}
+              : placeholder}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 text-muted-foreground" />
         </div>

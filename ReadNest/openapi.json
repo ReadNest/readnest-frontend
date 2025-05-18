@@ -751,7 +751,7 @@
             "type": "string",
             "nullable": true
           },
-          "link": {
+          "affiliateLink": {
             "type": "string",
             "nullable": true
           }
