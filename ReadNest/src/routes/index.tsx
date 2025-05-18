@@ -53,6 +53,7 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       <Header
         isAuthenticated={isAuthenticated}
         user={{
+          username: user.userName ?? "",
           fullName: user.fullName ?? "",
           avatarUrl: user.avatarUrl ?? "",
         }}
@@ -146,8 +147,8 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: false,
       publicOnly: true,
       element: <NotFoundPage />,
-	},
-	{
+    },
+    {
       path: ROUTE_PATHS.BOOK,
       isPrivate: true,
       // allowedRoles: ["user", "admin"],
