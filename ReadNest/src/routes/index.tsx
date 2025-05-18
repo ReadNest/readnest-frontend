@@ -7,6 +7,7 @@ import { ProtectedRoute } from "@/components/routes/ProtectedRoute";
 import { PublicRoute } from "@/components/routes/PublicRoute";
 import { RoleEnum } from "@/constants/enum";
 import { ROUTE_PATHS } from "@/constants/routePaths";
+import NotFoundPage from "@/pages/404/NotFoundPage";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import BookDetailPage from "@/pages/book/BookDetailPage";
@@ -28,6 +29,7 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       <Header
         isAuthenticated={isAuthenticated}
         user={{
+          username: user.userName ?? "",
           fullName: user.fullName ?? "",
           avatarUrl: user.avatarUrl ?? "",
         }}
@@ -115,6 +117,12 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       // allowedRoles: ["user", "admin"],
       element: <BookExchangePage />,
       layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.NOT_FOUND,
+      isPrivate: false,
+      publicOnly: true,
+      element: <NotFoundPage />,
     },
   ];
 

@@ -5,6 +5,8 @@ import type { Methods as Methods_1eq60rt } from './api/v1/auth/refresh-token';
 import type { Methods as Methods_1p8w04r } from './api/v1/auth/register';
 import type { Methods as Methods_r5qu0t } from './api/v1/users';
 import type { Methods as Methods_lejw6y } from './api/v1/users/_userId@string';
+import type { Methods as Methods_1xqu5x7 } from './api/v1/users/profile';
+import type { Methods as Methods_yk6d61 } from './api/v1/users/username/_userName@string';
 
 const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
   const prefix = (baseURL === undefined ? '' : baseURL).replace(/\/$/, '');
@@ -12,8 +14,11 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
   const PATH1 = '/api/v1/auth/refresh-token';
   const PATH2 = '/api/v1/auth/register';
   const PATH3 = '/api/v1/users';
+  const PATH4 = '/api/v1/users/profile';
+  const PATH5 = '/api/v1/users/username';
   const GET = 'GET';
   const POST = 'POST';
+  const PUT = 'PUT';
   const DELETE = 'DELETE';
 
   return {
@@ -87,6 +92,38 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
                 fetch<Methods_lejw6y['delete']['resBody'], BasicHeaders, Methods_lejw6y['delete']['status']>(prefix, prefix3, DELETE, option).json().then(r => r.body),
               $path: () => `${prefix}${prefix3}`,
             };
+          },
+          profile: {
+            /**
+             * @returns OK
+             */
+            put: (option: { body: Methods_1xqu5x7['put']['reqBody'], config?: T | undefined }) =>
+              fetch<Methods_1xqu5x7['put']['resBody'], BasicHeaders, Methods_1xqu5x7['put']['status']>(prefix, PATH4, PUT, option).json(),
+            /**
+             * @returns OK
+             */
+            $put: (option: { body: Methods_1xqu5x7['put']['reqBody'], config?: T | undefined }) =>
+              fetch<Methods_1xqu5x7['put']['resBody'], BasicHeaders, Methods_1xqu5x7['put']['status']>(prefix, PATH4, PUT, option).json().then(r => r.body),
+            $path: () => `${prefix}${PATH4}`,
+          },
+          username: {
+            _userName: (val4: string) => {
+              const prefix4 = `${PATH5}/${val4}`;
+
+              return {
+                /**
+                 * @returns OK
+                 */
+                get: (option?: { config?: T | undefined } | undefined) =>
+                  fetch<Methods_yk6d61['get']['resBody'], BasicHeaders, Methods_yk6d61['get']['status']>(prefix, prefix4, GET, option).json(),
+                /**
+                 * @returns OK
+                 */
+                $get: (option?: { config?: T | undefined } | undefined) =>
+                  fetch<Methods_yk6d61['get']['resBody'], BasicHeaders, Methods_yk6d61['get']['status']>(prefix, prefix4, GET, option).json().then(r => r.body),
+                $path: () => `${prefix}${prefix4}`,
+              };
+            },
           },
           /**
            * @returns OK
