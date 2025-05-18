@@ -10,4 +10,5 @@ export const ROUTE_PATHS = {
   RANK: "/community-rank",
   BOOK_EXCHANGE: "/book-exchange",
   BOOK: "/books",
+  MANAGE_BOOK: "/books/new",
 };

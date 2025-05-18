@@ -17,6 +17,7 @@ import HomePage from "@/pages/home/HomePage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import CommunityRanking from "@/pages/rank/CommunityRanking";
 import SearchPage from "@/pages/search/SearchPage";
+import CreateBookPage from "@/pages/book/CreateBookPage";
 
 export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
   const defaultLayout = {
@@ -24,6 +25,26 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       header: true,
       sidebar: false,
       footer: true,
+    },
+    header: (
+      <Header
+        isAuthenticated={isAuthenticated}
+        user={{
+          fullName: user.fullName ?? "",
+          avatarUrl: user.avatarUrl ?? "",
+        }}
+      />
+    ),
+    footer: <Footer />,
+    sidebar: <Sidebar roleName={user.roleName ?? ""} />,
+  };
+
+  const adminLayout = {
+    options: {
+      header: true,
+      sidebar: true,
+      footer: false,
+      sidebarFullHeight: true,
     },
     header: (
       <Header
@@ -122,16 +143,14 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       // allowedRoles: ["user", "admin"],
       element: <BookPage />,
-      layout: {
-        ...defaultLayout,
-        options: {
-          ...defaultLayout.options,
-          header: false,
-          sidebar: true,
-          footer: false,
-          sidebarFullHeight: true,
-        },
-      },
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.MANAGE_BOOK,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CreateBookPage />,
+      layout: adminLayout,
     },
   ];
 

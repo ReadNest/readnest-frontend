@@ -18,6 +18,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { RoleEnum } from "@/constants/enum";
 import readnestLogo from "@/assets/readnest_logo.svg";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 interface SidebarProps {
   roleName: string;
@@ -38,8 +39,8 @@ const adminSidebarItems = [
     icon: <Book size={18} />,
     key: "books",
     items: [
-      { label: "All Books", path: "/books" },
-      { label: "Add New", path: "/books/new" },
+      { label: "All Books", path: ROUTE_PATHS.BOOK },
+      { label: "Add New", path: ROUTE_PATHS.MANAGE_BOOK },
     ],
   },
   {
