@@ -18,6 +18,7 @@ import ProfilePage from "@/pages/profile/ProfilePage";
 import CommunityRanking from "@/pages/rank/CommunityRanking";
 import SearchPage from "@/pages/search/SearchPage";
 import CreateBookPage from "@/pages/book/CreateBookPage";
+import CreateBookAffiliateLinks from "@/pages/affliate/CreateBookAffiliateLinks";
 
 export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
   const defaultLayout = {
@@ -150,6 +151,20 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       // allowedRoles: ["user", "admin"],
       element: <CreateBookPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.AFFILIATE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <BookPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.MANAGE_AFFILIATE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CreateBookAffiliateLinks />,
       layout: adminLayout,
     },
   ];

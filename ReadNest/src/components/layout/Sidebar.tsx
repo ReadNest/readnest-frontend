@@ -48,8 +48,8 @@ const adminSidebarItems = [
     icon: <LinkIcon size={18} />,
     key: "affiliate",
     items: [
-      { label: "All Links", path: "/affiliate-links" },
-      { label: "Create New", path: "/affiliate-links/new" },
+      { label: "All Links", path: ROUTE_PATHS.AFFILIATE },
+      { label: "Create New", path: ROUTE_PATHS.MANAGE_AFFILIATE },
     ],
   },
 ];

@@ -11,4 +11,6 @@ export const ROUTE_PATHS = {
   BOOK_EXCHANGE: "/book-exchange",
   BOOK: "/books",
   MANAGE_BOOK: "/books/new",
+  AFFILIATE: "/affiliate-links",
+  MANAGE_AFFILIATE: "/affiliate-links/new",
 };

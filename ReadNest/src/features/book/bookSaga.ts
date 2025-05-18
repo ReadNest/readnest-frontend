@@ -1,12 +1,21 @@
 import type {
   CreateBookRequest,
   GetBookResponseApiResponse,
+  GetBookResponsePagingResponseApiResponse,
 } from "@/api/@types";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { createBookStart, setLoading, setSuccess } from "./bookSlice";
+import {
+  createBookStart,
+  fetchBooksStart,
+  setBooks,
+  setLoading,
+  setPagingInfo,
+  setSuccess,
+} from "./bookSlice";
 import { call, put, takeLatest } from "redux-saga/effects";
 import client from "@/lib/api/axiosClient";
 import { setDetailErrors, setMessage } from "@/store/error/errorSlice";
+import type { PagingRequest } from "@/lib/api/base/types";
 
 function* handleCreateBook(action: PayloadAction<CreateBookRequest>) {
   try {
@@ -42,6 +51,44 @@ function* handleCreateBook(action: PayloadAction<CreateBookRequest>) {
   }
 }
 
+function* fetchBooks(action: PayloadAction<PagingRequest>) {
+  try {
+    yield put(setLoading(true));
+
+    const res: GetBookResponsePagingResponseApiResponse = yield call(() =>
+      client.api.v1.books
+        .get({
+          query: {
+            PageIndex: action.payload.pageIndex,
+            PageSize: action.payload.pageSize,
+          },
+        })
+        .then((r) => r.body)
+    );
+
+    if (res.success && res.data) {
+      yield put(setSuccess(true));
+      yield put(setBooks(res.data.items ?? []));
+      yield put(
+        setPagingInfo({
+          totalItems: res.data.totalItems,
+          pageIndex: res.data.pageIndex,
+          pageSize: res.data.pageSize,
+        })
+      );
+    } else {
+      yield put(setSuccess(false));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error(error);
+  } finally {
+    yield put(setLoading(false));
+  }
+}
+
 export default function* bookSaga() {
   yield takeLatest(createBookStart.type, handleCreateBook);
+  yield takeLatest(fetchBooksStart.type, fetchBooks);
 }
