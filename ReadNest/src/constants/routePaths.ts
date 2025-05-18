@@ -9,4 +9,5 @@ export const ROUTE_PATHS = {
   BOOK_DETAIL: "/book-detail",
   RANK: "/community-rank",
   BOOK_EXCHANGE: "/book-exchange",
+  BOOK: "/books",
 };

@@ -10,6 +10,7 @@ import { ROUTE_PATHS } from "@/constants/routePaths";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import BookDetailPage from "@/pages/book/BookDetailPage";
+import BookPage from "@/pages/book/BookPage";
 import BookExchangePage from "@/pages/book/BookExchangePage";
 import FavoriteBooksPage from "@/pages/favouriteBooks/FavouriteBooksPage";
 import HomePage from "@/pages/home/HomePage";
@@ -34,7 +35,7 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       />
     ),
     footer: <Footer />,
-    sidebar: <Sidebar />,
+    sidebar: <Sidebar roleName={user.roleName ?? ""} />,
   };
 
   const routeConfigs = [
@@ -115,6 +116,22 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       // allowedRoles: ["user", "admin"],
       element: <BookExchangePage />,
       layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.BOOK,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <BookPage />,
+      layout: {
+        ...defaultLayout,
+        options: {
+          ...defaultLayout.options,
+          header: false,
+          sidebar: true,
+          footer: false,
+          sidebarFullHeight: true,
+        },
+      },
     },
   ];
 
