@@ -11,12 +11,15 @@ import NotFoundPage from "@/pages/404/NotFoundPage";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import BookDetailPage from "@/pages/book/BookDetailPage";
+import BookPage from "@/pages/book/BookPage";
 import BookExchangePage from "@/pages/book/BookExchangePage";
 import FavoriteBooksPage from "@/pages/favouriteBooks/FavouriteBooksPage";
 import HomePage from "@/pages/home/HomePage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import CommunityRanking from "@/pages/rank/CommunityRanking";
 import SearchPage from "@/pages/search/SearchPage";
+import CreateBookPage from "@/pages/book/CreateBookPage";
+import CreateBookAffiliateLinks from "@/pages/affliate/CreateBookAffiliateLinks";
 
 export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
   const defaultLayout = {
@@ -36,7 +39,28 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       />
     ),
     footer: <Footer />,
-    sidebar: <Sidebar />,
+    sidebar: <Sidebar roleName={user.roleName ?? ""} />,
+  };
+
+  const adminLayout = {
+    options: {
+      header: true,
+      sidebar: true,
+      footer: false,
+      sidebarFullHeight: true,
+    },
+    header: (
+      <Header
+        isAuthenticated={isAuthenticated}
+        user={{
+          username: user.userName ?? "",
+          fullName: user.fullName ?? "",
+          avatarUrl: user.avatarUrl ?? "",
+        }}
+      />
+    ),
+    footer: <Footer />,
+    sidebar: <Sidebar roleName={user.roleName ?? ""} />,
   };
 
   const routeConfigs = [
@@ -123,6 +147,34 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: false,
       publicOnly: true,
       element: <NotFoundPage />,
+    },
+    {
+      path: ROUTE_PATHS.BOOK,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <BookPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.MANAGE_BOOK,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CreateBookPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.AFFILIATE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <BookPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.MANAGE_AFFILIATE,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CreateBookAffiliateLinks />,
+      layout: adminLayout,
     },
   ];
 

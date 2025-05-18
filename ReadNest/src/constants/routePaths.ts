@@ -10,4 +10,8 @@ export const ROUTE_PATHS = {
   RANK: "/community-rank",
   BOOK_EXCHANGE: "/book-exchange",
   NOT_FOUND: "/404",
+  BOOK: "/books",
+  MANAGE_BOOK: "/books/new",
+  AFFILIATE: "/affiliate-links",
+  MANAGE_AFFILIATE: "/affiliate-links/new",
 };

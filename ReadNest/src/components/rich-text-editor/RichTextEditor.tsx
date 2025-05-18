@@ -4,13 +4,14 @@ import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import { useEffect } from "react";
-import ToolBar from "./ToolBar";
+import ToolBar from "./Toolbar";
 
 interface RichTextEditorProps {
   content: string;
+  onChange?: (content: string) => void;
 }
 
-function RichTextEditor({ ...props }: RichTextEditorProps) {
+function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -18,8 +19,19 @@ function RichTextEditor({ ...props }: RichTextEditorProps) {
       Link.configure({ openOnClick: false, autolink: false }),
       Image,
     ],
-    content: props.content,
+    content: content,
+    onUpdate: ({ editor }) => {
+      if (onChange) {
+        onChange(editor.getHTML());
+      }
+    },
   });
+
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   useEffect(() => {
     return () => {

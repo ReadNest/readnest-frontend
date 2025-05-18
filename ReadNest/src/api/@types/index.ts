@@ -10,6 +10,11 @@ export type AffiliateLink = {
   book?: Book | undefined;
 }
 
+export type AffiliateLinkRequest = {
+  partnerName?: string | null | undefined;
+  affiliateLink?: string | null | undefined;
+}
+
 export type Book = {
   id?: string | undefined;
   createdAt?: string | undefined;
@@ -20,6 +25,8 @@ export type Book = {
   imageUrl?: string | null | undefined;
   avarageRating?: number | undefined;
   description?: string | null | undefined;
+  isbn?: string | null | undefined;
+  language?: string | null | undefined;
   favoriteBooks?: FavoriteBook[] | null | undefined;
   categories?: Category[] | null | undefined;
   affiliateLinks?: AffiliateLink[] | null | undefined;
@@ -49,6 +56,21 @@ export type Comment = {
   likes?: User[] | null | undefined;
 }
 
+export type CreateAffiliateLinkRequest = {
+  affiliateLinkRequests?: AffiliateLinkRequest[] | null | undefined;
+}
+
+export type CreateBookRequest = {
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  description?: string | null | undefined;
+  rating?: number | undefined;
+  isbn?: string | null | undefined;
+  language?: string | null | undefined;
+  categoryIds?: string[] | null | undefined;
+}
+
 export type DetailError = {
   field?: string | null | undefined;
   value?: string | null | undefined;
@@ -65,6 +87,55 @@ export type FavoriteBook = {
   bookId?: string | undefined;
   user?: User | undefined;
   book?: Book | undefined;
+}
+
+export type GetAffiliateLinkResponse = {
+  id?: string | undefined;
+  partnerName?: string | null | undefined;
+  affiliateLink?: string | null | undefined;
+}
+
+export type GetBookResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  averageRating?: number | undefined;
+  description?: string | null | undefined;
+  isbn?: string | null | undefined;
+  language?: string | null | undefined;
+  categories?: GetCategoryResponse[] | null | undefined;
+  affiliateLinks?: GetAffiliateLinkResponse[] | null | undefined;
+  favoriteCount?: number | undefined;
+}
+
+export type GetBookResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetBookResponsePagingResponse = {
+  items?: GetBookResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetBookResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetCategoryResponse = {
+  id?: string | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
 }
 
 export type GetCommentResponse = {
