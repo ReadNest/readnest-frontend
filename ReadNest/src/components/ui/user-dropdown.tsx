@@ -22,7 +22,7 @@ const getDropDownItems = (username: string) => [
   {
     icon: <User className="mr-2 h-4 w-4" />,
     content: "Thông tin cá nhân",
-    to: `/${username}`,
+    to: `/profile/${username}`,
   },
   {
     icon: <BookMarked className="mr-2 h-4 w-4" />,
@@ -43,7 +43,6 @@ const getDropDownItems = (username: string) => [
 
 function UserDropDown({ ...props }: UserDropDownProps) {
   return (
-    console.log("UserDropDown", props.username),
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button

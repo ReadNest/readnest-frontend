@@ -1,6 +1,6 @@
 export const ROUTE_PATHS = {
   DEFAULT: "/",
-  PROFILE: "/:username",
+  PROFILE: "/profile/:username",
   ADMIN: "/admin",
   LOGIN: "/login",
   REGISTER: "/register",

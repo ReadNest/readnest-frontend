@@ -6,9 +6,26 @@ import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
 import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard";
 import { CameraIcon, FrameIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { fetchUserProfileRequested } from "@/features/profile/profileSlice";
+import type { RootState } from "@/store";
 
 export default function ProfilePage() {
     const [showModal, setShowModal] = useState(false);
+    const { username } = useParams<{ username: string }>();
+    const dispatch = useDispatch();
+    const { profile } = useSelector((state: RootState) => state.profile);
+    console.log("Redux profile:", profile); // Thêm dòng này
+    //Call API to get user data
+    useEffect(() => {
+        if (username && (!profile || profile?.userName !== username)) {
+            dispatch(fetchUserProfileRequested(username));
+        }
+        // eslint-disable-next-line
+    }, [username]);
+
     return (
         <div className="container mx-auto py-8 px-10">
             {/* Top Profile Page */}
@@ -17,8 +34,8 @@ export default function ProfilePage() {
                     {/* Profile Header */}
                     <div className="relative flex flex-col items-center text-center">
                         <Avatar className="h-40 w-40 mb-4">
-                            <AvatarImage src="https://github.com/shadcn.png" />
-                            <AvatarFallback>NA</AvatarFallback>
+                            <AvatarImage src={profile.avatarUrl ?? "https://github.com/shadcn.png"} />
+                            <AvatarFallback>Avatar</AvatarFallback>
                         </Avatar>
                         <Button
                             className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
@@ -30,22 +47,22 @@ export default function ProfilePage() {
                     <div className="w-full flex flex-col items-start">
                         {/* Profile Info */}
                         <div className="flex flex-col items-center text-center ml-10">
-                            <h1 className="text-2xl font-bold">Huỳnh Trần Vũ Đạt</h1>
-                            <p className="text-gray-500">@dathuynh2k3</p>
+                            <h1 className="text-2xl font-bold">{profile.fullName}</h1>
+                            <p className="text-gray-500">@{profile.userName}</p>
                         </div>
 
                         {/* Stats */}
                         <div className="grid grid-cols-3 gap-3 text-center mt-6">
                             <div>
-                                <p className="text-2xl font-bold">12</p>
+                                <p className="text-2xl font-bold">{profile.numberOfPosts}</p>
                                 <p className="text-sm text-gray-500">Bài viết</p>
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">89</p>
+                                <p className="text-2xl font-bold">{profile.numberOfComments}</p>
                                 <p className="text-sm text-gray-500">Lượt đánh giá</p>
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">1003</p>
+                                <p className="text-2xl font-bold">{profile.ratingScores}</p>
                                 <p className="text-sm text-gray-500">Điểm đánh giá</p>
                             </div>
                         </div>
@@ -91,7 +108,7 @@ export default function ProfilePage() {
                                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                                     />
                                 </svg>
-                                Hồ Chí Minh, Việt Nam
+                                {profile.address ?? "Chưa cập nhật địa chỉ"}
                             </li>
                             <li className="flex items-center">
                                 <svg
@@ -108,7 +125,13 @@ export default function ProfilePage() {
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                     />
                                 </svg>
-                                Tham gia từ Tháng 3, 2025
+                                {profile.dateOfBirth
+                                    ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                    })
+                                    : "Chưa cập nhật ngày sinh"}
                             </li>
                         </ul>
                     </Card>
@@ -216,7 +239,7 @@ export default function ProfilePage() {
                             {showModal && (
                                 <div className="flex flex-col items-center space-y-4">
                                     <Avatar className="h-25 w-25">
-                                        <AvatarImage src="https://github.com/shadcn.png" />
+                                        <AvatarImage src={profile.avatarUrl ?? ""} />
                                         <AvatarFallback>NA</AvatarFallback>
                                     </Avatar>
                                 </div>
