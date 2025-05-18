@@ -1,13 +1,15 @@
-import type { GetUserProfileResponse } from "@/api/@types";
+import type { GetUserProfileResponse, UpdateUserRequest } from "@/api/@types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 
 export const initialState: {
     isLoading: boolean;
     profile: GetUserProfileResponse;
+    isProfileNotFound: boolean;
 } = {
     isLoading: false,
     profile: {},
+    isProfileNotFound: false,
 };
 
 const profileSlice = createSlice({
@@ -25,6 +27,29 @@ const profileSlice = createSlice({
         },
         fetchUserProfileFailure: (state) => {
             state.isLoading = false;
+            state.isProfileNotFound = true;
+        },
+
+        updateProfileRequested: (_state, _action: PayloadAction<Partial<UpdateUserRequest>>) => {
+        },
+        updateProfileStart: (state) => {
+            state.isLoading = true;
+        },
+        updateProfileSuccess: (state, action: PayloadAction<UpdateUserRequest>) => {
+            state.isLoading = false;
+            // Map các trường từ UpdateUserRequest vào profile
+            const { fullName, address, dateOfBirth, avatarUrl } = action.payload;
+            if (avatarUrl) {
+                state.profile.avatarUrl = avatarUrl;
+            } else {
+                state.profile.fullName = fullName;
+                state.profile.dateOfBirth = dateOfBirth ?? undefined;
+                // state.profile.bio = bio;
+                state.profile.address = address;
+            }
+        },
+        updateProfileFailure: (state) => {
+            state.isLoading = false;
         },
     },
 })
@@ -33,6 +58,11 @@ export const {
     fetchUserProfileStart,
     fetchUserProfileSuccess,
     fetchUserProfileFailure,
+
+    updateProfileRequested,
+    updateProfileStart,
+    updateProfileSuccess,
+    updateProfileFailure,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

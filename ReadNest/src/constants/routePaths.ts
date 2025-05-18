@@ -7,4 +7,5 @@ export const ROUTE_PATHS = {
   SEARCH: "/search",
   FAVOURITE: "/favourite",
   BOOK_DETAIL: "/book-detail",
+  NOT_FOUND: "/404",
 };

@@ -7,24 +7,34 @@ import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard
 import { CameraIcon, FrameIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { fetchUserProfileRequested } from "@/features/profile/profileSlice";
 import type { RootState } from "@/store";
+import { EditProfileModal } from "@/features/profile/components/EditProfileModal";
 
 export default function ProfilePage() {
-    const [showModal, setShowModal] = useState(false);
-    const { username } = useParams<{ username: string }>();
+    const [showModalAvatar, setShowModalAvatar] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { username } = useParams<{ username: string }>();
     const { profile } = useSelector((state: RootState) => state.profile);
-    console.log("Redux profile:", profile); // Thêm dòng này
+    // Removed incorrect and unused profileError destructuring
+    const isProfileNotFound = useSelector((state: RootState) => state.profile.isProfileNotFound);
+    const { user } = useSelector((state: RootState) => state.auth);
+
     //Call API to get user data
     useEffect(() => {
         if (username && (!profile || profile?.userName !== username)) {
             dispatch(fetchUserProfileRequested(username));
         }
-        // eslint-disable-next-line
-    }, [username]);
+    }, [username, profile, dispatch]);
+    // Navigate to 404 if user not found
+    useEffect(() => {
+        if (isProfileNotFound) {
+            navigate('/404');
+        }
+    }, [isProfileNotFound, navigate]);
 
     return (
         <div className="container mx-auto py-8 px-10">
@@ -37,12 +47,13 @@ export default function ProfilePage() {
                             <AvatarImage src={profile.avatarUrl ?? "https://github.com/shadcn.png"} />
                             <AvatarFallback>Avatar</AvatarFallback>
                         </Avatar>
-                        <Button
+                        {user.userId == profile.userId && < Button
                             className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
-                            onClick={() => setShowModal(true)}
+                            onClick={() => setShowModalAvatar(true)}
                         >
                             <CameraIcon />
                         </Button>
+                        }
                     </div>
                     <div className="w-full flex flex-col items-start">
                         {/* Profile Info */}
@@ -69,12 +80,24 @@ export default function ProfilePage() {
                     </div>
                     <div className="w-full flex justify-end">
                         {/* Edit Profile Button */}
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold end-0">
-                            Chỉnh sửa hồ sơ
-                        </Button>
+                        {user.userId == profile.userId &&
+                            // <Button
+                            //     className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold end-0"
+                            // >
+                            //     Chỉnh sửa hồ sơ
+                            // </Button>
+                            <EditProfileModal
+                                profileData={{
+                                    fullName: profile.fullName ?? "",
+                                    dateOfBirth: profile.dateOfBirth?.split('T')[0] ?? "",
+                                    bio: profile.address ?? "",
+                                    address: profile.address ?? "",
+                                }}
+                            />
+                        }
                     </div>
                 </div>
-            </Card>
+            </Card >
             <Separator className="mb-10" />
             {/* Bot Profile Page */}
             <div className="flex flex-col md:flex-row gap-8">
@@ -193,72 +216,66 @@ export default function ProfilePage() {
                 </div>
             </div>
             {/* Modal for Avatar Change */}
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-lg font-semibold mb-4 text-center">Thay đổi Avatar</h2>
-                        <Separator className="mb-4 w-full" />
-                        <div className="flex flex-col items-center space-y-4">
-                            {/* <label className="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                                <PlusIcon className="mr-2" /> Chọn ảnh
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                />
-                            </label> */}
-                            <div className="flex items-center space-x-4">
-                                <label className="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                                    <PlusIcon className="mr-2" /> Chọn ảnh
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={(e) => {
-                                            const file = e.target.files?.[0];
-                                            if (file) {
-                                                const reader = new FileReader();
-                                                reader.onload = () => {
-                                                    const result = reader.result as string;
-                                                    document.querySelector('.h-20.w-20 img')?.setAttribute('src', result);
-                                                };
-                                                reader.readAsDataURL(file);
-                                            }
+            {
+                showModalAvatar && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-lg font-semibold mb-4 text-center">Thay đổi Avatar</h2>
+                            <Separator className="mb-4 w-full" />
+                            <div className="flex flex-col items-center space-y-4">
+                                <div className="flex items-center space-x-4">
+                                    <label className="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                                        <PlusIcon className="mr-2" /> Chọn ảnh
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = () => {
+                                                        const result = reader.result as string;
+                                                        document.querySelector('.h-20.w-20 img')?.setAttribute('src', result);
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                    <Button
+                                        className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
+                                        onClick={() => {
+                                            alert("Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt.");
                                         }}
-                                    />
-                                </label>
+                                    >
+                                        <FrameIcon className="mr-2" /> Chọn khung
+                                    </Button>
+                                </div>
+                                {showModalAvatar && (
+                                    <div className="flex flex-col items-center space-y-4">
+                                        <Avatar className="h-25 w-25">
+                                            <AvatarImage src={profile.avatarUrl ?? ""} />
+                                            <AvatarFallback>NA</AvatarFallback>
+                                        </Avatar>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-end space-x-2">
+                                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                                    Lưu
+                                </Button>
                                 <Button
-                                    className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
-                                    onClick={() => {
-                                        alert("Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt.");
-                                    }}
+                                    className="bg-gray-300 hover:bg-gray-400 text-black"
+                                    onClick={() => setShowModalAvatar(false)}
                                 >
-                                    <FrameIcon className="mr-2" /> Chọn khung
+                                    Hủy
                                 </Button>
                             </div>
-                            {showModal && (
-                                <div className="flex flex-col items-center space-y-4">
-                                    <Avatar className="h-25 w-25">
-                                        <AvatarImage src={profile.avatarUrl ?? ""} />
-                                        <AvatarFallback>NA</AvatarFallback>
-                                    </Avatar>
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex justify-end space-x-2">
-                            <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-                                Lưu
-                            </Button>
-                            <Button
-                                className="bg-gray-300 hover:bg-gray-400 text-black"
-                                onClick={() => setShowModal(false)}
-                            >
-                                Hủy
-                            </Button>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }

@@ -194,6 +194,14 @@ export type TokenResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type UpdateUserRequest = {
+  userId?: string | undefined;
+  fullName?: string | null | undefined;
+  address?: string | null | undefined;
+  dateOfBirth?: string | null | undefined;
+  avatarUrl?: string | null | undefined;
+}
+
 export type User = {
   id?: string | undefined;
   createdAt?: string | undefined;
