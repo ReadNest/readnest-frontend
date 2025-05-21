@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import FormField from "@/components/ui/form-field";
 import FormImageUpload from "@/components/ui/form-image-upload";
-import RichTextEditor from "@/components/rich-text-editor/RichTextEditor";
 import {
   Select,
   SelectContent,
@@ -23,6 +22,7 @@ import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { clearErrors } from "@/store/error/errorSlice";
+import { TinyMCETextEditor } from "@/components/rich-text-editor/TinyMCETextEditor";
 
 interface BookFormProps {
   defaultValues?: Partial<CreateBookRequest>;
@@ -306,8 +306,8 @@ export default function BookForm({
           control={control}
           name="description"
           render={({ field }) => (
-            <RichTextEditor
-              content={field.value ?? ""}
+            <TinyMCETextEditor
+              value={field.value ?? ""}
               onChange={field.onChange}
             />
           )}
