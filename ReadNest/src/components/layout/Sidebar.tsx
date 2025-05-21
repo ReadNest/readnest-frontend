@@ -142,6 +142,7 @@ export default function Sidebar({ roleName }: SidebarProps) {
               <CollapsibleContent className="pl-10 mt-1 space-y-1">
                 {section.items.map((item) => (
                   <NavLink
+                    end
                     key={item.path}
                     to={item.path}
                     className={({ isActive }) =>

@@ -2,7 +2,7 @@ import type { DetailError } from "@/lib/api/base/types";
 import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
