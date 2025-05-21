@@ -14,4 +14,6 @@ export const ROUTE_PATHS = {
   MANAGE_BOOK: "/books/new",
   AFFILIATE: "/affiliate-links",
   MANAGE_AFFILIATE: "/affiliate-links/new",
+  CATEGORY: "/categories",
+  CREATE_CATEGORY: "/categories/create",
 };

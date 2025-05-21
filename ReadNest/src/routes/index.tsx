@@ -20,6 +20,8 @@ import CommunityRanking from "@/pages/rank/CommunityRanking";
 import SearchPage from "@/pages/search/SearchPage";
 import CreateBookPage from "@/pages/book/CreateBookPage";
 import CreateBookAffiliateLinks from "@/pages/affliate/CreateBookAffiliateLinks";
+import CategoryPage from "@/pages/category/CategoryPage";
+import CreateCategoryPage from "@/pages/category/CreateCategoryPage";
 
 export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
   const defaultLayout = {
@@ -174,6 +176,20 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       // allowedRoles: ["user", "admin"],
       element: <CreateBookAffiliateLinks />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.CATEGORY,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CategoryPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.CREATE_CATEGORY,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CreateCategoryPage />,
       layout: adminLayout,
     },
   ];

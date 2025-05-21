@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Book,
+  BookOpen,
   LinkIcon,
   ChevronDown,
   ChevronRight,
@@ -32,6 +33,15 @@ const adminSidebarItems = [
     items: [
       { label: "Overview", path: "/dashboard/overview" },
       { label: "Statistics", path: "/dashboard/stats" },
+    ],
+  },
+  {
+    label: "Categories",
+    icon: <BookOpen size={18} />,
+    key: "categories",
+    items: [
+      { label: "All Categories", path: ROUTE_PATHS.CATEGORY },
+      { label: "Add New", path: ROUTE_PATHS.CREATE_CATEGORY },
     ],
   },
   {

@@ -101,7 +101,7 @@ export default function BookExchangePage() {
         {books.map((book) => (
           <Card key={book.id} className="hover:shadow-md transition-shadow h-full flex flex-col">
             {/* Book Cover Image */}
-            <div className="relative h-48 w-full"
+            <div className="h-48 w-full bg-cover bg-center"
             style={{ backgroundImage: `url(${book.imageUrl})` }}
             >
               

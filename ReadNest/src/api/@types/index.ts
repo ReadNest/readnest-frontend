@@ -71,6 +71,11 @@ export type CreateBookRequest = {
   categoryIds?: string[] | null | undefined;
 }
 
+export type CreateCategoryRequest = {
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+}
+
 export type DetailError = {
   field?: string | null | undefined;
   value?: string | null | undefined;
@@ -136,6 +141,29 @@ export type GetCategoryResponse = {
   id?: string | undefined;
   name?: string | null | undefined;
   description?: string | null | undefined;
+}
+
+export type GetCategoryResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCategoryResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetCategoryResponsePagingResponse = {
+  items?: GetCategoryResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetCategoryResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCategoryResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type GetCommentResponse = {
@@ -263,6 +291,12 @@ export type TokenResponseApiResponse = {
   message?: string | null | undefined;
   data?: TokenResponse | undefined;
   listDetailError?: DetailError[] | null | undefined;
+}
+
+export type UpdateCategoryRequest = {
+  id?: string | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
 }
 
 export type UpdateUserRequest = {
