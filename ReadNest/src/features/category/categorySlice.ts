@@ -1,4 +1,4 @@
-import type { CreateCategoryRequest, GetCategoryResponse } from "@/api/@types";
+import type { CreateCategoryRequest, GetCategoryResponse, UpdateCategoryRequest } from "@/api/@types";
 import type { PagingRequest } from "@/lib/api/base/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
@@ -28,6 +28,8 @@ const categorySlice = createSlice({
   reducers: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createCategoryStart: (_state, _action: PayloadAction<CreateCategoryRequest>) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    updateCategoryStart: (_state, _action: PayloadAction<UpdateCategoryRequest>) => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchCategoriesStart: (_state, _action: PayloadAction<PagingRequest>) => {},
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -60,6 +62,7 @@ const categorySlice = createSlice({
 
 export const {
   createCategoryStart,
+  updateCategoryStart,
   fetchCategoriesStart,
   setLoading,
   setSuccess,

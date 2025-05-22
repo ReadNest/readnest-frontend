@@ -1,11 +1,13 @@
 import type {
     CreateCategoryRequest,
+    UpdateCategoryRequest,
     GetCategoryResponseApiResponse,
     GetCategoryResponsePagingResponseApiResponse,
   } from "@/api/@types";
   import type { PayloadAction } from "@reduxjs/toolkit";
   import {
     createCategoryStart,
+    updateCategoryStart,
     fetchCategoriesStart,
     setCategories,
     setLoading,
@@ -87,9 +89,43 @@ import type {
       yield put(setLoading(false));
     }
   }
+
+  function* handleUpdateCategory(action: PayloadAction<UpdateCategoryRequest>) {
+    try {
+      yield put(setLoading(true));
+  
+      const res: GetCategoryResponseApiResponse = yield call(() =>
+        client.api.v1.categories
+          .put({ body: action.payload })
+          .then((r) => r.body)
+      );
+  
+      yield put(setMessage({ message: res.message ?? "", messageId: res.messageId ?? "" }));
+  
+      if (res.success && res.data) {
+        yield put(setSuccess(true));
+        // Optionally update category in local state here
+      } else {
+        yield put(setSuccess(false));
+        yield put(setDetailErrors(res.listDetailError ?? []));
+      }
+    } catch (error: any) {
+      const errBody = error?.response?.data || {};
+      yield put(
+        setMessage({
+          message: errBody.message ?? "",
+          messageId: errBody.messageId ?? "",
+        })
+      );
+      yield put(setDetailErrors(errBody.listDetailError ?? []));
+    } finally {
+      yield put(setLoading(false));
+    }
+  }
   
   export default function* categorySaga() {
     yield takeLatest(createCategoryStart.type, handleCreateCategory);
     yield takeLatest(fetchCategoriesStart.type, fetchCategories);
+    yield takeLatest(updateCategoryStart.type, handleUpdateCategory);
   }
   
