@@ -7,8 +7,10 @@ import { useState } from "react";
 import type { VariantProps } from "class-variance-authority";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout } from "@/features/auth/authSlice";
+import { logout, setLoading } from "@/features/auth/authSlice";
 import UserDropDown from "../ui/user-dropdown";
+import { clearErrors } from "@/store/error/errorSlice";
+import { toast } from "react-toastify";
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -54,8 +56,19 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const onLogout = () => {
+  const onLogout = async () => {
+    dispatch(setLoading(true));
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     dispatch(logout());
+    dispatch(clearErrors());
+
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    dispatch(setLoading(false));
+    toast.success("Logout successfully!");
+
     navigate("/");
   };
 
