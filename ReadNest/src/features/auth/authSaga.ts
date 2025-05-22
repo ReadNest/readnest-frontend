@@ -62,6 +62,8 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
     );
     yield put(setDetailErrors(errBody.listDetailError ?? []));
     yield put(loginFailure());
+  } finally {
+    yield put(setLoading(false));
   }
 }
 
@@ -99,6 +101,8 @@ function* handleRegister(action: PayloadAction<RegisterRequest>) {
     );
     yield put(setDetailErrors(errBody.listDetailError ?? []));
     yield put(registerFailure());
+  } finally {
+    yield put(setLoading(false));
   }
 }
 
@@ -123,6 +127,8 @@ function* fetchUserLogin(action: PayloadAction<string>) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error(error);
+  } finally {
+    yield put(setLoading(false));
   }
 }
 

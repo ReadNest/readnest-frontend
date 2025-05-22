@@ -1,10 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { fetchUserProfileFailure, fetchUserProfileRequested, fetchUserProfileStart, fetchUserProfileSuccess } from "./profileSlice";
+import {
+  fetchUserProfileFailure,
+  fetchUserProfileRequested,
+  fetchUserProfileStart,
+  fetchUserProfileSuccess,
+  setIsLoading,
+} from "./profileSlice";
 import { call, put, takeLatest } from "redux-saga/effects";
 import type { GetUserProfileResponseApiResponse } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
 import { setDetailErrors, setMessage } from "@/store/error/errorSlice";
-import { updateProfileFailure, updateProfileRequested, updateProfileStart, updateProfileSuccess } from "./profileSlice";
+import {
+  updateProfileFailure,
+  updateProfileRequested,
+  updateProfileStart,
+  updateProfileSuccess,
+} from "./profileSlice";
 import type { UpdateUserRequest } from "@/api/@types";
 import { toast } from "react-toastify";
 
@@ -54,12 +66,13 @@ function* updateProfile(action: PayloadAction<UpdateUserRequest>) {
     );
     yield put(setDetailErrors(errBody.listDetailError ?? []));
     yield put(updateProfileFailure());
-
+  } finally {
+    yield put(setIsLoading(false));
   }
 }
-
 
 export default function* profileSaga() {
   yield takeLatest(fetchUserProfileRequested.type, fetchUserProfile);
   yield takeLatest(updateProfileRequested.type, updateProfile);
 }
+

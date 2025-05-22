@@ -9,6 +9,8 @@ import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/auth/authSlice";
 import UserDropDown from "../ui/user-dropdown";
+import { clearErrors } from "@/store/error/errorSlice";
+import { toast } from "react-toastify";
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -54,8 +56,12 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const onLogout = () => {
+  const onLogout = async () => {
     dispatch(logout());
+    dispatch(clearErrors());
+
+    toast.success("Logout successfully!");
+
     navigate("/");
   };
 

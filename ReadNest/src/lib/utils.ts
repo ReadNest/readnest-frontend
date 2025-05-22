@@ -1,7 +1,8 @@
 import type { DetailError } from "@/lib/api/base/types";
+import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -52,3 +53,27 @@ export function getInitials(fullName: string) {
   const lastTwo = parts.slice(-2);
   return lastTwo.map((word) => word[0]?.toUpperCase() ?? "").join("");
 }
+
+export const uploadFileToCloudinary = async (file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+    );
+    formData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_NAME);
+
+    const response = await axios.post(
+      import.meta.env.VITE_CLOUDINARY_URL,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+
+    return response.data.secure_url;
+  } catch {
+    toast.error("Error uploading to Cloudinary");
+  }
+};

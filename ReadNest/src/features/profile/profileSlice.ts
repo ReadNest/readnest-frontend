@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { GetUserProfileResponse, UpdateUserRequest } from "@/api/@types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
 
 export const initialState: {
   isLoading: boolean;

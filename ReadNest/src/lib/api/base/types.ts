@@ -12,3 +12,15 @@ export interface DetailError {
   messageId: string;
   message: string;
 }
+
+export interface PagingRequest {
+  pageIndex: number;
+  pageSize: number;
+}
+
+export type PagingResponse<T> = {
+  items?: T[] | null | undefined;
+  totalItems?: number;
+  pageIndex?: number;
+  pageSize?: number;
+};
