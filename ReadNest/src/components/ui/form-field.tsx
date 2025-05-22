@@ -17,6 +17,7 @@ interface FormFieldProps {
   register?: any;
   className?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  icon?: React.ReactNode;
 }
 
 export default function FormField({
@@ -28,6 +29,7 @@ export default function FormField({
   register,
   className = "",
   onChange,
+  icon,
 }: FormFieldProps) {
   return (
     <div className={`space-y-1 relative ${error ? "mb-8" : ""}`}>
@@ -37,14 +39,25 @@ export default function FormField({
       <TooltipProvider>
         <Tooltip open={!!error}>
           <TooltipTrigger asChild>
-            <Input
-              id={id}
-              type={type}
-              placeholder={placeholder}
-              {...(register ? register(id) : {})}
-              onChange={onChange}
-              className={`${error ? "border-red-500" : ""} ${className}`}
-            />
+            <div className="relative">
+              {icon && (
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+                  {icon}
+                </div>
+              )}
+              <Input
+                id={id}
+                type={type}
+                placeholder={placeholder}
+                {...(register ? register(id) : {})}
+                onChange={onChange}
+                className={`
+                  ${icon ? "pl-10" : ""} 
+                  ${error ? "border-red-500" : ""} 
+                  ${className}
+                `}
+              />
+            </div>
           </TooltipTrigger>
           <TooltipContent
             side="bottom"

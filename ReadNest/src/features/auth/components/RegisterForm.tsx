@@ -11,6 +11,7 @@ import { showToastMessage } from "@/lib/utils";
 import { registerStart } from "@/features/auth/authSlice";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { User, Mail, MapPin, Lock, ShieldCheck, Signature } from "lucide-react";
 
 export default function RegisterForm() {
   const dispatch = useDispatch();
@@ -53,6 +54,7 @@ export default function RegisterForm() {
       dispatch(clearErrors());
     }
   }, [isRegisterSuccess, reset, navigate, dispatch]);
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -64,6 +66,7 @@ export default function RegisterForm() {
         placeholder="Nhập tên đăng nhập"
         error={errors.userName?.message || errorFields["userName"]}
         register={register}
+        icon={<User className="w-4 h-4" />}
       />
 
       <FormField
@@ -72,6 +75,7 @@ export default function RegisterForm() {
         placeholder="Nhập email"
         error={errors.email?.message || errorFields["email"]}
         register={register}
+        icon={<Mail className="w-4 h-4" />}
       />
 
       <FormField
@@ -80,6 +84,7 @@ export default function RegisterForm() {
         placeholder="Nhập họ và tên"
         error={errors.fullName?.message || errorFields["fullName"]}
         register={register}
+        icon={<Signature className="w-4 h-4" />}
       />
 
       <FormField
@@ -88,6 +93,7 @@ export default function RegisterForm() {
         placeholder="Nhập địa chỉ"
         error={errors.address?.message || errorFields["address"]}
         register={register}
+        icon={<MapPin className="w-4 h-4" />}
       />
 
       <FormDateField
@@ -105,6 +111,7 @@ export default function RegisterForm() {
         placeholder="Nhập mật khẩu"
         error={errors.password?.message || errorFields["password"]}
         register={register}
+        icon={<Lock className="w-4 h-4" />}
       />
 
       <FormField
@@ -116,6 +123,7 @@ export default function RegisterForm() {
           errors.confirmPassword?.message || errorFields["confirmPassword"]
         }
         register={register}
+        icon={<ShieldCheck className="w-4 h-4" />}
       />
 
       <Button
