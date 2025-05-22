@@ -64,7 +64,10 @@ function UserDropDown({ ...props }: UserDropDownProps) {
               <AvatarImage src={props.avatarUrl} />
               <AvatarFallback>{getInitials(props.fullName)}</AvatarFallback>
             </Avatar>
-            <p className="text-sm font-medium leading-none">{props.fullName}</p>
+            <div className="text-start flex flex-col">
+              <p className="text-sm font-medium">{props.fullName}</p>
+              <p className="text-xs text-muted-foreground">@{props.username}</p>
+            </div>
           </div>
         </DropdownMenuLabel>
 
