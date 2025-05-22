@@ -40,6 +40,24 @@ export const TinyMCETextEditor = ({
     }
   };
 
+  const handleEditorDragAndDrop = async (event: DragEvent, editor: any) => {
+    const files = event.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    event.preventDefault();
+
+    for (const file of Array.from(files)) {
+      if (file.type.startsWith("image/")) {
+        try {
+          const url = await uploadFileToCloudinary(file);
+          editor.insertContent(`<img src="${url}" alt="dropped image"/>`);
+        } catch (err) {
+          console.error("Failed to upload dropped image", err);
+        }
+      }
+    }
+  };
+
   return (
     <Editor
       value={value}
@@ -98,6 +116,7 @@ export const TinyMCETextEditor = ({
         },
         setup: (editor: any) => {
           editor.on("paste", (e: any) => handleEditorPaste(e, editor));
+          editor.on("drop", (e: any) => handleEditorDragAndDrop(e, editor));
         },
       }}
     />
