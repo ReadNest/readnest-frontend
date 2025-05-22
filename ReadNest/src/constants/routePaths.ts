@@ -6,7 +6,7 @@ export const ROUTE_PATHS = {
   REGISTER: "/register",
   SEARCH: "/search",
   FAVOURITE: "/favorites",
-  BOOK_DETAIL: "/book-detail",
+  BOOK_DETAIL: "/book-detail/:bookId",
   RANK: "/community-rank",
   BOOK_EXCHANGE: "/book-exchange",
   NOT_FOUND: "/*",
