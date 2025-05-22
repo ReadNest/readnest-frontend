@@ -24,7 +24,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Plus } from "lucide-react";
 import { useColumnResize } from "@/hooks/useColumnResize";
 
 interface DataTableProps<T> {
@@ -39,11 +39,14 @@ interface DataTableProps<T> {
   }[];
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
+  onAdd?: () => void;
   enableEdit?: boolean;
   enableDelete?: boolean;
+  enableAdd?: boolean;
   pageSizeOptions?: number[];
   totalItems?: number;
   className?: string;
+  addButtonText?: string;
 }
 
 export function DataTableWithPagination<T>({
@@ -51,11 +54,14 @@ export function DataTableWithPagination<T>({
   columns,
   onEdit,
   onDelete,
+  onAdd,
   enableEdit = false,
   enableDelete = false,
+  enableAdd = true,
   pageSizeOptions = [5, 10, 20, 50, 100],
   totalItems,
   className = "",
+  addButtonText = "Add New",
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(pageSizeOptions[0]);
@@ -133,9 +139,22 @@ export function DataTableWithPagination<T>({
 
   return (
     <div className={`space-y-4 ${className}`}>
+      {/* Header section with Add button and pagination controls */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          Total: {totalCount} items
+        <div className="flex items-center gap-4">
+          <div className="text-sm">
+            Total: <strong>{totalCount}</strong> items
+          </div>
+          {enableAdd && (
+            <Button
+              onClick={onAdd}
+              className="h-9 px-4 bg-indigo-600 hover:bg-indigo-700 text-white"
+              size="sm"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {addButtonText}
+            </Button>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Rows per page</span>
@@ -190,7 +209,7 @@ export function DataTableWithPagination<T>({
                   </TableHead>
                 ))}
                 {(enableEdit || enableDelete) && (
-                  <TableHead className="bg-inherit border-b border-r-0 font-medium text-center p-3">
+                  <TableHead className="bg-inherit border-b border-r-0 font-medium text-right p-3">
                     Actions
                   </TableHead>
                 )}
