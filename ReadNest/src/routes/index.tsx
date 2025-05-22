@@ -26,6 +26,8 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearErrors } from "@/store/error/errorSlice";
+import CreatePostPage from "@/pages/post/CreatePostPage";
+
 
 export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
   const location = useLocation();
@@ -202,6 +204,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: false,
       publicOnly: true,
       element: <NotFoundPage />,
+    },
+    {
+      path: ROUTE_PATHS.CREATE_POST,
+      isPrivate: false,
+      allowedRoles: ["user", "admin"],
+      element: <CreatePostPage />,
+      layout: defaultLayout,
     },
   ];
 

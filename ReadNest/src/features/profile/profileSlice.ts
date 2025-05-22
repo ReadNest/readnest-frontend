@@ -16,9 +16,11 @@ const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    fetchUserProfileRequested: (_state, _action: PayloadAction<string>) => {},
+    fetchUserProfileRequested: (_state, _action: PayloadAction<string>) => {
+    },
     fetchUserProfileStart: (state) => {
       state.isLoading = true;
+      state.isProfileNotFound = false;
     },
     fetchUserProfileSuccess: (state, action) => {
       state.isLoading = false;
@@ -32,20 +34,20 @@ const profileSlice = createSlice({
     updateProfileRequested: (
       _state,
       _action: PayloadAction<Partial<UpdateUserRequest>>
-    ) => {},
+    ) => { },
     updateProfileStart: (state) => {
       state.isLoading = true;
     },
     updateProfileSuccess: (state, action: PayloadAction<UpdateUserRequest>) => {
       state.isLoading = false;
       // Map các trường từ UpdateUserRequest vào profile
-      const { fullName, address, dateOfBirth, avatarUrl } = action.payload;
+      const { fullName, address, dateOfBirth, avatarUrl, bio } = action.payload;
       if (avatarUrl) {
         state.profile.avatarUrl = avatarUrl;
       } else {
         state.profile.fullName = fullName;
         state.profile.dateOfBirth = dateOfBirth ?? undefined;
-        // state.profile.bio = bio;
+        state.profile.bio = bio;
         state.profile.address = address;
       }
     },
@@ -55,6 +57,9 @@ const profileSlice = createSlice({
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+    setIsProfileNotFound: (state, action: PayloadAction<boolean>) => {
+      state.isProfileNotFound = action.payload;
+    }
   },
 });
 export const {
@@ -68,6 +73,7 @@ export const {
   updateProfileSuccess,
   updateProfileFailure,
   setIsLoading,
+  setIsProfileNotFound,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

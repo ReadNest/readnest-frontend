@@ -18,6 +18,7 @@ import {
   updateProfileSuccess,
 } from "./profileSlice";
 import type { UpdateUserRequest } from "@/api/@types";
+import { toast } from "react-toastify";
 
 function* fetchUserProfile(action: PayloadAction<string>) {
   try {
@@ -47,7 +48,13 @@ function* updateProfile(action: PayloadAction<UpdateUserRequest>) {
       client.api.v1.users.profile.$put({ body: action.payload })
     );
     if (response.success) {
+      console.log("response", action.payload);
       yield put(updateProfileSuccess(action.payload));
+      if (action.payload?.avatarUrl) {
+        toast.success("Cập nhật ảnh đại diện thành công!");
+      } else {
+        toast.success("Cập nhật hồ sơ thành công!");
+      }
     }
   } catch (error: any) {
     const errBody = error?.response?.data || {};
@@ -68,3 +75,4 @@ export default function* profileSaga() {
   yield takeLatest(fetchUserProfileRequested.type, fetchUserProfile);
   yield takeLatest(updateProfileRequested.type, updateProfile);
 }
+
