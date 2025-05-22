@@ -24,6 +24,18 @@ export type Book = {
   categories?: Category[] | null | undefined;
   affiliateLinks?: AffiliateLink[] | null | undefined;
   comments?: Comment[] | null | undefined;
+  bookImages?: BookImage[] | null | undefined;
+}
+
+export type BookImage = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  bookId?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+  book?: Book | undefined;
 }
 
 export type Category = {
@@ -83,6 +95,7 @@ export type GetUserProfileResponse = {
   userName?: string | null | undefined;
   email?: string | null | undefined;
   address?: string | null | undefined;
+  bio?: string | null | undefined;
   dateOfBirth?: string | undefined;
   avatarUrl?: string | null | undefined;
   roleId?: string | undefined;
@@ -200,6 +213,7 @@ export type UpdateUserRequest = {
   address?: string | null | undefined;
   dateOfBirth?: string | null | undefined;
   avatarUrl?: string | null | undefined;
+  bio?: string | null | undefined;
 }
 
 export type User = {
@@ -209,6 +223,7 @@ export type User = {
   isDeleted?: boolean | undefined;
   fullName?: string | null | undefined;
   userName?: string | null | undefined;
+  bio?: string | null | undefined;
   email?: string | null | undefined;
   hashPassword?: string | null | undefined;
   address?: string | null | undefined;

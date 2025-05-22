@@ -625,6 +625,49 @@
               "$ref": "#/components/schemas/Comment"
             },
             "nullable": true
+          },
+          "bookImages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookImage"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookImage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "bookId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "book": {
+            "$ref": "#/components/schemas/Book"
           }
         },
         "additionalProperties": false
@@ -821,6 +864,10 @@
             "nullable": true
           },
           "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
             "type": "string",
             "nullable": true
           },
@@ -1223,6 +1270,10 @@
           "avatarUrl": {
             "type": "string",
             "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1250,6 +1301,10 @@
             "nullable": true
           },
           "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
             "type": "string",
             "nullable": true
           },

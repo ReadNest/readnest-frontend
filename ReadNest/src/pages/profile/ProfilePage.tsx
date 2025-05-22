@@ -9,9 +9,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { fetchUserProfileRequested } from "@/features/profile/profileSlice";
+import { fetchUserProfileRequested, setIsProfileNotFound, updateProfileRequested } from "@/features/profile/profileSlice";
 import type { RootState } from "@/store";
 import { EditProfileModal } from "@/features/profile/components/EditProfileModal";
+import { toast } from "react-toastify";
+import { uploadFileToCloudinary } from "@/lib/utils";
 
 export default function ProfilePage() {
     const [showModalAvatar, setShowModalAvatar] = useState(false);
@@ -23,12 +25,68 @@ export default function ProfilePage() {
     const isProfileNotFound = useSelector((state: RootState) => state.profile.isProfileNotFound);
     const { user } = useSelector((state: RootState) => state.auth);
 
+    // ========== Avatar Upload ========== //
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+
+    // Xử lý chọn file ảnh
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file && file.size > 5 * 1024 * 1024) {
+            toast.error("Kích thước file không được vượt quá 5MB");
+            return;
+        }
+
+        if (file) {
+            setAvatarFile(file);
+            const reader = new FileReader();
+            reader.onload = () => setAvatarPreview(reader.result as string);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Xử lý lưu avatar mới
+    const handleSaveAvatar = async () => {
+        if (!avatarFile) {
+            toast.error("Vui lòng chọn ảnh!");
+            return;
+        }
+        setIsUploading(true);
+        try {
+            // Upload lên Cloudinary
+            const uploadResult = await uploadFileToCloudinary(avatarFile);
+            console.log(uploadResult);
+            if (!uploadResult) {
+                toast.error("Upload ảnh thất bại!");
+                setIsUploading(false);
+                return;
+            }
+            const data = {
+                userId: user.userId,
+                avatarUrl: uploadResult,
+            };
+            // Gọi API update profile (chỉ update avatar)
+            dispatch(updateProfileRequested(data));
+            // toast.success("Cập nhật avatar thành công!");
+            setShowModalAvatar(false);
+            setAvatarPreview(null);
+            setAvatarFile(null);
+        } catch {
+            toast.error("Có lỗi khi cập nhật avatar!");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
     //Call API to get user data
     useEffect(() => {
-        if (username && (!profile || profile?.userName !== username)) {
+        dispatch(setIsProfileNotFound(false));
+        if (username) {
             dispatch(fetchUserProfileRequested(username));
         }
-    }, [username, profile, dispatch]);
+    }, [username]);
     // Navigate to 404 if user not found
     useEffect(() => {
         if (isProfileNotFound) {
@@ -47,12 +105,12 @@ export default function ProfilePage() {
                             <AvatarImage src={profile.avatarUrl ?? "https://github.com/shadcn.png"} />
                             <AvatarFallback>Avatar</AvatarFallback>
                         </Avatar>
-                        {user.userId == profile.userId && < Button
-                            className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
-                            onClick={() => setShowModalAvatar(true)}
-                        >
-                            <CameraIcon />
-                        </Button>
+                        {user.userId == profile.userId &&
+                            <Button
+                                className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
+                                onClick={() => setShowModalAvatar(true)}>
+                                <CameraIcon />
+                            </Button>
                         }
                     </div>
                     <div className="w-full flex flex-col items-start">
@@ -81,16 +139,11 @@ export default function ProfilePage() {
                     <div className="w-full flex justify-end">
                         {/* Edit Profile Button */}
                         {user.userId == profile.userId &&
-                            // <Button
-                            //     className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold end-0"
-                            // >
-                            //     Chỉnh sửa hồ sơ
-                            // </Button>
                             <EditProfileModal
                                 profileData={{
                                     fullName: profile.fullName ?? "",
                                     dateOfBirth: profile.dateOfBirth?.split('T')[0] ?? "",
-                                    bio: profile.address ?? "",
+                                    bio: profile.bio ?? "",
                                     address: profile.address ?? "",
                                 }}
                             />
@@ -107,7 +160,7 @@ export default function ProfilePage() {
                     <Card className="p-4">
                         <h2 className="text-lg font-semibold mb-2">Giới thiệu</h2>
                         <p className="text-sm text-gray-700 mb-4">
-                            Yêu thích đọc sách, đặc biệt là thể loại văn học dương đại và tâm lý học. Luôn tìm kiếm những cuốn sách hay để chia sẻ với cộng đồng.
+                            &emsp;&emsp;{profile.bio == "" ? "Người dùng này quá lười để viết phần giới thiệu" : profile.bio}
                         </p>
                         <ul className="space-y-2 text-sm">
                             <li className="flex items-center">
@@ -230,23 +283,13 @@ export default function ProfilePage() {
                                             type="file"
                                             accept="image/*"
                                             className="hidden"
-                                            onChange={(e) => {
-                                                const file = e.target.files?.[0];
-                                                if (file) {
-                                                    const reader = new FileReader();
-                                                    reader.onload = () => {
-                                                        const result = reader.result as string;
-                                                        document.querySelector('.h-20.w-20 img')?.setAttribute('src', result);
-                                                    };
-                                                    reader.readAsDataURL(file);
-                                                }
-                                            }}
+                                            onChange={handleAvatarChange}
                                         />
                                     </label>
                                     <Button
                                         className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
                                         onClick={() => {
-                                            alert("Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt.");
+                                            toast.info("Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt.");
                                         }}
                                     >
                                         <FrameIcon className="mr-2" /> Chọn khung
@@ -255,19 +298,28 @@ export default function ProfilePage() {
                                 {showModalAvatar && (
                                     <div className="flex flex-col items-center space-y-4">
                                         <Avatar className="h-25 w-25">
-                                            <AvatarImage src={profile.avatarUrl ?? ""} />
-                                            <AvatarFallback>NA</AvatarFallback>
+                                            <AvatarImage src={avatarPreview ?? profile.avatarUrl ?? ""} />
+                                            <AvatarFallback>N/A</AvatarFallback>
                                         </Avatar>
                                     </div>
                                 )}
                             </div>
                             <div className="flex justify-end space-x-2">
-                                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-                                    Lưu
+                                <Button
+                                    className="bg-blue-500 hover:bg-blue-600 text-white"
+                                    onClick={handleSaveAvatar}
+                                    disabled={isUploading}
+                                >
+                                    {isUploading ? "Đang lưu..." : "Lưu"}
                                 </Button>
                                 <Button
                                     className="bg-gray-300 hover:bg-gray-400 text-black"
-                                    onClick={() => setShowModalAvatar(false)}
+                                    onClick={() => {
+                                        setShowModalAvatar(false);
+                                        setAvatarPreview(null);
+                                        setAvatarFile(null);
+                                    }}
+                                    disabled={isUploading}
                                 >
                                     Hủy
                                 </Button>
