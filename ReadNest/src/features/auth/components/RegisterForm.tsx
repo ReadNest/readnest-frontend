@@ -95,6 +95,7 @@ export default function RegisterForm() {
         date={dateOfBirth}
         setDate={setDateOfBirth}
         error={errorFields["dateOfBirth"]}
+        showQuickOptions={false}
       />
 
       <FormField
