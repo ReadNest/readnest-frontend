@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { clearErrors } from "@/store/error/errorSlice";
 import type { RootState } from "@/store";
@@ -21,7 +21,13 @@ export default function RegisterForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<RegisterRequest>();
+    watch,
+    setValue,
+  } = useForm<RegisterRequest>({
+    defaultValues: {
+      dateOfBirth: format(new Date(), "yyyy-MM-dd"),
+    },
+  });
 
   const isRegisterSuccess = useSelector(
     (state: RootState) => state.auth.isRegisterSuccess
@@ -31,7 +37,10 @@ export default function RegisterForm() {
   );
   const errorMessage = useSelector((state: RootState) => state.error);
 
-  const [dateOfBirth, setDateOfBirth] = useState<Date>();
+  const dateOfBirth = watch("dateOfBirth");
+  const onDateChange = (date?: Date) => {
+    setValue("dateOfBirth", format(date ?? new Date(), "yyyy-MM-dd"));
+  };
 
   const onSubmit = (data: RegisterRequest) => {
     dispatch(clearErrors());
@@ -49,7 +58,6 @@ export default function RegisterForm() {
   useEffect(() => {
     if (isRegisterSuccess) {
       reset();
-      setDateOfBirth(new Date());
       navigate("/login");
       dispatch(clearErrors());
     }
@@ -67,6 +75,7 @@ export default function RegisterForm() {
         error={errors.userName?.message || errorFields["userName"]}
         register={register}
         icon={<User className="w-4 h-4" />}
+        required
       />
 
       <FormField
@@ -76,6 +85,7 @@ export default function RegisterForm() {
         error={errors.email?.message || errorFields["email"]}
         register={register}
         icon={<Mail className="w-4 h-4" />}
+        required
       />
 
       <FormField
@@ -85,6 +95,7 @@ export default function RegisterForm() {
         error={errors.fullName?.message || errorFields["fullName"]}
         register={register}
         icon={<Signature className="w-4 h-4" />}
+        required
       />
 
       <FormField
@@ -94,14 +105,16 @@ export default function RegisterForm() {
         error={errors.address?.message || errorFields["address"]}
         register={register}
         icon={<MapPin className="w-4 h-4" />}
+        required
       />
 
       <FormDateField
         label="Ngày sinh"
-        date={dateOfBirth}
-        setDate={setDateOfBirth}
+        date={dateOfBirth ? new Date(dateOfBirth) : undefined}
+        setDate={onDateChange}
         error={errorFields["dateOfBirth"]}
         showQuickOptions={false}
+        required
       />
 
       <FormField
@@ -112,6 +125,7 @@ export default function RegisterForm() {
         error={errors.password?.message || errorFields["password"]}
         register={register}
         icon={<Lock className="w-4 h-4" />}
+        required
       />
 
       <FormField
@@ -124,6 +138,7 @@ export default function RegisterForm() {
         }
         register={register}
         icon={<ShieldCheck className="w-4 h-4" />}
+        required
       />
 
       <Button

@@ -36,6 +36,7 @@ interface FormDateFieldProps {
   maxDate?: Date;
   disabled?: boolean;
   showQuickOptions?: boolean;
+  required?: boolean;
 }
 
 export default function FormDateField({
@@ -49,6 +50,7 @@ export default function FormDateField({
   maxDate,
   disabled = false,
   showQuickOptions = true,
+  required = false,
 }: FormDateFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(date || new Date());
@@ -122,6 +124,7 @@ export default function FormDateField({
     <div className="space-y-1 relative group">
       <Label className="block text-left p-1 text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
+        {required && <span className="text-red-500 ml-1">*</span>}{" "}
       </Label>
 
       <TooltipProvider>

@@ -32,15 +32,12 @@ const authSlice = createSlice({
     registerStart: (_state, _action: PayloadAction<RegisterRequest>) => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchUserLoginStart: (_state, _action: PayloadAction<string>) => {},
-    loginRequest: (state) => {
-      state.loading = true;
-    },
-    registerRequest: (state) => {
-      state.loading = true;
-    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    loginRequest: (_state) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    registerRequest: (_state) => {},
     loginSuccess: (state, action: PayloadAction<TokenResponse>) => {
       state.isAuthenticated = true;
-      state.loading = false;
       localStorage.setItem("access_token", action.payload.accessToken ?? "");
       localStorage.setItem("refresh_token", action.payload.refreshToken ?? "");
     },
@@ -48,7 +45,6 @@ const authSlice = createSlice({
       state.loading = false;
     },
     registerSuccess: (state) => {
-      state.loading = false;
       state.isRegisterSuccess = true;
     },
     registerFailure: (state) => {

@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
-import { appRoutes } from "./routes";
+import { AppRoutes } from "./routes";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "./store";
 import { fetchUserLoginStart } from "./features/auth/authSlice";
@@ -22,7 +22,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.isAuthenticated]);
 
-  const routes = appRoutes(auth.user, auth.isAuthenticated);
+  const routes = AppRoutes(auth.user, auth.isAuthenticated);
 
   return (
     <>
