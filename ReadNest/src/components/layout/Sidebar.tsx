@@ -48,10 +48,7 @@ const adminSidebarItems = [
     label: "Books",
     icon: <Book size={18} />,
     key: "books",
-    items: [
-      { label: "All Books", path: ROUTE_PATHS.BOOK },
-      { label: "Add New", path: ROUTE_PATHS.MANAGE_BOOK },
-    ],
+    items: [{ label: "Manage Books", path: ROUTE_PATHS.BOOK }],
   },
   {
     label: "Affiliate",
@@ -142,6 +139,7 @@ export default function Sidebar({ roleName }: SidebarProps) {
               <CollapsibleContent className="pl-10 mt-1 space-y-1">
                 {section.items.map((item) => (
                   <NavLink
+                    end
                     key={item.path}
                     to={item.path}
                     className={({ isActive }) =>

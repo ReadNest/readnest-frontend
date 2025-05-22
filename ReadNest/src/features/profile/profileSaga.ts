@@ -5,6 +5,7 @@ import {
   fetchUserProfileRequested,
   fetchUserProfileStart,
   fetchUserProfileSuccess,
+  setIsLoading,
 } from "./profileSlice";
 import { call, put, takeLatest } from "redux-saga/effects";
 import type { GetUserProfileResponseApiResponse } from "@/api/@types";
@@ -58,6 +59,8 @@ function* updateProfile(action: PayloadAction<UpdateUserRequest>) {
     );
     yield put(setDetailErrors(errBody.listDetailError ?? []));
     yield put(updateProfileFailure());
+  } finally {
+    yield put(setIsLoading(false));
   }
 }
 

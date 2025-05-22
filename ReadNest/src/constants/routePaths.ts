@@ -9,7 +9,7 @@ export const ROUTE_PATHS = {
   BOOK_DETAIL: "/book-detail",
   RANK: "/community-rank",
   BOOK_EXCHANGE: "/book-exchange",
-  NOT_FOUND: "/404",
+  NOT_FOUND: "/*",
   BOOK: "/books",
   MANAGE_BOOK: "/books/new",
   AFFILIATE: "/affiliate-links",

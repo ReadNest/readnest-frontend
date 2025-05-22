@@ -1,5 +1,5 @@
 import type { GetUserResponse } from "@/api/@types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -15,12 +15,18 @@ export const ProtectedRoute = ({
   allowedRoles,
   children,
 }: ProtectedRouteProps) => {
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
-  setTimeout(() => {
+  useEffect(() => {
     if (allowedRoles && !allowedRoles.includes(user?.roleName ?? "")) {
-      return <Navigate to="/unauthorized" replace />;
+      const timer = setTimeout(() => {
+        setShouldRedirect(true);
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, 1000);
+  }, [allowedRoles, user]);
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (shouldRedirect) return <Navigate to="/not-found" replace />;
   return <>{children}</>;
 };

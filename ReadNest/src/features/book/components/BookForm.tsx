@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import FormField from "@/components/ui/form-field";
 import FormImageUpload from "@/components/ui/form-image-upload";
-import RichTextEditor from "@/components/rich-text-editor/RichTextEditor";
 import {
   Select,
   SelectContent,
@@ -19,10 +18,11 @@ import {
 } from "@/components/ui/popover";
 import { cn, showToastMessage, uploadFileToCloudinary } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { clearErrors } from "@/store/error/errorSlice";
+import { TinyMCETextEditor } from "@/components/rich-text-editor/TinyMCETextEditor";
+import { toast } from "react-toastify";
 
 interface BookFormProps {
   defaultValues?: Partial<CreateBookRequest>;
@@ -111,6 +111,12 @@ export default function BookForm({
       messageId: errorMessage.messageId,
     });
   }, [errorMessage]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearErrors());
+    };
+  }, [dispatch]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue("title", e.target.value);
@@ -306,8 +312,8 @@ export default function BookForm({
           control={control}
           name="description"
           render={({ field }) => (
-            <RichTextEditor
-              content={field.value ?? ""}
+            <TinyMCETextEditor
+              value={field.value ?? ""}
               onChange={field.onChange}
             />
           )}

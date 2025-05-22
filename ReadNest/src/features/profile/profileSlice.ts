@@ -52,6 +52,9 @@ const profileSlice = createSlice({
     updateProfileFailure: (state) => {
       state.isLoading = false;
     },
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
   },
 });
 export const {
@@ -64,6 +67,7 @@ export const {
   updateProfileStart,
   updateProfileSuccess,
   updateProfileFailure,
+  setIsLoading,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { showToastMessage } from "@/lib/utils";
 import { RoleEnum } from "@/constants/enum";
+import { Lock, User } from "lucide-react";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -93,19 +94,22 @@ export default function LoginForm() {
         <TooltipProvider>
           <Tooltip open={!!(errors.userName || errorFields["userName"])}>
             <TooltipTrigger asChild>
-              <Input
-                id="userName"
-                placeholder="Nhập tên đăng nhập"
-                {...register("userName", {
-                  required: "Tên đăng nhập không được để trống",
-                })}
-                onChange={handleUserNameChange}
-                className={
-                  errors.userName || errorFields["userName"]
-                    ? "border-red-500"
-                    : ""
-                }
-              />
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
+                <Input
+                  id="userName"
+                  placeholder="Nhập tên đăng nhập"
+                  {...register("userName", {
+                    required: "Tên đăng nhập không được để trống",
+                  })}
+                  onChange={handleUserNameChange}
+                  className={
+                    errors.userName || errorFields["userName"]
+                      ? "border-red-500 pl-10"
+                      : "pl-10"
+                  }
+                />
+              </div>
             </TooltipTrigger>
             <TooltipContent
               side="bottom"
@@ -129,20 +133,23 @@ export default function LoginForm() {
         <TooltipProvider>
           <Tooltip open={!!(errors.password || errorFields["password"])}>
             <TooltipTrigger asChild>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Nhập mật khẩu"
-                {...register("password", {
-                  required: "Mật khẩu không được để trống",
-                })}
-                onChange={handlePasswordChange}
-                className={
-                  errors.password || errorFields["password"]
-                    ? "border-red-500"
-                    : ""
-                }
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Nhập mật khẩu"
+                  {...register("password", {
+                    required: "Mật khẩu không được để trống",
+                  })}
+                  onChange={handlePasswordChange}
+                  className={
+                    errors.password || errorFields["password"]
+                      ? "border-red-500 pl-10"
+                      : "pl-10"
+                  }
+                />
+              </div>
             </TooltipTrigger>
             <TooltipContent
               side="bottom"

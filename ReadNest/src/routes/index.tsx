@@ -145,22 +145,16 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       layout: defaultLayout,
     },
     {
-      path: ROUTE_PATHS.NOT_FOUND,
-      isPrivate: false,
-      publicOnly: true,
-      element: <NotFoundPage />,
-    },
-    {
       path: ROUTE_PATHS.BOOK,
-      isPrivate: true,
-      // allowedRoles: ["user", "admin"],
+      isPrivate: false,
+      allowedRoles: [RoleEnum.ADMIN, RoleEnum.USER],
       element: <BookPage />,
       layout: adminLayout,
     },
     {
       path: ROUTE_PATHS.MANAGE_BOOK,
       isPrivate: true,
-      // allowedRoles: ["user", "admin"],
+      allowedRoles: [RoleEnum.ADMIN, RoleEnum.USER],
       element: <CreateBookPage />,
       layout: adminLayout,
     },
@@ -191,6 +185,12 @@ export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       // allowedRoles: ["user", "admin"],
       element: <CreateCategoryPage />,
       layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.NOT_FOUND,
+      isPrivate: false,
+      publicOnly: true,
+      element: <NotFoundPage />,
     },
   ];
 
