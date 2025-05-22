@@ -112,6 +112,12 @@ export default function BookForm({
     });
   }, [errorMessage]);
 
+  useEffect(() => {
+    return () => {
+      dispatch(clearErrors());
+    };
+  }, [dispatch]);
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue("title", e.target.value);
     clearFormErrors("title");

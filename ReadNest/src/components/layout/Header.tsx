@@ -59,14 +59,9 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
   const onLogout = async () => {
     dispatch(setLoading(true));
 
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
     dispatch(logout());
     dispatch(clearErrors());
 
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    dispatch(setLoading(false));
     toast.success("Logout successfully!");
 
     navigate("/");

@@ -1,12 +1,14 @@
+import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from ".";
 
-export const selectGlobalLoading = (state: RootState) => {
-  return (
-    state.auth.loading ||
-    state.profile.isLoading ||
-    state.affiliate.loading ||
-    state.categories.loading ||
-    state.book.loading ||
-    false
-  );
-};
+export const selectGlobalLoading = createSelector(
+  [
+    (state: RootState) => state.auth.loading,
+    (state: RootState) => state.book.loading,
+    (state: RootState) => state.affiliate.loading,
+
+    (state: RootState) => state.categories.loading,
+    (state: RootState) => state.profile.isLoading,
+  ],
+  (authLoading, bookLoading /* ... */) => authLoading || bookLoading // || ...
+);

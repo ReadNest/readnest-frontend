@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useMemo } from "react";
 import {
   Table,
   TableHeader,
@@ -27,8 +26,14 @@ import {
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { useColumnResize } from "@/hooks/useColumnResize";
 
+interface PagingInfo {
+  totalItems?: number;
+  pageIndex?: number; // 1-based
+  pageSize?: number;
+}
+
 interface DataTableProps<T> {
-  data: T[];
+  pagedData: T[];
   columns: {
     key: keyof T | string;
     label: string;
@@ -37,6 +42,9 @@ interface DataTableProps<T> {
     maxWidth?: number;
     initialWidth?: number;
   }[];
+  pagingInfo: PagingInfo;
+  onPageChange?: (pageIndex: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
   onAdd?: () => void;
@@ -44,14 +52,16 @@ interface DataTableProps<T> {
   enableDelete?: boolean;
   enableAdd?: boolean;
   pageSizeOptions?: number[];
-  totalItems?: number;
   className?: string;
   addButtonText?: string;
 }
 
 export function DataTableWithPagination<T>({
-  data,
+  pagedData,
   columns,
+  pagingInfo,
+  onPageChange,
+  onPageSizeChange,
   onEdit,
   onDelete,
   onAdd,
@@ -59,61 +69,34 @@ export function DataTableWithPagination<T>({
   enableDelete = false,
   enableAdd = true,
   pageSizeOptions = [5, 10, 20, 50, 100],
-  totalItems,
   className = "",
   addButtonText = "Add New",
 }: DataTableProps<T>) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(pageSizeOptions[0]);
   const tableRef = useColumnResize();
 
-  const totalCount = totalItems || data.length;
+  const currentPage = pagingInfo.pageIndex ?? 1;
+  const pageSize = pagingInfo.pageSize ?? pageSizeOptions[0];
+  const totalCount = pagingInfo.totalItems ?? 0;
+
   const totalPages = pageSize === -1 ? 1 : Math.ceil(totalCount / pageSize);
-
-  const pagedData = useMemo(() => {
-    if (pageSize === -1) return data;
-    const start = (currentPage - 1) * pageSize;
-    return data.slice(start, start + pageSize);
-  }, [data, currentPage, pageSize]);
-
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
 
   const renderPageNumbers = () => {
     const pages: number[] = [];
     const maxVisiblePages = 5;
 
     if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       pages.push(1);
-
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
 
-      if (currentPage <= 3) {
-        end = 4;
-      } else if (currentPage >= totalPages - 2) {
-        start = totalPages - 3;
-      }
+      if (currentPage <= 3) end = 4;
+      else if (currentPage >= totalPages - 2) start = totalPages - 3;
 
-      if (start > 2) {
-        pages.push(-1);
-      }
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (end < totalPages - 1) {
-        pages.push(-1);
-      }
-
+      if (start > 2) pages.push(-1);
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (end < totalPages - 1) pages.push(-1);
       pages.push(totalPages);
     }
 
@@ -126,7 +109,7 @@ export function DataTableWithPagination<T>({
         <PaginationItem key={page}>
           <PaginationLink
             isActive={page === currentPage}
-            onClick={() => handlePageChange(page)}
+            onClick={() => onPageChange?.(page)}
             href="#"
             className="min-w-[2.5rem]"
           >
@@ -139,7 +122,6 @@ export function DataTableWithPagination<T>({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Header section with Add button and pagination controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="text-sm">
@@ -162,8 +144,8 @@ export function DataTableWithPagination<T>({
             value={pageSize.toString()}
             onValueChange={(value) => {
               const newSize = Number(value);
-              setPageSize(newSize);
-              setCurrentPage(1);
+              onPageSizeChange?.(newSize);
+              onPageChange?.(1);
             }}
           >
             <SelectTrigger className="w-[100px] h-8">
@@ -175,7 +157,7 @@ export function DataTableWithPagination<T>({
                   {opt}
                 </SelectItem>
               ))}
-              <SelectItem value="-1">All</SelectItem>
+              <SelectItem value={String(totalCount)}>All</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -220,29 +202,23 @@ export function DataTableWithPagination<T>({
                 pagedData.map((item, index) => (
                   <TableRow
                     key={index}
-                    className={`
-                      hover:bg-blue-50/50 dark:hover:bg-blue-900/20 
-                      transition-colors duration-150 
-                      ${
-                        index % 2 === 0
-                          ? "bg-white dark:bg-gray-950"
-                          : "bg-gray-50/30 dark:bg-gray-900/30"
-                      }
-                    `}
+                    className={`hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors duration-150 ${
+                      index % 2 === 0
+                        ? "bg-white dark:bg-gray-950"
+                        : "bg-gray-50/30 dark:bg-gray-900/30"
+                    }`}
                   >
                     {columns.map((col, colIndex) => (
                       <TableCell
                         key={col.key.toString()}
-                        className={`
-                          p-3 text-sm border-r
-                          ${col.isBold ? "font-bold" : ""}
-                          ${
-                            colIndex === columns.length - 1 &&
-                            !(enableEdit || enableDelete)
-                              ? "border-r-0"
-                              : ""
-                          }
-                        `}
+                        className={`p-3 text-sm border-r ${
+                          col.isBold ? "font-bold" : ""
+                        } ${
+                          colIndex === columns.length - 1 &&
+                          !(enableEdit || enableDelete)
+                            ? "border-r-0"
+                            : ""
+                        }`}
                       >
                         {typeof col.key === "string"
                           ? (item as any)[col.key]
@@ -252,28 +228,24 @@ export function DataTableWithPagination<T>({
                     {(enableEdit || enableDelete) && (
                       <TableCell className="p-3 text-right border-r-0">
                         <div className="flex gap-2 justify-end">
-                          {
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => onEdit?.(item)}
-                              className="h-8 w-8 p-0 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                              disabled={!enableEdit}
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                          }
-                          {
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => onDelete?.(item)}
-                              className="h-8 w-8 p-0"
-                              disabled={!enableDelete}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          }
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onEdit?.(item)}
+                            className="h-8 w-8 p-0 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                            disabled={!enableEdit}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => onDelete?.(item)}
+                            className="h-8 w-8 p-0"
+                            disabled={!enableDelete}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
                         </div>
                       </TableCell>
                     )}
@@ -304,7 +276,7 @@ export function DataTableWithPagination<T>({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  handlePageChange(currentPage - 1);
+                  onPageChange?.(currentPage - 1);
                 }}
                 className={
                   currentPage === 1 ? "pointer-events-none opacity-50" : ""
@@ -317,7 +289,7 @@ export function DataTableWithPagination<T>({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  handlePageChange(currentPage + 1);
+                  onPageChange?.(currentPage + 1);
                 }}
                 className={
                   currentPage === totalPages

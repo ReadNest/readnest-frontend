@@ -9,12 +9,10 @@ import { useEffect } from "react";
 import { UserLoader } from "./components/ui/user-loader";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import { selectGlobalLoading } from "./store/selectors";
 
 function App() {
   const dispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
-  const loading = useSelector(selectGlobalLoading);
 
   useEffect(() => {
     if (auth.isAuthenticated && !auth.user?.fullName) {
@@ -28,7 +26,7 @@ function App() {
 
   return (
     <>
-      <UserLoader loading={loading}>
+      <UserLoader loading={auth.loading}>
         <Routes>
           {routes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
