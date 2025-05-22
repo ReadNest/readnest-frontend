@@ -92,7 +92,6 @@ export default function FormDateField({
     setIsOpen(false);
   };
 
-  // Shortcuts cho ngày thông dụng
   const getQuickDateOptions = () => {
     const today = new Date();
     const yesterday = new Date(today);
@@ -154,7 +153,6 @@ export default function FormDateField({
 
               <PopoverContent className="w-auto p-0" align="start">
                 <div className="p-3 space-y-3">
-                  {/* Quick date shortcuts */}
                   {showQuickOptions && (
                     <div className="grid grid-cols-2 gap-2">
                       {getQuickDateOptions().map((option) => (
@@ -173,7 +171,6 @@ export default function FormDateField({
 
                   {showQuickOptions && <div className="border-t pt-3"></div>}
 
-                  {/* Year and Month selectors */}
                   {showYearMonthSelector && (
                     <div className="flex gap-2 mb-3">
                       <Select
@@ -213,7 +210,6 @@ export default function FormDateField({
                     </div>
                   )}
 
-                  {/* Calendar */}
                   <Calendar
                     mode="single"
                     selected={date}
@@ -262,7 +258,6 @@ export default function FormDateField({
                     }}
                   />
 
-                  {/* Today button */}
                   <div className="border-t pt-3 mt-3">
                     <Button
                       variant="outline"
