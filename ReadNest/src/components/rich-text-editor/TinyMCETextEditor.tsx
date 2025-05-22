@@ -90,6 +90,7 @@ export const TinyMCETextEditor = ({
               type: blob.type,
             });
             const url = await uploadFileToCloudinary(file);
+            console.log("Uploaded image URL:", url);
             success(url);
           } catch {
             failure("Failed to upload image");
