@@ -49,7 +49,7 @@ const adminSidebarItems = [
     icon: <Book size={18} />,
     key: "books",
     items: [
-      { label: "All Books", path: ROUTE_PATHS.BOOK },
+      { label: "Manage Books", path: ROUTE_PATHS.BOOK },
       { label: "Add New", path: ROUTE_PATHS.MANAGE_BOOK },
     ],
   },
