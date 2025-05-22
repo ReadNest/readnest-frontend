@@ -22,8 +22,19 @@ import CreateBookPage from "@/pages/book/CreateBookPage";
 import CreateBookAffiliateLinks from "@/pages/affliate/CreateBookAffiliateLinks";
 import CategoryPage from "@/pages/category/CategoryPage";
 import CreateCategoryPage from "@/pages/category/CreateCategoryPage";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearErrors } from "@/store/error/errorSlice";
 
-export const appRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
+export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(clearErrors());
+  }, [location.pathname, dispatch]);
+
   const defaultLayout = {
     options: {
       header: true,
