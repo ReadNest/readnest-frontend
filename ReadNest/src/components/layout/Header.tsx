@@ -7,7 +7,7 @@ import { useState } from "react";
 import type { VariantProps } from "class-variance-authority";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout, setLoading } from "@/features/auth/authSlice";
+import { logout } from "@/features/auth/authSlice";
 import UserDropDown from "../ui/user-dropdown";
 import { clearErrors } from "@/store/error/errorSlice";
 import { toast } from "react-toastify";
@@ -57,8 +57,6 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
   };
 
   const onLogout = async () => {
-    dispatch(setLoading(true));
-
     dispatch(logout());
     dispatch(clearErrors());
 
