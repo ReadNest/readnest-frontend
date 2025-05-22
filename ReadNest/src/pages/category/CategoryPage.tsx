@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCategoriesStart,
+  updateCategoryStart,
   resetState,
 } from "@/features/category/categorySlice";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ import {
 } from "@/components/ui/table";
 
 type Category = {
-  id: number;
+  id: string;
   name: string;
   description: string;
 };
@@ -54,7 +55,7 @@ export default function CategoryPage() {
     };
   }, [dispatch]);
 
-  const openEditModal = (category: Category) => {
+  const openEditModal = (category: any) => {
     setSelectedCategory(category);
     setEditName(category.name);
     setEditDescription(category.description);
@@ -62,9 +63,15 @@ export default function CategoryPage() {
   };
 
   const handleUpdate = () => {
-    alert(`Updating: ${editName} - ${editDescription}`);
+    if (!selectedCategory) return;
+  
+    dispatch(updateCategoryStart({
+      id: selectedCategory.id,
+      name: editName.trim(),
+      description: editDescription.trim(),
+    }));
+  
     setEditModalOpen(false);
-    // TODO: dispatch updateCategoryAsync({ id: selectedCategory.id, name: editName, description: editDescription })
   };
 
   const pageIndex = pagingInfo.pageIndex ?? 1;

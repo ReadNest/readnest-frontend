@@ -11,6 +11,8 @@ import {
   setLoading,
   setPagingInfo,
   setSuccess,
+  getBookByIdStart,
+  setSelectedBook,
 } from "./bookSlice";
 import { call, put, takeLatest } from "redux-saga/effects";
 import client from "@/lib/api/axiosClient";
@@ -88,7 +90,45 @@ function* fetchBooks(action: PayloadAction<PagingRequest>) {
   }
 }
 
+function* getBookById(action: PayloadAction<any>) {
+  try {
+    yield put(setLoading(true));
+
+    const res: GetBookResponseApiResponse = yield call(() =>
+      client.api.v1.books
+        ._bookId(action.payload)
+        .get()
+        .then((r) => r.body)
+    );
+
+    if (res.success && res.data) {
+      yield put(setSelectedBook(res.data));
+      yield put(setSuccess(true));
+    } else {
+      yield put(setSelectedBook(null));
+      yield put(setSuccess(false));
+      yield put(setDetailErrors(res.listDetailError ?? []));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    const errBody = error?.response?.data || {};
+    yield put(setSelectedBook(null));
+    yield put(setSuccess(false));
+    yield put(
+      setMessage({
+        message: errBody.message ?? "Đã xảy ra lỗi",
+        messageId: errBody.messageId ?? "",
+      })
+    );
+    yield put(setDetailErrors(errBody.listDetailError ?? []));
+  } finally {
+    yield put(setLoading(false));
+  }
+}
+
 export default function* bookSaga() {
   yield takeLatest(createBookStart.type, handleCreateBook);
   yield takeLatest(fetchBooksStart.type, fetchBooks);
+  yield takeLatest(getBookByIdStart.type, getBookById);
 }

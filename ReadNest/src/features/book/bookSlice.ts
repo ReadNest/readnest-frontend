@@ -6,6 +6,7 @@ export const initialState: {
   isSuccess: boolean;
   loading: boolean;
   books: GetBookResponse[];
+  selectedBook: GetBookResponse | null;
   pagingInfo: {
     totalItems?: number;
     pageIndex?: number;
@@ -15,6 +16,7 @@ export const initialState: {
   isSuccess: false,
   loading: false,
   books: [],
+  selectedBook: null,
   pagingInfo: {
     totalItems: 0,
     pageIndex: 1,
@@ -55,16 +57,24 @@ const bookSlice = createSlice({
     resetState: (state) => {
       Object.assign(state, initialState);
     },
+    getBookByIdStart: (_state, _action: PayloadAction<any>) => {},
+
+    setSelectedBook: (state, action: PayloadAction<GetBookResponse | null>) => {
+      // Lưu thông tin cuốn sách được chọn
+      state.selectedBook = action.payload;
+    },
   },
 });
 
 export const {
   createBookStart,
   fetchBooksStart,
+  getBookByIdStart,
   setLoading,
   setSuccess,
   addBook,
   setBooks,
+  setSelectedBook,
   setPagingInfo,
   resetState,
 } = bookSlice.actions;
