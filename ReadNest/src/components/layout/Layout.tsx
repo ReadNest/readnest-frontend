@@ -1,8 +1,8 @@
-// components/layout/Layout.tsx
 type LayoutOptions = {
   header: boolean;
   sidebar: boolean;
   footer: boolean;
+  sidebarFullHeight?: boolean;
 };
 
 interface LayoutProps {
@@ -16,23 +16,55 @@ interface LayoutProps {
 }
 
 export const Layout = ({ ...props }: LayoutProps) => {
-  return (
-    <div className="flex flex-col min-h-screen">
-      {props.options.header && (
-        <div className="sticky top-0 z-50">{props.header}</div>
-      )}
+  const { header, sidebar, footer } = props;
+  const {
+    header: showHeader,
+    sidebar: showSidebar,
+    footer: showFooter,
+    sidebarFullHeight,
+  } = props.options;
 
-      <div className="flex flex-1">
-        {props.options.sidebar && (
-          <aside className="w-64 bg-gray-100 p-4 hidden md:block">
-            {props.sidebar}
+  if (sidebarFullHeight) {
+    return (
+      <div className="flex min-h-screen bg-gray-50">
+        {showSidebar && (
+          <aside className="w-64 hidden md:block border-r border-gray-200">
+            {sidebar}
           </aside>
         )}
 
-        <main className="flex-1">{props.children}</main>
+        <div className="flex flex-col flex-1">
+          {showHeader && (
+            <div className="sticky top-0 z-50 bg-white shadow-sm">{header}</div>
+          )}
+          <main className="flex-1 overflow-y-auto p-4 bg-white">
+            {props.children}
+          </main>
+          {showFooter && footer}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {showHeader && (
+        <div className="sticky top-0 z-50 bg-white shadow-sm">{header}</div>
+      )}
+
+      <div className="flex flex-1 min-h-0">
+        {showSidebar && (
+          <aside className="w-64 hidden md:block border-r border-gray-200">
+            {sidebar}
+          </aside>
+        )}
+
+        <main className="flex-1 overflow-y-auto bg-white">
+          {props.children}
+        </main>
       </div>
 
-      {props.options.footer && props.footer}
+      {showFooter && footer}
     </div>
   );
 };

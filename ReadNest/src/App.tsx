@@ -1,13 +1,14 @@
-import { Toaster } from "sonner";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
-import { appRoutes } from "./routes";
+import { AppRoutes } from "./routes";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "./store";
 import { fetchUserLoginStart } from "./features/auth/authSlice";
 import { useEffect } from "react";
 import { UserLoader } from "./components/ui/user-loader";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.isAuthenticated]);
 
-  const routes = appRoutes(auth.user, auth.isAuthenticated);
+  const routes = AppRoutes(auth.user, auth.isAuthenticated);
 
   return (
     <>
@@ -32,7 +33,17 @@ function App() {
           ))}
         </Routes>
       </UserLoader>
-      <Toaster position="top-right" duration={4000} />
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 }

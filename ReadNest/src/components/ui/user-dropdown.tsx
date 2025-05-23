@@ -12,16 +12,17 @@ import { getInitials } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
 interface UserDropDownProps {
+  username: string;
   fullName: string;
   avatarUrl?: string;
   onClickLogout: () => void;
 }
 
-const dropDownItems = [
+const getDropDownItems = (username: string) => [
   {
     icon: <User className="mr-2 h-4 w-4" />,
     content: "Thông tin cá nhân",
-    to: "/profile",
+    to: `/profile/${username}`,
   },
   {
     icon: <BookMarked className="mr-2 h-4 w-4" />,
@@ -63,13 +64,16 @@ function UserDropDown({ ...props }: UserDropDownProps) {
               <AvatarImage src={props.avatarUrl} />
               <AvatarFallback>{getInitials(props.fullName)}</AvatarFallback>
             </Avatar>
-            <p className="text-sm font-medium leading-none">{props.fullName}</p>
+            <div className="text-start flex flex-col">
+              <p className="text-sm font-medium">{props.fullName}</p>
+              <p className="text-xs text-muted-foreground">@{props.username}</p>
+            </div>
           </div>
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
 
-        {dropDownItems.map((item, index) => (
+        {getDropDownItems(props.username).map((item, index) => (
           <DropdownMenuItem key={index} asChild>
             <Link to={item.to} className="flex items-center cursor-pointer">
               {item.icon}

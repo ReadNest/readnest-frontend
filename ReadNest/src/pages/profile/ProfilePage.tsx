@@ -6,9 +6,94 @@ import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
 import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard";
 import { CameraIcon, FrameIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { fetchUserProfileRequested, setIsProfileNotFound, updateProfileRequested } from "@/features/profile/profileSlice";
+import type { RootState } from "@/store";
+import { EditProfileModal } from "@/features/profile/components/EditProfileModal";
+import { toast } from "react-toastify";
+import { uploadFileToCloudinary } from "@/lib/utils";
 
 export default function ProfilePage() {
-    const [showModal, setShowModal] = useState(false);
+    const [showModalAvatar, setShowModalAvatar] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { username } = useParams<{ username: string }>();
+    const { profile } = useSelector((state: RootState) => state.profile);
+    // Removed incorrect and unused profileError destructuring
+    const isProfileNotFound = useSelector((state: RootState) => state.profile.isProfileNotFound);
+    const { user } = useSelector((state: RootState) => state.auth);
+
+    // ========== Avatar Upload ========== //
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+
+    // Xử lý chọn file ảnh
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file && file.size > 5 * 1024 * 1024) {
+            toast.error("Kích thước file không được vượt quá 5MB");
+            return;
+        }
+
+        if (file) {
+            setAvatarFile(file);
+            const reader = new FileReader();
+            reader.onload = () => setAvatarPreview(reader.result as string);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Xử lý lưu avatar mới
+    const handleSaveAvatar = async () => {
+        if (!avatarFile) {
+            toast.error("Vui lòng chọn ảnh!");
+            return;
+        }
+        setIsUploading(true);
+        try {
+            // Upload lên Cloudinary
+            const uploadResult = await uploadFileToCloudinary(avatarFile);
+            console.log(uploadResult);
+            if (!uploadResult) {
+                toast.error("Upload ảnh thất bại!");
+                setIsUploading(false);
+                return;
+            }
+            const data = {
+                userId: user.userId,
+                avatarUrl: uploadResult,
+            };
+            // Gọi API update profile (chỉ update avatar)
+            dispatch(updateProfileRequested(data));
+            // toast.success("Cập nhật avatar thành công!");
+            setShowModalAvatar(false);
+            setAvatarPreview(null);
+            setAvatarFile(null);
+        } catch {
+            toast.error("Có lỗi khi cập nhật avatar!");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    //Call API to get user data
+    useEffect(() => {
+        dispatch(setIsProfileNotFound(false));
+        if (username) {
+            dispatch(fetchUserProfileRequested(username));
+        }
+    }, [username]);
+    // Navigate to 404 if user not found
+    useEffect(() => {
+        if (isProfileNotFound) {
+            navigate('/404');
+        }
+    }, [isProfileNotFound, navigate]);
+
     return (
         <div className="container mx-auto py-8 px-10">
             {/* Top Profile Page */}
@@ -17,47 +102,55 @@ export default function ProfilePage() {
                     {/* Profile Header */}
                     <div className="relative flex flex-col items-center text-center">
                         <Avatar className="h-40 w-40 mb-4">
-                            <AvatarImage src="https://github.com/shadcn.png" />
-                            <AvatarFallback>NA</AvatarFallback>
+                            <AvatarImage src={profile.avatarUrl ?? "https://github.com/shadcn.png"} />
+                            <AvatarFallback>Avatar</AvatarFallback>
                         </Avatar>
-                        <Button
-                            className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
-                            onClick={() => setShowModal(true)}
-                        >
-                            <CameraIcon />
-                        </Button>
+                        {user.userId == profile.userId &&
+                            <Button
+                                className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
+                                onClick={() => setShowModalAvatar(true)}>
+                                <CameraIcon />
+                            </Button>
+                        }
                     </div>
                     <div className="w-full flex flex-col items-start">
                         {/* Profile Info */}
                         <div className="flex flex-col items-center text-center ml-10">
-                            <h1 className="text-2xl font-bold">Huỳnh Trần Vũ Đạt</h1>
-                            <p className="text-gray-500">@dathuynh2k3</p>
+                            <h1 className="text-2xl font-bold">{profile.fullName}</h1>
+                            <p className="text-gray-500">@{profile.userName}</p>
                         </div>
 
                         {/* Stats */}
                         <div className="grid grid-cols-3 gap-3 text-center mt-6">
                             <div>
-                                <p className="text-2xl font-bold">12</p>
+                                <p className="text-2xl font-bold">{profile.numberOfPosts}</p>
                                 <p className="text-sm text-gray-500">Bài viết</p>
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">89</p>
+                                <p className="text-2xl font-bold">{profile.numberOfComments}</p>
                                 <p className="text-sm text-gray-500">Lượt đánh giá</p>
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">1003</p>
+                                <p className="text-2xl font-bold">{profile.ratingScores}</p>
                                 <p className="text-sm text-gray-500">Điểm đánh giá</p>
                             </div>
                         </div>
                     </div>
                     <div className="w-full flex justify-end">
                         {/* Edit Profile Button */}
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold end-0">
-                            Chỉnh sửa hồ sơ
-                        </Button>
+                        {user.userId == profile.userId &&
+                            <EditProfileModal
+                                profileData={{
+                                    fullName: profile.fullName ?? "",
+                                    dateOfBirth: profile.dateOfBirth?.split('T')[0] ?? "",
+                                    bio: profile.bio ?? "",
+                                    address: profile.address ?? "",
+                                }}
+                            />
+                        }
                     </div>
                 </div>
-            </Card>
+            </Card >
             <Separator className="mb-10" />
             {/* Bot Profile Page */}
             <div className="flex flex-col md:flex-row gap-8">
@@ -67,7 +160,7 @@ export default function ProfilePage() {
                     <Card className="p-4">
                         <h2 className="text-lg font-semibold mb-2">Giới thiệu</h2>
                         <p className="text-sm text-gray-700 mb-4">
-                            Yêu thích đọc sách, đặc biệt là thể loại văn học dương đại và tâm lý học. Luôn tìm kiếm những cuốn sách hay để chia sẻ với cộng đồng.
+                            &emsp;&emsp;{profile.bio == "" ? "Người dùng này quá lười để viết phần giới thiệu" : profile.bio}
                         </p>
                         <ul className="space-y-2 text-sm">
                             <li className="flex items-center">
@@ -91,7 +184,7 @@ export default function ProfilePage() {
                                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                                     />
                                 </svg>
-                                Hồ Chí Minh, Việt Nam
+                                {profile.address ?? "Chưa cập nhật địa chỉ"}
                             </li>
                             <li className="flex items-center">
                                 <svg
@@ -108,7 +201,13 @@ export default function ProfilePage() {
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                     />
                                 </svg>
-                                Tham gia từ Tháng 3, 2025
+                                {profile.dateOfBirth
+                                    ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                    })
+                                    : "Chưa cập nhật ngày sinh"}
                             </li>
                         </ul>
                     </Card>
@@ -170,72 +269,65 @@ export default function ProfilePage() {
                 </div>
             </div>
             {/* Modal for Avatar Change */}
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-lg font-semibold mb-4 text-center">Thay đổi Avatar</h2>
-                        <Separator className="mb-4 w-full" />
-                        <div className="flex flex-col items-center space-y-4">
-                            {/* <label className="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                                <PlusIcon className="mr-2" /> Chọn ảnh
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                />
-                            </label> */}
-                            <div className="flex items-center space-x-4">
-                                <label className="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                                    <PlusIcon className="mr-2" /> Chọn ảnh
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={(e) => {
-                                            const file = e.target.files?.[0];
-                                            if (file) {
-                                                const reader = new FileReader();
-                                                reader.onload = () => {
-                                                    const result = reader.result as string;
-                                                    document.querySelector('.h-20.w-20 img')?.setAttribute('src', result);
-                                                };
-                                                reader.readAsDataURL(file);
-                                            }
+            {
+                showModalAvatar && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-lg font-semibold mb-4 text-center">Thay đổi Avatar</h2>
+                            <Separator className="mb-4 w-full" />
+                            <div className="flex flex-col items-center space-y-4">
+                                <div className="flex items-center space-x-4">
+                                    <label className="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                                        <PlusIcon className="mr-2" /> Chọn ảnh
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleAvatarChange}
+                                        />
+                                    </label>
+                                    <Button
+                                        className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
+                                        onClick={() => {
+                                            toast.info("Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt.");
                                         }}
-                                    />
-                                </label>
+                                    >
+                                        <FrameIcon className="mr-2" /> Chọn khung
+                                    </Button>
+                                </div>
+                                {showModalAvatar && (
+                                    <div className="flex flex-col items-center space-y-4">
+                                        <Avatar className="h-25 w-25">
+                                            <AvatarImage src={avatarPreview ?? profile.avatarUrl ?? ""} />
+                                            <AvatarFallback>N/A</AvatarFallback>
+                                        </Avatar>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-end space-x-2">
                                 <Button
-                                    className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
-                                    onClick={() => {
-                                        alert("Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt.");
-                                    }}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white"
+                                    onClick={handleSaveAvatar}
+                                    disabled={isUploading}
                                 >
-                                    <FrameIcon className="mr-2" /> Chọn khung
+                                    {isUploading ? "Đang lưu..." : "Lưu"}
+                                </Button>
+                                <Button
+                                    className="bg-gray-300 hover:bg-gray-400 text-black"
+                                    onClick={() => {
+                                        setShowModalAvatar(false);
+                                        setAvatarPreview(null);
+                                        setAvatarFile(null);
+                                    }}
+                                    disabled={isUploading}
+                                >
+                                    Hủy
                                 </Button>
                             </div>
-                            {showModal && (
-                                <div className="flex flex-col items-center space-y-4">
-                                    <Avatar className="h-25 w-25">
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>NA</AvatarFallback>
-                                    </Avatar>
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex justify-end space-x-2">
-                            <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-                                Lưu
-                            </Button>
-                            <Button
-                                className="bg-gray-300 hover:bg-gray-400 text-black"
-                                onClick={() => setShowModal(false)}
-                            >
-                                Hủy
-                            </Button>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }

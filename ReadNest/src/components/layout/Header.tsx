@@ -9,10 +9,13 @@ import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/auth/authSlice";
 import UserDropDown from "../ui/user-dropdown";
+import { clearErrors } from "@/store/error/errorSlice";
+import { toast } from "react-toastify";
 
 interface HeaderProps {
   isAuthenticated: boolean;
   user?: {
+    username: string;
     fullName: string;
     avatarUrl?: string;
   };
@@ -53,8 +56,12 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const onLogout = () => {
+  const onLogout = async () => {
     dispatch(logout());
+    dispatch(clearErrors());
+
+    toast.success("Logout successfully!");
+
     navigate("/");
   };
 
@@ -192,6 +199,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
               <Bell className="h-5 w-5 hover:animate-shake transition-transform" />
             </Link>
             <UserDropDown
+              username={user?.username ?? ""}
               fullName={user?.fullName ?? ""}
               avatarUrl={user?.avatarUrl}
               onClickLogout={onLogout}
