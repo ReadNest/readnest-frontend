@@ -72,6 +72,11 @@ export type CreateAffiliateLinkRequest = {
   affiliateLinkRequests?: AffiliateLinkRequest[] | null | undefined;
 }
 
+export type CreateBookImageRequest = {
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
 export type CreateBookRequest = {
   title?: string | null | undefined;
   author?: string | null | undefined;
@@ -81,6 +86,7 @@ export type CreateBookRequest = {
   isbn?: string | null | undefined;
   language?: string | null | undefined;
   categoryIds?: string[] | null | undefined;
+  bookImages?: CreateBookImageRequest[] | null | undefined;
 }
 
 export type CreateCategoryRequest = {
@@ -112,6 +118,12 @@ export type GetAffiliateLinkResponse = {
   affiliateLink?: string | null | undefined;
 }
 
+export type GetBookImageResponse = {
+  id?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
 export type GetBookResponse = {
   id?: string | undefined;
   title?: string | null | undefined;
@@ -123,6 +135,7 @@ export type GetBookResponse = {
   language?: string | null | undefined;
   categories?: GetCategoryResponse[] | null | undefined;
   affiliateLinks?: GetAffiliateLinkResponse[] | null | undefined;
+  bookImages?: GetBookImageResponse[] | null | undefined;
   favoriteCount?: number | undefined;
 }
 

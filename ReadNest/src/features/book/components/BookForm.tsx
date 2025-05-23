@@ -19,6 +19,7 @@ import { TinyMCETextEditor } from "@/components/rich-text-editor/TinyMCETextEdit
 import { toast } from "react-toastify";
 import { fetchCategoriesStart } from "@/features/category/categorySlice";
 import { LazyMultiSelectCombobox } from "@/components/ui/LazyMultiSelectCombobox";
+import MultiImageUploader from "@/components/ui/MultiImageUploader";
 
 interface BookFormProps {
   defaultValues?: Partial<CreateBookRequest>;
@@ -50,6 +51,7 @@ export default function BookForm({
       categoryIds: [],
       imageUrl: "",
       description: "",
+      bookImages: defaultValues?.bookImages ?? [],
       ...defaultValues,
     },
   });
@@ -64,6 +66,16 @@ export default function BookForm({
   const categories = categoryState.categories;
 
   const [isUploading, setIsUploading] = useState(false);
+
+  const bookImages = watch("bookImages") ?? [];
+
+  const handleDetailImagesChange = (images: string[]) => {
+    const mappedImages = images.map((url, index) => ({
+      imageUrl: url,
+      order: index,
+    }));
+    setValue("bookImages", mappedImages);
+  };
 
   const handleUploadImage = async (file: File) => {
     dispatch(clearErrors());
@@ -274,7 +286,7 @@ export default function BookForm({
       </div>
 
       <FormImageUpload
-        label="Ảnh bìa"
+        label="Ảnh bìa sản phẩm"
         onUpload={handleUploadImage}
         error={errors.imageUrl?.message || errorFields["imageUrl"]}
         imageUrl={watch("imageUrl") ?? ""}
@@ -285,7 +297,24 @@ export default function BookForm({
 
       <div>
         <label className="text-sm font-medium text-gray-700 mb-1 block">
-          Mô tả
+          Hình ảnh sản phẩm
+        </label>
+        <Controller
+          control={control}
+          name="bookImages"
+          render={() => (
+            <MultiImageUploader
+              images={bookImages.map((img) => img.imageUrl ?? "")}
+              setImages={handleDetailImagesChange}
+              disabled={false}
+            />
+          )}
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1 block">
+          Mô tả sản phẩm
         </label>
         <Controller
           control={control}
