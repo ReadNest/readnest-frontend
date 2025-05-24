@@ -16,4 +16,5 @@ export const ROUTE_PATHS = {
   MANAGE_AFFILIATE: "/affiliate-links/new",
   CATEGORY: "/categories",
   CREATE_CATEGORY: "/categories/create",
+  CREATE_POST: "/create-post",
 };

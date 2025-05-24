@@ -31,6 +31,18 @@ export type Book = {
   categories?: Category[] | null | undefined;
   affiliateLinks?: AffiliateLink[] | null | undefined;
   comments?: Comment[] | null | undefined;
+  bookImages?: BookImage[] | null | undefined;
+}
+
+export type BookImage = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  bookId?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+  book?: Book | undefined;
 }
 
 export type Category = {
@@ -60,6 +72,11 @@ export type CreateAffiliateLinkRequest = {
   affiliateLinkRequests?: AffiliateLinkRequest[] | null | undefined;
 }
 
+export type CreateBookImageRequest = {
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
 export type CreateBookRequest = {
   title?: string | null | undefined;
   author?: string | null | undefined;
@@ -69,6 +86,7 @@ export type CreateBookRequest = {
   isbn?: string | null | undefined;
   language?: string | null | undefined;
   categoryIds?: string[] | null | undefined;
+  bookImages?: CreateBookImageRequest[] | null | undefined;
 }
 
 export type CreateCategoryRequest = {
@@ -100,6 +118,12 @@ export type GetAffiliateLinkResponse = {
   affiliateLink?: string | null | undefined;
 }
 
+export type GetBookImageResponse = {
+  id?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
 export type GetBookResponse = {
   id?: string | undefined;
   title?: string | null | undefined;
@@ -111,6 +135,7 @@ export type GetBookResponse = {
   language?: string | null | undefined;
   categories?: GetCategoryResponse[] | null | undefined;
   affiliateLinks?: GetAffiliateLinkResponse[] | null | undefined;
+  bookImages?: GetBookImageResponse[] | null | undefined;
   favoriteCount?: number | undefined;
 }
 
@@ -182,6 +207,7 @@ export type GetUserProfileResponse = {
   userName?: string | null | undefined;
   email?: string | null | undefined;
   address?: string | null | undefined;
+  bio?: string | null | undefined;
   dateOfBirth?: string | undefined;
   avatarUrl?: string | null | undefined;
   roleId?: string | undefined;
@@ -305,6 +331,7 @@ export type UpdateUserRequest = {
   address?: string | null | undefined;
   dateOfBirth?: string | null | undefined;
   avatarUrl?: string | null | undefined;
+  bio?: string | null | undefined;
 }
 
 export type User = {
@@ -314,6 +341,7 @@ export type User = {
   isDeleted?: boolean | undefined;
   fullName?: string | null | undefined;
   userName?: string | null | undefined;
+  bio?: string | null | undefined;
   email?: string | null | undefined;
   hashPassword?: string | null | undefined;
   address?: string | null | undefined;

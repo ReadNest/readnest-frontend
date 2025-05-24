@@ -11,31 +11,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { CreateBookRequest } from "@/api/@types";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn, showToastMessage, uploadFileToCloudinary } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { showToastMessage, uploadFileToCloudinary } from "@/lib/utils";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { clearErrors } from "@/store/error/errorSlice";
 import { TinyMCETextEditor } from "@/components/rich-text-editor/TinyMCETextEditor";
 import { toast } from "react-toastify";
+import { fetchCategoriesStart } from "@/features/category/categorySlice";
+import { LazyMultiSelectCombobox } from "@/components/ui/LazyMultiSelectCombobox";
+import MultiImageUploader from "@/components/ui/MultiImageUploader";
 
 interface BookFormProps {
   defaultValues?: Partial<CreateBookRequest>;
   onSubmit: (data: CreateBookRequest) => void;
   isSubmitting?: boolean;
 }
-
-const categories = [
-  { id: "fiction", label: "Fiction" },
-  { id: "non-fiction", label: "Non-fiction" },
-  { id: "science", label: "Science" },
-  { id: "history", label: "History" },
-];
 
 export default function BookForm({
   defaultValues,
@@ -61,6 +51,7 @@ export default function BookForm({
       categoryIds: [],
       imageUrl: "",
       description: "",
+      bookImages: defaultValues?.bookImages ?? [],
       ...defaultValues,
     },
   });
@@ -70,8 +61,21 @@ export default function BookForm({
     (state: RootState) => state.error.detailErrors
   );
   const errorMessage = useSelector((state: RootState) => state.error);
+  const categoryState = useSelector((state: RootState) => state.categories);
+  const { pageIndex, pageSize, totalItems } = categoryState.pagingInfo;
+  const categories = categoryState.categories;
 
   const [isUploading, setIsUploading] = useState(false);
+
+  const bookImages = watch("bookImages") ?? [];
+
+  const handleDetailImagesChange = (images: string[]) => {
+    const mappedImages = images.map((url, index) => ({
+      imageUrl: url,
+      order: index,
+    }));
+    setValue("bookImages", mappedImages);
+  };
 
   const handleUploadImage = async (file: File) => {
     dispatch(clearErrors());
@@ -99,6 +103,15 @@ export default function BookForm({
       reset(defaultValues);
     }
   }, [defaultValues, reset]);
+
+  useEffect(() => {
+    dispatch(
+      fetchCategoriesStart({
+        pageIndex: 1,
+        pageSize: 10,
+      })
+    );
+  }, [dispatch]);
 
   const handleFormSubmit = (data: CreateBookRequest) => {
     onSubmit(data);
@@ -156,6 +169,15 @@ export default function BookForm({
     if (errorFields["imageUrl"]) {
       dispatch(clearErrors());
     }
+  };
+
+  const handleFetchMoreCategories = (nextPage: number) => {
+    dispatch(
+      fetchCategoriesStart({
+        pageIndex: nextPage,
+        pageSize: pageSize || 10,
+      })
+    );
   };
 
   return (
@@ -246,56 +268,25 @@ export default function BookForm({
             control={control}
             name="categoryIds"
             render={({ field }) => (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    className="w-full justify-between"
-                  >
-                    {field.value?.length
-                      ? categories
-                          .filter((cat) => field?.value?.includes(cat.id))
-                          .map((cat) => cat.label)
-                          .join(", ")
-                      : "Chọn thể loại"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-2">
-                  {categories.map((category) => (
-                    <div
-                      key={category.id}
-                      className={cn(
-                        "flex items-center space-x-2 p-2 rounded-md cursor-pointer hover:bg-gray-100",
-                        field.value?.includes(category.id) && "bg-gray-100"
-                      )}
-                      onClick={() => {
-                        const newValue = field.value?.includes(category.id)
-                          ? field.value.filter((id) => id !== category.id)
-                          : [...(field.value || []), category.id];
-                        field.onChange(newValue);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "h-4 w-4",
-                          field.value?.includes(category.id)
-                            ? "opacity-100"
-                            : "opacity-0"
-                        )}
-                      />
-                      <span>{category.label}</span>
-                    </div>
-                  ))}
-                </PopoverContent>
-              </Popover>
+              <LazyMultiSelectCombobox
+                values={field.value || []}
+                onChange={field.onChange}
+                data={categories}
+                displayField="name"
+                valueField="id"
+                fetchMoreData={handleFetchMoreCategories}
+                pageIndex={pageIndex ?? 1}
+                pageSize={pageSize ?? 10}
+                totalItems={totalItems ?? 10}
+                placeholder="Chọn thể loại"
+              />
             )}
           />
         </div>
       </div>
 
       <FormImageUpload
-        label="Ảnh bìa"
+        label="Ảnh bìa sản phẩm"
         onUpload={handleUploadImage}
         error={errors.imageUrl?.message || errorFields["imageUrl"]}
         imageUrl={watch("imageUrl") ?? ""}
@@ -306,7 +297,24 @@ export default function BookForm({
 
       <div>
         <label className="text-sm font-medium text-gray-700 mb-1 block">
-          Mô tả
+          Hình ảnh sản phẩm
+        </label>
+        <Controller
+          control={control}
+          name="bookImages"
+          render={() => (
+            <MultiImageUploader
+              images={bookImages.map((img) => img.imageUrl ?? "")}
+              setImages={handleDetailImagesChange}
+              disabled={false}
+            />
+          )}
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1 block">
+          Mô tả sản phẩm
         </label>
         <Controller
           control={control}

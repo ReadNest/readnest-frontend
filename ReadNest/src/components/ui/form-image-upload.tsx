@@ -73,7 +73,9 @@ export default function FormImageUpload({
 
   return (
     <div className={`space-y-1 relative ${error ? "mb-8" : ""}`}>
-      <Label className="block text-left p-1">{label}</Label>
+      <Label className="text-sm font-medium text-gray-700 mb-1 block">
+        {label}
+      </Label>
 
       <TooltipProvider>
         <Tooltip open={!!error}>
@@ -159,7 +161,6 @@ export default function FormImageUpload({
         disabled={disabled}
       />
 
-      {/* Image Preview Dialog */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="sm:max-w-4xl max-h-screen overflow-hidden p-1">
           {imageUrl && (

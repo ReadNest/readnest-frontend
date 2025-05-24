@@ -7,9 +7,7 @@
   "paths": {
     "/api/v1/books/{bookId}/affiliate-links": {
       "post": {
-        "tags": [
-          "AffiliateLink"
-        ],
+        "tags": ["AffiliateLink"],
         "parameters": [
           {
             "name": "bookId",
@@ -86,9 +84,7 @@
     },
     "/api/v1/auth/register": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -154,9 +150,7 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -222,9 +216,7 @@
     },
     "/api/v1/auth/refresh-token": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -290,9 +282,7 @@
     },
     "/api/v1/books": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -355,9 +345,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -423,9 +411,7 @@
     },
     "/api/v1/books/{bookId}": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "bookId",
@@ -483,9 +469,7 @@
     },
     "/api/v1/categories": {
       "get": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -548,9 +532,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -614,9 +596,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -702,9 +682,7 @@
     },
     "/api/v1/users": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -769,9 +747,7 @@
     },
     "/api/v1/users/{userId}": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "userId",
@@ -827,9 +803,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "userId",
@@ -887,9 +861,7 @@
     },
     "/api/v1/users/username/{userName}": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "userName",
@@ -946,9 +918,7 @@
     },
     "/api/v1/users/profile": {
       "put": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1138,6 +1108,49 @@
               "$ref": "#/components/schemas/Comment"
             },
             "nullable": true
+          },
+          "bookImages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookImage"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookImage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "bookId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "book": {
+            "$ref": "#/components/schemas/Book"
           }
         },
         "additionalProperties": false
@@ -1237,6 +1250,20 @@
         },
         "additionalProperties": false
       },
+      "CreateBookImageRequest": {
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateBookRequest": {
         "type": "object",
         "properties": {
@@ -1273,6 +1300,13 @@
             "items": {
               "type": "string",
               "format": "uuid"
+            },
+            "nullable": true
+          },
+          "bookImages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateBookImageRequest"
             },
             "nullable": true
           }
@@ -1368,6 +1402,24 @@
         },
         "additionalProperties": false
       },
+      "GetBookImageResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetBookResponse": {
         "type": "object",
         "properties": {
@@ -1414,6 +1466,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GetAffiliateLinkResponse"
+            },
+            "nullable": true
+          },
+          "bookImages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetBookImageResponse"
             },
             "nullable": true
           },
@@ -1656,6 +1715,10 @@
             "type": "string",
             "nullable": true
           },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
           "dateOfBirth": {
             "type": "string",
             "format": "date-time"
@@ -1881,7 +1944,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       },
       "RegisterRequest": {
         "type": "object",
@@ -2073,6 +2136,10 @@
           "avatarUrl": {
             "type": "string",
             "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2100,6 +2167,10 @@
             "nullable": true
           },
           "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
             "type": "string",
             "nullable": true
           },
@@ -2166,7 +2237,7 @@
   },
   "security": [
     {
-      "Bearer": [ ]
+      "Bearer": []
     }
   ]
 }

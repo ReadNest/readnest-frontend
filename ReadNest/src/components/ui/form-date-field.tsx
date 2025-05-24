@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Label } from "@/components/ui/label";
 import {
   Tooltip,
@@ -37,6 +36,7 @@ interface FormDateFieldProps {
   maxDate?: Date;
   disabled?: boolean;
   showQuickOptions?: boolean;
+  required?: boolean;
 }
 
 export default function FormDateField({
@@ -50,6 +50,7 @@ export default function FormDateField({
   maxDate,
   disabled = false,
   showQuickOptions = true,
+  required = false,
 }: FormDateFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(date || new Date());
@@ -120,9 +121,10 @@ export default function FormDateField({
   };
 
   return (
-    <div className={`space-y-1 relative ${error ? "mb-8" : ""}`}>
+    <div className="space-y-1 relative group">
       <Label className="block text-left p-1 text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
+        {required && <span className="text-red-500 ml-1">*</span>}{" "}
       </Label>
 
       <TooltipProvider>
@@ -133,8 +135,9 @@ export default function FormDateField({
                 <button
                   type="button"
                   disabled={disabled}
+                  aria-invalid={!!error}
                   className={cn(
-                    "flex w-full justify-between items-center rounded-md border border-input bg-background px-3 py-2 text-sm h-10",
+                    "flex w-full justify-start items-center rounded-md border bg-background px-3 py-2 text-sm h-10",
                     "hover:bg-accent hover:text-accent-foreground transition-colors",
                     "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
                     !date && "text-muted-foreground",
@@ -144,10 +147,10 @@ export default function FormDateField({
                       "opacity-50 cursor-not-allowed hover:bg-background"
                   )}
                 >
+                  <CalendarIcon className="h-4 w-4 opacity-50 flex-shrink-0 mr-2" />
                   <span className="truncate text-left">
                     {date ? formatDisplayDate(date) : placeholder}
                   </span>
-                  <CalendarIcon className="h-4 w-4 opacity-50 flex-shrink-0 ml-2" />
                 </button>
               </PopoverTrigger>
 
@@ -169,7 +172,7 @@ export default function FormDateField({
                     </div>
                   )}
 
-                  {showQuickOptions && <div className="border-t pt-3"></div>}
+                  {showQuickOptions && <div className="border-t pt-3" />}
 
                   {showYearMonthSelector && (
                     <div className="flex gap-2 mb-3">
@@ -249,12 +252,8 @@ export default function FormDateField({
                       day_hidden: "invisible",
                     }}
                     components={{
-                      IconLeft: ({ ...props }) => (
-                        <ChevronLeft className="h-4 w-4" />
-                      ),
-                      IconRight: ({ ...props }) => (
-                        <ChevronRight className="h-4 w-4" />
-                      ),
+                      IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+                      IconRight: () => <ChevronRight className="h-4 w-4" />,
                     }}
                   />
 
@@ -272,13 +271,16 @@ export default function FormDateField({
               </PopoverContent>
             </Popover>
           </TooltipTrigger>
-          <TooltipContent
-            side="bottom"
-            align="start"
-            className="bg-red-500 text-white border-red-500"
-          >
-            {error}
-          </TooltipContent>
+
+          {error && (
+            <TooltipContent
+              side="bottom"
+              align="start"
+              className="bg-red-500 text-white border border-red-500 rounded-md shadow-sm text-sm"
+            >
+              {error}
+            </TooltipContent>
+          )}
         </Tooltip>
       </TooltipProvider>
     </div>
