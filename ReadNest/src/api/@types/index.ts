@@ -207,6 +207,15 @@ export type GetCommentResponse = {
   creator?: GetUserResponse | undefined;
   creatorName?: string | null | undefined;
   numberOfLikes?: number | undefined;
+  createdAt?: string | undefined;
+}
+
+export type GetCommentResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCommentResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type GetCommentResponseListApiResponse = {

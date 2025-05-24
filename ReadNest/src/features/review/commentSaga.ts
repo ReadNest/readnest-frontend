@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addCommentRequested, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess } from "./commentSlice";
+import { addCommentRequested, addCommentStart, addCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess } from "./commentSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { CreateCommentRequest, GetCommentResponse } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
@@ -29,12 +29,13 @@ function* fetchComments(action: PayloadAction<string>) {
 
 function* addComment(action: PayloadAction<CreateCommentRequest>) {
     try {
-        yield put(fetchCommentsStart());
+        yield put(addCommentStart());
         const response: { data: GetCommentResponse; success: boolean } = yield call(() =>
             client.api.v1.Comment.$post({ body: action.payload })
         );
+        console.log("Add comment request response:", response);
         if (response.success) {
-            yield put(fetchCommentsSuccess([response.data]));
+            yield put(addCommentSuccess(response.data));
             toast.success("Bạn đã bình luận thành công!");
         }
     } catch (error: any) {
@@ -46,6 +47,7 @@ function* addComment(action: PayloadAction<CreateCommentRequest>) {
             })
         );
         yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(fetchUserProfileFailure());
     }
 }
 

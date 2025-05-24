@@ -6,7 +6,7 @@ export type Methods = DefineMethods<{
   post: {
     status: 200;
     /** OK */
-    resBody: Types.StringApiResponse;
+    resBody: Types.GetCommentResponseApiResponse;
     reqBody: Types.CreateCommentRequest;
   };
 }>;

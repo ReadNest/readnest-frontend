@@ -13,16 +13,24 @@ import BookImageGallery, {
   type BookImage,
 } from "@/components/ui/BookImageGallery";
 import ReviewInput from "@/features/review/components/ReviewInput";
+import { UserCommentCard } from "@/features/review/components/UserCommentCard";
+import { addCommentRequested, fetchCommentsRequested } from "@/features/review/commentSlice";
+import type { CreateCommentRequest } from "@/api/@types";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
   const { bookId } = useParams(); // URL dạng /books/:bookId
   const book = useSelector((state: RootState) => state.book.selectedBook);
   const loading = useSelector((state: RootState) => state.book.loading);
+  const auth = useSelector((state: RootState) => state.auth);
+  const comments = useSelector((state: RootState) => state.comment.comments);
+  const [showAllComments, setShowAllComments] = useState(false);
 
   useEffect(() => {
     if (bookId) {
       dispatch(getBookByIdStart(bookId));
+      // Fetch comments for the book when the component mounts
+      dispatch(fetchCommentsRequested(bookId));
     }
   }, [dispatch, bookId]);
 
@@ -30,7 +38,14 @@ export default function BookDetailPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   // Hàm để xử lý lưu đánh giá vào database ở đây
   const handleSubmitReview = (reviewContent: string) => {
-    console.log('Review submitted:', reviewContent);
+    // console.log('Review submitted:', reviewContent);
+    const commentData: CreateCommentRequest = {
+      bookId: book?.id ?? "",
+      userId: auth.user?.userId ?? "",
+      content: reviewContent,
+    }
+    // console.log('Comment data:', commentData);
+    dispatch(addCommentRequested(commentData));
     setIsModalOpen(false); // Ẩn form sau khi submit
     // Xử lý lưu đánh giá vào database ở đây
   };
@@ -189,64 +204,37 @@ export default function BookDetailPage() {
 
       {/* User Comments Section */}
       <div className="space-y-4">
-        {/* Comment 1 */}
-        <Card className="p-4">
-          <div className="flex gap-4">
-            <div className="relative flex flex-col items-center text-center">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>QL</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="flex-1">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-semibold text-lg">Quang Long</h3>
-                  <p className="text-gray-500 text-sm">3 giờ trước</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  className="text-gray-500 hover:bg-transparent"
-                >
-                  <HeartIcon className="h-4 w-4 mr-1" />
-                  <span>245</span>
-                </Button>
-              </div>
-              <p className="text-gray-700">
-                Cuốn sách thật sự rất hay. Nó làm tôi nhớ về cội nguồn cuộc
-                sống, nơi tôi chìm đắm trong sự thơ mộng của nghệ thuật.
-              </p>
-            </div>
+        {(showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
+          <UserCommentCard
+            key={comment.commentId}
+            avatarSrc={comment.creator?.avatarUrl || ""}
+            username={comment.creator?.fullName || "Người dùng ẩn danh"}
+            createdAt={comment.createdAt || new Date().toISOString()}
+            comment={comment.content ?? ""}
+            likeCount={comment.numberOfLikes || 0}
+            onLikeClick={() => console.log('Like clicked')}
+          />
+        ))}
+        {comments.length > 4 && !showAllComments && (
+          <div className="flex justify-end">
+            <button
+              className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+              onClick={() => setShowAllComments(true)}
+            >
+              Xem thêm bình luận
+            </button>
           </div>
-        </Card>
-
-        {/* Comment 2 */}
-        <Card className="p-4">
-          <div className="flex gap-4">
-            <div className="relative flex flex-col items-center text-center">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>DH</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="flex-1">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-semibold text-lg">Đạt Huỳnh</h3>
-                  <p className="text-gray-500 text-sm">2 giờ trước</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  className="text-gray-500 hover:bg-transparent"
-                >
-                  <HeartIcon className="h-4 w-4 mr-1" />
-                  <span>140</span>
-                </Button>
-              </div>
-              <p className="text-gray-700">Mọi người nên mua cuốn sách này.</p>
-            </div>
+        )}
+        {comments.length > 4 && showAllComments && (
+          <div className="flex justify-end">
+            <button
+              className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+              onClick={() => setShowAllComments(false)}
+            >
+              Ẩn bớt bình luận
+            </button>
           </div>
-        </Card>
+        )}
       </div>
 
       {/* Related Articles Section */}

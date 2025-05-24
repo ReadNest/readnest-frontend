@@ -730,17 +730,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/GetCommentResponseApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/GetCommentResponseApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StringApiResponse"
+                  "$ref": "#/components/schemas/GetCommentResponseApiResponse"
                 }
               }
             }
@@ -1871,6 +1871,37 @@
           "numberOfLikes": {
             "type": "integer",
             "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCommentResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetCommentResponse"
+          },
+          "listDetailError": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailError"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -13,7 +13,7 @@ const commentSlice = createSlice({
     name: "comment",
     initialState,
     reducers: {
-        fetchCommentsRequested: (_state, _action: PayloadAction<string>) => {},
+        fetchCommentsRequested: (_state, _action: PayloadAction<string>) => { },
         fetchCommentsStart: (state) => {
             state.isLoading = true;
         },
@@ -25,13 +25,13 @@ const commentSlice = createSlice({
             state.isLoading = false;
         },
 
-        addCommentRequested: (_state, _action: PayloadAction<CreateCommentRequest>) => {},
+        addCommentRequested: (_state, _action: PayloadAction<CreateCommentRequest>) => { },
         addCommentStart: (state) => {
             state.isLoading = true;
         },
         addCommentSuccess: (state, action) => {
             state.isLoading = false;
-            state.comments.push(action.payload.data);
+            state.comments.unshift(action.payload); // Thêm vào đầu mảng
         },
         addCommentFailure: (state) => {
             state.isLoading = false;
