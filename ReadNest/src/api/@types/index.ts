@@ -301,6 +301,24 @@ export type StringApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type ToggleFavoriteBookRequest = {
+  userId?: string | undefined;
+  bookId?: string | undefined;
+}
+
+export type ToggleFavoriteBookResponse = {
+  bookId?: string | undefined;
+  isFavorited?: boolean | undefined;
+}
+
+export type ToggleFavoriteBookResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: ToggleFavoriteBookResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type TokenRequest = {
   userId?: string | undefined;
   refreshToken?: string | null | undefined;

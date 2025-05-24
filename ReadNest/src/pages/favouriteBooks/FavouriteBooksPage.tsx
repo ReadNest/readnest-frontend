@@ -1,100 +1,186 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BookCard } from "@/features/favouriteBooks/components/BookCard";
-// import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ChevronDownIcon } from "lucide-react";
-
-const books = [
-  {
-    id: 1,
-    title: "Nhà Giả Kim",
-    author: "Paulo Coelho",
-    rating: 4,
-    coverImage: "https://m.media-amazon.com/images/I/71aFt4+OTOL._AC_UF1000,1000_QL80_.jpg",
-  },
-  {
-    id: 2,
-    title: "Tôi Thấy Hoa Vàng Trên Cỏ Xanh",
-    author: "Nguyễn Nhật Ánh",
-    rating: 5,
-    coverImage: "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
-  },
-  // Thêm nhiều sách khác ở đây...
-];
-
-// Component Dropdown đơn giản chỉ để hiển thị
-const DropdownUI = ({ label }: { label: string }) => {
-  return (
-    <div className="relative inline-block">
-      <Button variant="outline" className="flex items-center gap-1">
-        {label} <ChevronDownIcon className="h-4 w-4" />
-      </Button>
-      <div className="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
-        <div className="py-1">
-          <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 1</div>
-          <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 2</div>
-          <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item 3</div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Component Pagination đơn giản chỉ để hiển thị
-const PaginationUI = () => {
-  return (
-    <div className="flex items-center justify-center space-x-2 mt-8">
-      <Button variant="outline" className="px-3 py-1">
-        Trước
-      </Button>
-      <Button variant="outline" disabled className="px-3 py-1">
-        1
-      </Button>
-      <Button variant="outline" className="px-3 py-1">
-        Sau
-      </Button>
-    </div>
-  );
-};
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import type { RootState } from "@/store";
+import {
+  getFavoritesStart,
+  setPagingInfo,
+} from "@/features/favouriteBooks/favoriteSlice";
+import { useCallback, useEffect } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function FavouriteBooksPage() {
+  const dispatch = useDispatch();
+  const { favorites, pagingInfo } = useSelector((state: RootState) => state.favorites);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+
+  const { pageIndex = 1, pageSize = 4, totalItems = 0 } = pagingInfo;
+
+  // Fetch favorites when component loads or when paging changes
+  useEffect(() => {
+    if (user?.userId) {
+      dispatch(
+        getFavoritesStart({
+          userId: user.userId,
+          paging: { pageIndex, pageSize },
+        })
+      );
+    }
+  }, [dispatch, user?.userId, pageIndex, pageSize]);
+
+  // Handle page change
+  const handlePageChange = useCallback(
+    (newPageIndex: number) => {
+      dispatch(setPagingInfo({ ...pagingInfo, pageIndex: newPageIndex }));
+    },
+    [dispatch, pagingInfo]
+  );
+
+  // Handle page size change
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => {
+      dispatch(
+        setPagingInfo({
+          ...pagingInfo,
+          pageSize: newPageSize,
+          pageIndex: 1,
+        })
+      );
+    },
+    [dispatch, pagingInfo]
+  );
+
+  const totalPages = Math.ceil(totalItems / (pageSize || 1));
+
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      {/* Header Section */}
       <Card className="p-6 mb-6">
         <CardHeader>
           <h1 className="text-3xl font-bold mb-2">Sách yêu thích của tôi</h1>
-          <p className="text-gray-600">Tổng cộng: {books.length} cuốn sách</p>
+          <p className="text-gray-600">Tổng cộng: {totalItems} cuốn sách</p>
         </CardHeader>
 
-        {/* Filter and Search Section - Chỉ UI không có chức năng */}
         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
-          <div className="relative w-full sm:w-64">
-          </div>
-          <div className="flex gap-2">
-            <DropdownUI label="Sắp xếp" />
-            <DropdownUI label="Lọc" />
-          </div>
+          <div className="relative w-full sm:w-64"></div>
+            <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+              <div className="relative w-full sm:w-64"></div>
+
+              {/* Thay vì Dropdown "Sắp xếp" và "Lọc", ta dùng page size selector */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground mr-2">Sách mỗi trang</span>
+                <Select
+                  value={pageSize.toString()}
+                  onValueChange={(value) => handlePageSizeChange(Number(value))}
+                >
+                  <SelectTrigger className="w-[100px]">
+                    <SelectValue placeholder="Chọn số" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[4, 8, 10, 20].map((opt) => (
+                      <SelectItem key={opt} value={opt.toString()}>
+                        {opt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
         </div>
 
-        {/* Books List */}
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {books.map((book) => (
+            {favorites.map((book) => (
               <BookCard
                 key={book.id}
-                title={book.title}
-                author={book.author}
-                rating={book.rating}
-                image={book.coverImage}
+                title={book.title ?? "Không có tiêu đề"}
+                author={book.author ?? "Không rõ tác giả"}
+                rating={book.averageRating ?? 0}
+                image={book.imageUrl || ""}
+                onClick={() => navigate(`/book-detail/${book.id}`)}
               />
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Pagination - Chỉ UI không có chức năng */}
-      <PaginationUI />
+      {/* Pagination controls */}
+      <Pagination className="mt-8">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                handlePageChange(pageIndex - 1);
+              }}
+              className={pageIndex <= 1 ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+
+          {(() => {
+            const pages: (number | "...")[] = [];
+            const maxVisible = 5;
+
+            if (totalPages <= maxVisible) {
+              for (let i = 1; i <= totalPages; i++) pages.push(i);
+            } else {
+              pages.push(1);
+              let start = Math.max(2, pageIndex - 1);
+              let end = Math.min(totalPages - 1, pageIndex + 1);
+
+              if (pageIndex <= 3) end = 4;
+              else if (pageIndex >= totalPages - 2) start = totalPages - 3;
+
+              if (start > 2) pages.push("...");
+              for (let i = start; i <= end; i++) pages.push(i);
+              if (end < totalPages - 1) pages.push("...");
+              pages.push(totalPages);
+            }
+
+            return pages.map((p, idx) =>
+              p === "..." ? (
+                <PaginationItem key={`ellipsis-${idx}`}>
+                  <span className="px-2 text-muted-foreground">...</span>
+                </PaginationItem>
+              ) : (
+                <PaginationItem key={p}>
+                  <PaginationLink
+                    href="#"
+                    isActive={p === pageIndex}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(p);
+                    }}
+                  >
+                    {p}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            );
+          })()}
+
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                handlePageChange(pageIndex + 1);
+              }}
+              className={pageIndex >= totalPages ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

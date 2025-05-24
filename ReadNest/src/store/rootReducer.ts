@@ -5,6 +5,7 @@ import profileReducer from "@/features/profile/profileSlice";
 import bookReducer from "@/features/book/bookSlice";
 import affiliateReducer from "@/features/affiliate/affiliateSlice";
 import categoryReducer from "@/features/category/categorySlice";
+import favoriteReducer from "@/features/favouriteBooks/favoriteSlice";
 
 const rootReducer = combineReducers({
   error: errorReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   book: bookReducer,
   affiliate: affiliateReducer,
   categories: categoryReducer,
+  favorites: favoriteReducer,
 });
 
 export default rootReducer;
