@@ -3,8 +3,8 @@ import { Card } from "@/components/ui/card";
 import { BookRating } from "@/features/favouriteBooks/components/BookRating";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "@radix-ui/react-separator";
-import { HeartIcon, StarIcon } from "lucide-react";
-import { useEffect } from "react";
+import { HeartIcon, PenToolIcon, StarIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { RootState } from "@/store";
@@ -12,6 +12,7 @@ import { getBookByIdStart } from "@/features/book/bookSlice";
 import BookImageGallery, {
   type BookImage,
 } from "@/components/ui/BookImageGallery";
+import ReviewInput from "@/features/review/components/ReviewInput";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
@@ -25,6 +26,15 @@ export default function BookDetailPage() {
     }
   }, [dispatch, bookId]);
 
+  // State quản lý việc hiển thị ReviewInput
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  // Hàm để xử lý lưu đánh giá vào database ở đây
+  const handleSubmitReview = (reviewContent: string) => {
+    console.log('Review submitted:', reviewContent);
+    setIsModalOpen(false); // Ẩn form sau khi submit
+    // Xử lý lưu đánh giá vào database ở đây
+  };
+
   if (loading || !book) {
     return <div className="text-center py-10">Đang tải dữ liệu sách...</div>;
   }
@@ -37,11 +47,11 @@ export default function BookDetailPage() {
             bookImages={
               book.bookImages?.map(
                 (x) =>
-                  ({
-                    id: x.id ?? "",
-                    imageUrl: x.imageUrl ?? "",
-                    order: x.order,
-                  } as BookImage)
+                ({
+                  id: x.id ?? "",
+                  imageUrl: x.imageUrl ?? "",
+                  order: x.order,
+                } as BookImage)
               ) ?? []
             }
           />
@@ -103,31 +113,31 @@ export default function BookDetailPage() {
       <Card className="p-4">
         {/* Reviews Section */}
         <div className="mb-12">
-          {/* Header with title and write review button */}
-
-          <h2 className="text-2xl font-bold">Đánh giá sản phẩm</h2>
+          {/* Header with title */}
+          <h2 className="text-4xl font-bold mb-6 text-left">Đánh giá sản phẩm</h2>
 
           {/* Rating Summary */}
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="w-full md:w-1/3">
-              <div className="text-4xl font-bold mb-2">
-                4.2<span className="text-2xl text-gray-500">/5</span>
-              </div>
-              <div className="flex mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    className={`h-5 w-5 ${
-                      i < 4
-                        ? "text-yellow-500 fill-yellow-500"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            {/* Group: 4.2/5 + Star */}
+            <div className="w-full md:w-1/4 flex flex-col items-center md:items-start">
+              <div className="flex flex-col items-center w-full">
+                <div className="text-3xl font-bold text-center mb-1">
+                  4.2<span className="text-lg text-gray-500">/5</span>
+                </div>
+                <div className="flex justify-center mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <StarIcon
+                      key={i}
+                      className={`h-5 w-5 ${i < 4 ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="w-full md:w-3/3">
+            {/* Thanh đếm số lượng đánh giá */}
+            <div className="w-full md:w-1/2"
+              style={{ marginLeft: "-100px" }}>
               <div className="space-y-3">
                 {[5, 4, 3, 2, 1].map((star) => (
                   <div key={star} className="flex items-center">
@@ -140,10 +150,10 @@ export default function BookDetailPage() {
                             star === 5
                               ? "40%"
                               : star === 4
-                              ? "40%"
-                              : star === 3
-                              ? "20%"
-                              : "0%",
+                                ? "40%"
+                                : star === 3
+                                  ? "20%"
+                                  : "0%",
                         }}
                       ></div>
                     </div>
@@ -151,17 +161,23 @@ export default function BookDetailPage() {
                       {star === 5
                         ? "40%"
                         : star === 4
-                        ? "40%"
-                        : star === 3
-                        ? "20%"
-                        : "0%"}
+                          ? "40%"
+                          : star === 3
+                            ? "20%"
+                            : "0%"}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="flex justify-between items-center mb-6">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
+
+            {/* Nút viết đánh giá */}
+            <div className="w-full md:w-1/4 flex md:justify-end items-start mt-6 md:mt-0">
+              <button
+                className="flex items-center bg-white border border-gray-400 text-gray-800 font-medium py-2 px-4 rounded transition-colors duration-150 hover:bg-violet-600 hover:text-white hover:border-violet-600"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <PenToolIcon className="h-4 w-4 mr-2" />
                 Viết đánh giá
               </button>
             </div>
@@ -305,6 +321,13 @@ export default function BookDetailPage() {
           </div>
         </div>
       </div>
+      {/* Review Input Modal */}
+      <ReviewInput
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmitReview}
+        book={book}
+      />
     </div>
   );
 }
