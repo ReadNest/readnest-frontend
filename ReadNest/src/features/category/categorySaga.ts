@@ -13,6 +13,7 @@ import {
   setLoading,
   setPagingInfo,
   setSuccess,
+  resetState,
 } from "./categorySlice";
 import { call, put, takeLatest } from "redux-saga/effects";
 import client from "@/lib/api/axiosClient";
@@ -104,6 +105,7 @@ function* handleUpdateCategory(action: PayloadAction<UpdateCategoryRequest>) {
 
     if (res.success && res.data) {
       yield put(setSuccess(true));
+      resetState;
       // Optionally update category in local state here
     } else {
       yield put(setSuccess(false));
