@@ -1,8 +1,7 @@
 import readnestLogo from "@/assets/readnest_logo.svg";
-import { Bell, Search } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
-import { Input } from "../ui/input";
 import { useState } from "react";
 import type { VariantProps } from "class-variance-authority";
 import { NavLink } from "react-router-dom";
@@ -11,6 +10,7 @@ import { logout } from "@/features/auth/authSlice";
 import UserDropDown from "../ui/user-dropdown";
 import { clearErrors } from "@/store/error/errorSlice";
 import { toast } from "react-toastify";
+import SearchContainer from "@/features/search/components/SearchContainer";
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -162,15 +162,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
       )}
 
       <div className="flex items-center gap-4">
-        <div className="relative h-10">
-          <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <Input
-            placeholder="Tìm kiếm sách..."
-            className="pl-8 pr-2 py-2 w-40 md:w-60 h-full"
-          />
-        </div>
+        <SearchContainer />
 
         {!isAuthenticated ? (
           <>

@@ -4,6 +4,7 @@ import bookSaga from "@/features/book/bookSaga";
 import categorySaga from "@/features/category/categorySaga";
 import favoriteSaga from "@/features/favouriteBooks/favoriteSaga";
 import profileSaga from "@/features/profile/profileSaga";
+import { bookSearchSaga } from "@/features/search/bookSearchSaga";
 import commentSaga from "@/features/review/commentSaga";
 import { all, call } from "redux-saga/effects";
 
@@ -15,6 +16,7 @@ export default function* rootSaga() {
     call(affiliateSaga),
     call(categorySaga),
     call(favoriteSaga),
-    call(commentSaga),
+    call(bookSearchSaga),
+        call(commentSaga),
   ]);
 }
