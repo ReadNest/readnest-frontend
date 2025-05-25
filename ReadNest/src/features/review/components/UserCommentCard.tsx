@@ -10,6 +10,8 @@ interface UserCommentCardProps {
     createdAt: string
     comment: string
     likeCount: number
+    userLikes: string[]
+    curUserId?: string
     onLikeClick?: () => void
 }
 
@@ -19,6 +21,8 @@ export function UserCommentCard({
     createdAt,
     comment,
     likeCount,
+    userLikes,
+    curUserId,
     onLikeClick,
 }: UserCommentCardProps) {
     // Get initials for fallback avatar
@@ -50,7 +54,9 @@ export function UserCommentCard({
                             className="text-gray-500 hover:bg-transparent"
                             onClick={onLikeClick}
                         >
-                            <HeartIcon className="h-4 w-4 mr-1" />
+                            <HeartIcon
+                                className={`h-4 w-4 mr-1 ${userLikes.includes(curUserId ?? "") ? "text-red-500 fill-red-500" : ""}`}
+                            />
                             <span>{likeCount}</span>
                         </Button>
                     </div>

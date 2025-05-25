@@ -14,8 +14,9 @@ import BookImageGallery, {
 } from "@/components/ui/BookImageGallery";
 import ReviewInput from "@/features/review/components/ReviewInput";
 import { UserCommentCard } from "@/features/review/components/UserCommentCard";
-import { addCommentRequested, fetchCommentsRequested } from "@/features/review/commentSlice";
-import type { CreateCommentRequest } from "@/api/@types";
+import { addCommentRequested, fetchCommentsRequested, likeCommentRequested } from "@/features/review/commentSlice";
+import type { CreateCommentLikeRequest, CreateCommentRequest } from "@/api/@types";
+import { toast } from "react-toastify";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
@@ -48,6 +49,18 @@ export default function BookDetailPage() {
     dispatch(addCommentRequested(commentData));
     setIsModalOpen(false); // Ẩn form sau khi submit
     // Xử lý lưu đánh giá vào database ở đây
+  };
+  // Hàm để xử lý sự kiện click vào nút "Thích" trong UserCommentCard
+  const handleOnLikeClick = (commentId: string) => {
+    if (commentId === "") {
+      toast.info("Đã xãy ra lỗi, vui lòng thử lại sau");
+      return;
+    }
+    const likeData: CreateCommentLikeRequest = {
+      commentId: commentId,
+      userId: auth.user?.userId ?? "",
+    };
+    dispatch(likeCommentRequested(likeData));
   };
 
   if (loading || !book) {
@@ -212,7 +225,9 @@ export default function BookDetailPage() {
             createdAt={comment.createdAt || new Date().toISOString()}
             comment={comment.content ?? ""}
             likeCount={comment.numberOfLikes || 0}
-            onLikeClick={() => console.log('Like clicked')}
+            userLikes={comment.userLikes || []}
+            curUserId={auth.user?.userId}
+            onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
           />
         ))}
         {comments.length > 4 && !showAllComments && (

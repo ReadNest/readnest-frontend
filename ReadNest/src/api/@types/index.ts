@@ -95,6 +95,11 @@ export type CreateCategoryRequest = {
   description?: string | null | undefined;
 }
 
+export type CreateCommentLikeRequest = {
+  userId?: string | undefined;
+  commentId?: string | undefined;
+}
+
 export type CreateCommentRequest = {
   content?: string | null | undefined;
   bookId?: string | undefined;
@@ -206,6 +211,7 @@ export type GetCommentResponse = {
   book?: Book | undefined;
   creator?: GetUserResponse | undefined;
   creatorName?: string | null | undefined;
+  userLikes?: string[] | null | undefined;
   numberOfLikes?: number | undefined;
   createdAt?: string | undefined;
 }
