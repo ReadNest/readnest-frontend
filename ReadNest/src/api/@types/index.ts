@@ -63,6 +63,7 @@ export type Comment = {
   content?: string | null | undefined;
   bookId?: string | undefined;
   userId?: string | undefined;
+  status?: string | null | undefined;
   book?: Book | undefined;
   creator?: User | undefined;
   likes?: User[] | null | undefined;
@@ -92,6 +93,17 @@ export type CreateBookRequest = {
 export type CreateCategoryRequest = {
   name?: string | null | undefined;
   description?: string | null | undefined;
+}
+
+export type CreateCommentLikeRequest = {
+  userId?: string | undefined;
+  commentId?: string | undefined;
+}
+
+export type CreateCommentRequest = {
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
 }
 
 export type DetailError = {
@@ -197,8 +209,27 @@ export type GetCommentResponse = {
   bookId?: string | undefined;
   userId?: string | undefined;
   book?: Book | undefined;
+  creator?: GetUserResponse | undefined;
   creatorName?: string | null | undefined;
+  userLikes?: string[] | null | undefined;
   numberOfLikes?: number | undefined;
+  createdAt?: string | undefined;
+}
+
+export type GetCommentResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCommentResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetCommentResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCommentResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type GetUserProfileResponse = {
