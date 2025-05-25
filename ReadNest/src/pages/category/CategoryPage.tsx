@@ -4,7 +4,6 @@ import {
   fetchCategoriesStart,
   updateCategoryStart,
   setPagingInfo,
-  resetState,
 } from "@/features/category/categorySlice";
 import { useNavigate } from "react-router-dom";
 import type { RootState } from "@/store";
@@ -12,7 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { DataTableWithPagination } from "@/components/ui/DataTableWithPagination";
 
 type Category = {
@@ -25,7 +30,6 @@ export default function CategoryPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const categoryState = useSelector((state: RootState) => state.categories);
-
   const { pageIndex, pageSize } = categoryState.pagingInfo;
 
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -33,22 +37,23 @@ export default function CategoryPage() {
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
 
-  useEffect(():any => {
-    dispatch(fetchCategoriesStart({ pageIndex: pageIndex ?? 1, pageSize: pageSize ?? 10 }));
-    return () => dispatch(resetState());
-  }, [dispatch, pageIndex, pageSize]);
-
   const handlePageChange = useCallback(
-    (newPageIndex: number) => {
-      dispatch(fetchCategoriesStart({ pageIndex: newPageIndex, pageSize: pageSize ?? 10 }));
+    (pageIndex: number) => {
+      dispatch(
+        fetchCategoriesStart({
+          pageIndex,
+          pageSize: pageSize ?? 10,
+        })
+      );
     },
     [dispatch, pageSize]
   );
 
-  const handlePageSizeChange = (newPageSize: number) => {
-    dispatch(setPagingInfo({ ...categoryState.pagingInfo, pageSize: newPageSize }));
-    dispatch(fetchCategoriesStart({ pageIndex: 1, pageSize: newPageSize }));
-  };
+  useEffect(() => {
+    dispatch(
+      fetchCategoriesStart({ pageIndex: pageIndex ?? 1, pageSize: pageSize ?? 10 })
+    );
+  }, [dispatch, pageIndex, pageSize]);
 
   const openEditModal = (category: any) => {
     setSelectedCategory(category);
@@ -59,13 +64,13 @@ export default function CategoryPage() {
 
   const handleUpdate = () => {
     if (!selectedCategory) return;
-
-    dispatch(updateCategoryStart({
-      id: selectedCategory.id,
-      name: editName.trim(),
-      description: editDescription.trim(),
-    }));
-
+    dispatch(
+      updateCategoryStart({
+        id: selectedCategory.id,
+        name: editName.trim(),
+        description: editDescription.trim(),
+      })
+    );
     setEditModalOpen(false);
   };
 
@@ -74,7 +79,6 @@ export default function CategoryPage() {
       <CardContent className="p-5">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Categories</h1>
-          {/* <Button onClick={() => navigate("/categories/create")}>+ Create New</Button> */}
         </div>
 
         <DataTableWithPagination
@@ -84,13 +88,26 @@ export default function CategoryPage() {
             { key: "description", label: "Description" },
           ]}
           onEdit={openEditModal}
-          onDelete={(item) => alert("Delete logic")}
+          onDelete={(item) => console.log("Delete", item)}
           onAdd={() => navigate("/categories/create")}
           enableEdit={true}
           enableDelete={true}
           enableAdd={true}
           pagingInfo={categoryState.pagingInfo}
-          onPageSizeChange={handlePageSizeChange}
+          onPageSizeChange={(newPageSize) => {
+            dispatch(
+              setPagingInfo({
+                ...categoryState.pagingInfo,
+                pageSize: newPageSize ?? 10,
+              })
+            );
+            dispatch(
+              fetchCategoriesStart({
+                pageIndex: pageIndex ?? 1,
+                pageSize: newPageSize ?? 10,
+              })
+            );
+          }}
           onPageChange={handlePageChange}
         />
       </CardContent>

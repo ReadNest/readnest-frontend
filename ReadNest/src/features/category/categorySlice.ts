@@ -30,6 +30,13 @@ const categorySlice = createSlice({
     createCategoryStart: (_state, _action: PayloadAction<CreateCategoryRequest>) => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateCategoryStart: (_state, _action: PayloadAction<UpdateCategoryRequest>) => {},
+    updateCategoryInList: (state, action: PayloadAction<GetCategoryResponse>) => {
+      const updated = action.payload;
+      const index = state.categories.findIndex((cat) => cat.id === updated.id);
+      if (index !== -1) {
+        state.categories[index] = updated;
+      }
+    },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchCategoriesStart: (_state, _action: PayloadAction<PagingRequest>) => {},
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -63,6 +70,7 @@ const categorySlice = createSlice({
 export const {
   createCategoryStart,
   updateCategoryStart,
+  updateCategoryInList,
   fetchCategoriesStart,
   setLoading,
   setSuccess,
