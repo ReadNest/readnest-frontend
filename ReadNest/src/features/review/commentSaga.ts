@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addCommentRequested, addCommentStart, addCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, unlikeCommentSuccess } from "./commentSlice";
+import { addCommentRequested, addCommentStart, addCommentSuccess, deleteCommentRequested, deleteCommentStart, deleteCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, unlikeCommentSuccess, updateCommentRequested, updateCommentStart, updateCommentSuccess } from "./commentSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse } from "@/api/@types";
+import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse, UpdateCommentRequest } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
 import { setDetailErrors, setMessage } from "@/store/error/errorSlice";
 import { fetchUserProfileFailure } from "../profile/profileSlice";
@@ -70,8 +70,7 @@ function* likeComment(action: PayloadAction<CreateCommentLikeRequest>) {
             }
         }
 
-    }
-    catch (error: any) {
+    } catch (error: any) {
         const errBody = error?.response.data || {};
         yield put(
             setMessage({
@@ -84,9 +83,58 @@ function* likeComment(action: PayloadAction<CreateCommentLikeRequest>) {
     }
 }
 
+function* updateComment(action: PayloadAction<UpdateCommentRequest>) {
+    try {
+        yield put(updateCommentStart());
+        const response: { data: string; success: boolean } = yield call(() =>
+            client.api.v1.Comment.$put({ body: action.payload })
+        );
+        console.log("Update comment request response:", response);
+        if (response.success) {
+            yield put(updateCommentSuccess({ commentId: action.payload.commentId, content: action.payload.content }));
+            toast.success("Bạn đã cập nhật bình luận thành công!");
+        }
+    } catch (error: any) {
+        const errBody = error?.response.data || {};
+        yield put(
+            setMessage({
+                message: errBody.message ?? "",
+                messageId: errBody.messageId ?? "",
+            })
+        );
+        yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(fetchUserProfileFailure());
+    }
+}
+
+function* deleteComment(action: PayloadAction<string>) {
+    try {
+        yield put(deleteCommentStart());
+        const response: { success: boolean } = yield call(() =>
+            client.api.v1.Comment._commentId(action.payload).$delete()
+        );
+        // console.log("Delete comment request response:", response);
+        if (response.success) {
+            yield put(deleteCommentSuccess({ commentId: action.payload }));
+            toast.success("Bạn đã xóa bình luận thành công!");
+        }
+    } catch (error: any) {
+        const errBody = error?.response.data || {};
+        yield put(
+            setMessage({
+                message: errBody.message ?? "",
+                messageId: errBody.messageId ?? "",
+            })
+        );
+        yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(fetchUserProfileFailure());
+    }
+}
 
 export default function* commentSaga() {
     yield takeLatest(fetchCommentsRequested.type, fetchComments);
     yield takeLatest(addCommentRequested.type, addComment);
     yield takeLatest(likeCommentRequested.type, likeComment);
+    yield takeLatest(updateCommentRequested.type, updateComment);
+    yield takeLatest(deleteCommentRequested.type, deleteComment);
 }

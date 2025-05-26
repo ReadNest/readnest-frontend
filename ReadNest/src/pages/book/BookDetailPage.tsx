@@ -221,13 +221,14 @@ export default function BookDetailPage() {
           <UserCommentCard
             key={comment.commentId}
             avatarSrc={comment.creator?.avatarUrl || ""}
-            username={comment.creator?.fullName || "Người dùng ẩn danh"}
+            fullName={comment.creator?.fullName || "Người dùng ẩn danh"}
             createdAt={comment.createdAt || new Date().toISOString()}
             comment={comment.content ?? ""}
             likeCount={comment.numberOfLikes || 0}
             userLikes={comment.userLikes || []}
-            curUserId={auth.user?.userId}
+            userId={comment.creator?.userId || ""}
             onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
+            commentId={comment.commentId || ""}
           />
         ))}
         {comments.length > 4 && !showAllComments && (
@@ -330,6 +331,7 @@ export default function BookDetailPage() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitReview}
         book={book}
+        isUpdate={false} // Chỉ sử dụng khi cần cập nhật đánh giá
       />
     </div>
   );

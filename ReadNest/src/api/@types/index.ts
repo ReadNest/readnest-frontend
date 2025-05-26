@@ -21,10 +21,13 @@ export type Book = {
   updatedAt?: string | undefined;
   isDeleted?: boolean | undefined;
   title?: string | null | undefined;
+  titleNormalized?: string | null | undefined;
   author?: string | null | undefined;
+  authorNormalized?: string | null | undefined;
   imageUrl?: string | null | undefined;
   avarageRating?: number | undefined;
   description?: string | null | undefined;
+  descriptionNormalized?: string | null | undefined;
   isbn?: string | null | undefined;
   language?: string | null | undefined;
   favoriteBooks?: FavoriteBook[] | null | undefined;
@@ -171,6 +174,30 @@ export type GetBookResponsePagingResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetBookResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetBookSearchResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  averageRating?: number | undefined;
+  shortDescription?: string | null | undefined;
+}
+
+export type GetBookSearchResponsePagingResponse = {
+  items?: GetBookSearchResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetBookSearchResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookSearchResponsePagingResponse | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -372,6 +399,11 @@ export type UpdateCategoryRequest = {
   id?: string | undefined;
   name?: string | null | undefined;
   description?: string | null | undefined;
+}
+
+export type UpdateCommentRequest = {
+  commentId?: string | undefined;
+  content?: string | null | undefined;
 }
 
 export type UpdateUserRequest = {

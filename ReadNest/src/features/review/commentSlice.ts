@@ -1,4 +1,4 @@
-import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse } from "@/api/@types";
+import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse, UpdateCommentRequest } from "@/api/@types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export const initialState: {
@@ -66,6 +66,37 @@ const commentSlice = createSlice({
             state.isLoading = false;
         },
 
+        // Update comment
+        updateCommentRequested: (_state, _action: PayloadAction<UpdateCommentRequest>) => { },
+        updateCommentStart: (state) => {
+            state.isLoading = true;
+        },
+        updateCommentSuccess: (state, action) => {
+            state.isLoading = false;
+            console.log("action.payload:", action.payload);
+            const index = state.comments.findIndex(c => c.commentId === action.payload.commentId);
+            console.log("index:", index);
+            if (index !== -1) {
+                state.comments[index].content = action.payload.content; // Cập nhật nội dung bình luận
+            }
+        },
+        updateCommentFailure: (state) => {
+            state.isLoading = false;
+        },
+
+        // Delete comment
+        deleteCommentRequested: (_state, _action: PayloadAction<string>) => { },
+        deleteCommentStart: (state) => {
+            state.isLoading = true;
+        },
+        deleteCommentSuccess: (state, action) => {
+            state.isLoading = false;
+            state.comments = state.comments.filter(c => c.commentId !== action.payload.commentId); // Xóa bình luận theo commentId
+        },
+        deleteCommentFailure: (state) => {
+            state.isLoading = false;
+        },
+
     },
 });
 
@@ -86,5 +117,16 @@ export const {
     likeCommentSuccess,
     unlikeCommentSuccess,
     likeCommentFailure,
+    // Actions for updating a comment
+    updateCommentRequested,
+    updateCommentStart,
+    updateCommentSuccess,
+    updateCommentFailure,
+    // Actions for deleting a comment
+    deleteCommentRequested,
+    deleteCommentStart,
+    deleteCommentSuccess,
+    deleteCommentFailure,
+
 } = commentSlice.actions;
 export default commentSlice.reducer;
