@@ -17,6 +17,7 @@ import { UserCommentCard } from "@/features/review/components/UserCommentCard";
 import { addCommentRequested, fetchCommentsRequested, likeCommentRequested } from "@/features/review/commentSlice";
 import type { CreateCommentLikeRequest, CreateCommentRequest } from "@/api/@types";
 import { toast } from "react-toastify";
+import { getFavoritesStart, toggleFavoriteStart } from "@/features/favouriteBooks/favoriteSlice";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
@@ -25,6 +26,8 @@ export default function BookDetailPage() {
   const loading = useSelector((state: RootState) => state.book.loading);
   const auth = useSelector((state: RootState) => state.auth);
   const comments = useSelector((state: RootState) => state.comment.comments);
+  const favorites = useSelector((state: RootState) => state.favorites.favorites);
+  const isFavorite = book ? favorites.some(fav => fav.id === book.id) : false;
   const [showAllComments, setShowAllComments] = useState(false);
 
   useEffect(() => {
@@ -32,6 +35,7 @@ export default function BookDetailPage() {
       dispatch(getBookByIdStart(bookId));
       // Fetch comments for the book when the component mounts
       dispatch(fetchCommentsRequested(bookId));
+      dispatch(getFavoritesStart({ userId: auth.user.userId ?? "", paging: { pageIndex: 1, pageSize: 100 } }));
     }
   }, [dispatch, bookId]);
 
@@ -61,6 +65,21 @@ export default function BookDetailPage() {
       userId: auth.user?.userId ?? "",
     };
     dispatch(likeCommentRequested(likeData));
+  };
+
+  const handleToggleFavorite = () => {
+    if (!auth.user?.userId) {
+      toast.info("Bạn cần đăng nhập để lưu yêu thích");
+      return;
+    }
+    if (!book?.id) return;
+  
+    dispatch(
+      toggleFavoriteStart({
+        bookId: book.id,
+        userId: auth.user.userId,
+      })
+    );
   };
 
   if (loading || !book) {
@@ -114,7 +133,16 @@ export default function BookDetailPage() {
           <div className="flex gap-4 mt-6">
             <Button className="bg-blue-600 hover:bg-blue-700">Mua sách</Button>
             <Button variant="outline">Phát tài liệu</Button>
-            <Button variant="outline">Lưu yêu thích</Button>
+            <Button 
+              onClick={handleToggleFavorite}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition 
+                ${isFavorite 
+                  ? "bg-red-100 text-red-600 hover:bg-red-200" 
+                  : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"}`}
+            >
+              <HeartIcon className={`h-5 w-5 ${isFavorite ? "text-red-500" : "text-gray-400"}`} />
+              {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
+            </Button>
           </div>
         </Card>
       </div>
