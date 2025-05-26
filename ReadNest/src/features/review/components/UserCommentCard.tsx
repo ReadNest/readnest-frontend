@@ -8,8 +8,10 @@ import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { useState } from "react"
 import ReviewInput from "./ReviewInput"
-import type { GetBookResponse, UpdateCommentRequest } from "@/api/@types"
-import { deleteCommentRequested, updateCommentRequested } from "../commentSlice"
+import type { GetBookResponse, ReportCommentRequest, UpdateCommentRequest } from "@/api/@types"
+import { deleteCommentRequested, reportCommentRequested, updateCommentRequested } from "../commentSlice"
+import { ReportDialog } from "./ReportDialog"
+import { toast } from "react-toastify"
 
 interface UserCommentCardProps {
     avatarSrc?: string
@@ -47,6 +49,26 @@ export function UserCommentCard({
 
     // State quản lý việc hiển thị ReviewInput
     const [isModalOpen, setIsModalOpen] = useState(false)
+    // State quản lý việc hiển thị form báo cáo
+    const [isReportOpen, setIsReportOpen] = useState(false);
+    // State quản lý lý do báo cáo
+    const [reportReason, setReportReason] = useState("");
+
+    // Hàm để xử lý gửi báo cáo
+    const handleReportSubmit = () => {
+        if (!reportReason.trim()) {
+            toast.info("Vui lòng nhập lý do báo cáo!");
+            return;
+        }
+        // TODO: Gửi reportReason và commentId lên server tại đây
+        const reportData: ReportCommentRequest = {
+            commentId: commentId ?? "",
+            moderationReason: reportReason,
+        }
+        dispatch(reportCommentRequested(reportData));
+        setIsReportOpen(false);
+        setReportReason("");
+    };
 
     // Hàm để xử lý lưu đánh giá vào database ở đây
     const handleSubmitReview = (reviewContent: string) => {
@@ -94,47 +116,53 @@ export function UserCommentCard({
                                 />
                                 <span>{likeCount}</span>
                             </Button>
-                            {user.userId === userId ? (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="ml-1 p-1 h-6 w-6 text-gray-500 hover:bg-gray-200"
-                                        >
-                                            <MoreVertical className="w-4 h-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="start"
-                                        className="bg-white shadow-2xl rounded-lg p-2"
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="ml-1 p-1 h-6 w-6 text-gray-500 hover:bg-gray-200"
                                     >
+                                        <MoreVertical className="w-4 h-4" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="start"
+                                    className="bg-white shadow-2xl rounded-lg p-2"
+                                >
+                                    {user.userId == userId &&
                                         <DropdownMenuItem
-                                            className="bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
+                                            className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
                                             onClick={() => setIsModalOpen(true)}
                                         >
                                             Chỉnh sửa
                                         </DropdownMenuItem>
+                                    }
+                                    {user.userId == userId &&
                                         <DropdownMenuItem
-                                            className="bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
+                                            className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
                                             onClick={() => handleDelteComment(commentId ?? "")}
                                         >
                                             Xóa
                                         </DropdownMenuItem>
+                                    }
+                                    {user.userId !== userId &&
+
                                         <DropdownMenuItem
-                                            className="bg-white hover:bg-gray-100 rounded first:mt-0 last:mb-0"
-                                            onClick={() => alert("Báo cáo bình luận")}
+                                            className="cursor-pointer bg-white hover:bg-gray-100 rounded first:mt-0 last:mb-0"
+                                            onClick={() => setIsReportOpen(true)}
                                         >
                                             Báo cáo bình luận
                                         </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            ) : <div className="ml-6"></div>}
+                                    }
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
                     <p className="text-gray-700">{comment}</p>
                 </div>
-            </div>  
+            </div>
             {/* Review Input Modal */}
             <ReviewInput
                 isOpen={isModalOpen}
@@ -143,6 +171,13 @@ export function UserCommentCard({
                 book={{} as GetBookResponse} // Empty book mean update comment review
                 initialContent={comment} // Set initial content to the current comment
                 isUpdate={true} // Indicate that this is an update mode
+            />
+            <ReportDialog
+                isOpen={isReportOpen}
+                onOpenChange={setIsReportOpen}
+                reportReason={reportReason}
+                onReportReasonChange={setReportReason}
+                onSubmit={handleReportSubmit}
             />
         </Card>
     )

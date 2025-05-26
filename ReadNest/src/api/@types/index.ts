@@ -67,6 +67,7 @@ export type Comment = {
   bookId?: string | undefined;
   userId?: string | undefined;
   status?: string | null | undefined;
+  moderationReason?: string | null | undefined;
   book?: Book | undefined;
   creator?: User | undefined;
   likes?: User[] | null | undefined;
@@ -340,6 +341,11 @@ export type RegisterRequest = {
   fullName?: string | null | undefined;
   address?: string | null | undefined;
   dateOfBirth?: string | undefined;
+}
+
+export type ReportCommentRequest = {
+  commentId?: string | undefined;
+  moderationReason?: string | null | undefined;
 }
 
 export type Role = {

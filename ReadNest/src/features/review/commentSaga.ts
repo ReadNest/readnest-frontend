@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addCommentRequested, addCommentStart, addCommentSuccess, deleteCommentRequested, deleteCommentStart, deleteCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, unlikeCommentSuccess, updateCommentRequested, updateCommentStart, updateCommentSuccess } from "./commentSlice";
+import { addCommentRequested, addCommentStart, addCommentSuccess, deleteCommentRequested, deleteCommentStart, deleteCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, reportCommentRequested, unlikeCommentSuccess, updateCommentRequested, updateCommentStart, updateCommentSuccess } from "./commentSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse, UpdateCommentRequest } from "@/api/@types";
+import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse, ReportCommentRequest, UpdateCommentRequest } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
 import { setDetailErrors, setMessage } from "@/store/error/errorSlice";
 import { fetchUserProfileFailure } from "../profile/profileSlice";
@@ -131,10 +131,33 @@ function* deleteComment(action: PayloadAction<string>) {
     }
 }
 
+function* reportComment(action: PayloadAction<ReportCommentRequest>) {
+    try {
+        const response: { success: boolean } = yield call(() =>
+            client.api.v1.Comment.report.$put({ body: action.payload })
+        );
+        if (response.success) {
+            toast.success("Bạn đã báo cáo bình luận thành công! Admin sẽ xem xét và xử lý trong thời gian sớm nhất.");
+        }
+    }
+    catch (error: any) {
+        const errBody = error?.response.data || {};
+        yield put(
+            setMessage({
+                message: errBody.message ?? "",
+                messageId: errBody.messageId ?? "",
+            })
+        );
+        yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(fetchUserProfileFailure());
+    }
+}
+
 export default function* commentSaga() {
     yield takeLatest(fetchCommentsRequested.type, fetchComments);
     yield takeLatest(addCommentRequested.type, addComment);
     yield takeLatest(likeCommentRequested.type, likeComment);
     yield takeLatest(updateCommentRequested.type, updateComment);
     yield takeLatest(deleteCommentRequested.type, deleteComment);
+    yield takeLatest(reportCommentRequested.type, reportComment);
 }
