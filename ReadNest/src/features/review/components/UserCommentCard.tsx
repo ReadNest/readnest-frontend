@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { useState } from "react"
 import ReviewInput from "./ReviewInput"
-import type { GetBookResponse, ReportCommentRequest, UpdateCommentRequest } from "@/api/@types"
+import type { CreateCommentReportRequest, GetBookResponse, UpdateCommentRequest } from "@/api/@types"
 import { deleteCommentRequested, reportCommentRequested, updateCommentRequested } from "../commentSlice"
 import { ReportDialog } from "./ReportDialog"
 import { toast } from "react-toastify"
@@ -61,9 +61,10 @@ export function UserCommentCard({
             return;
         }
         // TODO: Gửi reportReason và commentId lên server tại đây
-        const reportData: ReportCommentRequest = {
+        const reportData: CreateCommentReportRequest = {
             commentId: commentId ?? "",
-            moderationReason: reportReason,
+            reason: reportReason,
+            reporterId: userId ?? "",
         }
         dispatch(reportCommentRequested(reportData));
         setIsReportOpen(false);

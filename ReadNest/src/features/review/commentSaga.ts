@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addCommentRequested, addCommentStart, addCommentSuccess, deleteCommentRequested, deleteCommentStart, deleteCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, reportCommentRequested, unlikeCommentSuccess, updateCommentRequested, updateCommentStart, updateCommentSuccess } from "./commentSlice";
+import { addCommentRequested, addCommentStart, addCommentSuccess, deleteCommentRequested, deleteCommentStart, deleteCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, reportCommentFailure, reportCommentRequested, reportCommentStart, reportCommentSuccess, unlikeCommentSuccess, updateCommentRequested, updateCommentStart, updateCommentSuccess } from "./commentSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse, ReportCommentRequest, UpdateCommentRequest } from "@/api/@types";
+import type { CreateCommentLikeRequest, CreateCommentReportRequest, CreateCommentRequest, GetCommentResponse, UpdateCommentRequest } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
 import { setDetailErrors, setMessage } from "@/store/error/errorSlice";
 import { fetchUserProfileFailure } from "../profile/profileSlice";
@@ -131,13 +131,18 @@ function* deleteComment(action: PayloadAction<string>) {
     }
 }
 
-function* reportComment(action: PayloadAction<ReportCommentRequest>) {
+function* reportComment(action: PayloadAction<CreateCommentReportRequest>) {
     try {
+        yield put(reportCommentStart());
         const response: { success: boolean } = yield call(() =>
-            client.api.v1.Comment.report.$put({ body: action.payload })
+            client.api.v1.CommentReport.$post({ body: action.payload })
         );
         if (response.success) {
+            yield put(reportCommentSuccess());
             toast.success("Bạn đã báo cáo bình luận thành công! Admin sẽ xem xét và xử lý trong thời gian sớm nhất.");
+        } else {
+            yield put(reportCommentFailure());
+            toast.error("Báo cáo bình luận không thành công. Vui lòng thử lại sau.");
         }
     }
     catch (error: any) {

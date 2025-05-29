@@ -1,4 +1,4 @@
-import type { CreateCommentLikeRequest, CreateCommentRequest, GetCommentResponse, ReportCommentRequest, UpdateCommentRequest } from "@/api/@types";
+import type { CreateCommentLikeRequest, CreateCommentReportRequest, CreateCommentRequest, GetCommentResponse, UpdateCommentRequest } from "@/api/@types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export const initialState: {
@@ -98,11 +98,11 @@ const commentSlice = createSlice({
         },
 
         // Report comment
-        reportCommentRequested: (_state, _action: PayloadAction<ReportCommentRequest>) => { },
+        reportCommentRequested: (_state, _action: PayloadAction<CreateCommentReportRequest>) => { },
         reportCommentStart: (state) => {
             state.isLoading = true;
         },
-        reportCommentSuccess: (state, _action) => {
+        reportCommentSuccess: (state) => {
             state.isLoading = false;
             // Xử lý thành công báo cáo bình luận
         },

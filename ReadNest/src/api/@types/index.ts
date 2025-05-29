@@ -67,10 +67,23 @@ export type Comment = {
   bookId?: string | undefined;
   userId?: string | undefined;
   status?: string | null | undefined;
-  moderationReason?: string | null | undefined;
   book?: Book | undefined;
   creator?: User | undefined;
   likes?: User[] | null | undefined;
+  reports?: CommentReport[] | null | undefined;
+}
+
+export type CommentReport = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  reporterId?: string | undefined;
+  commentId?: string | undefined;
+  reason?: string | null | undefined;
+  status?: string | null | undefined;
+  comment?: Comment | undefined;
+  reporter?: User | undefined;
 }
 
 export type CreateAffiliateLinkRequest = {
@@ -102,6 +115,12 @@ export type CreateCategoryRequest = {
 export type CreateCommentLikeRequest = {
   userId?: string | undefined;
   commentId?: string | undefined;
+}
+
+export type CreateCommentReportRequest = {
+  commentId?: string | undefined;
+  reporterId?: string | undefined;
+  reason?: string | null | undefined;
 }
 
 export type CreateCommentRequest = {
@@ -343,11 +362,6 @@ export type RegisterRequest = {
   dateOfBirth?: string | undefined;
 }
 
-export type ReportCommentRequest = {
-  commentId?: string | undefined;
-  moderationReason?: string | null | undefined;
-}
-
 export type Role = {
   id?: string | undefined;
   createdAt?: string | undefined;
@@ -439,4 +453,5 @@ export type User = {
   favoriteBooks?: FavoriteBook[] | null | undefined;
   comments?: Comment[] | null | undefined;
   likedComments?: Comment[] | null | undefined;
+  reports?: CommentReport[] | null | undefined;
 }
