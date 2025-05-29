@@ -14,6 +14,8 @@ import {
   setPagingInfo,
   setSuccess,
   updateCategoryInList,
+  setFetchMoreCategories,
+  fetchMoreCategoriesStart,
 } from "./categorySlice";
 import { call, put, takeLatest } from "redux-saga/effects";
 import client from "@/lib/api/axiosClient";
@@ -26,7 +28,9 @@ function* handleCreateCategory(action: PayloadAction<CreateCategoryRequest>) {
     yield put(setLoading(true));
 
     const res: GetCategoryResponseApiResponse = yield call(() =>
-      client.api.v1.categories.post({ body: action.payload }).then((r) => r.body)
+      client.api.v1.categories
+        .post({ body: action.payload })
+        .then((r) => r.body)
     );
 
     yield put(
@@ -99,12 +103,12 @@ function* handleUpdateCategory(action: PayloadAction<UpdateCategoryRequest>) {
     yield put(setLoading(true));
 
     const res: GetCategoryResponseApiResponse = yield call(() =>
-      client.api.v1.categories
-        .put({ body: action.payload })
-        .then((r) => r.body)
+      client.api.v1.categories.put({ body: action.payload }).then((r) => r.body)
     );
 
-    yield put(setMessage({ message: res.message ?? "", messageId: res.messageId ?? "" }));
+    yield put(
+      setMessage({ message: res.message ?? "", messageId: res.messageId ?? "" })
+    );
 
     if (res.success && res.data) {
       yield put(setSuccess(true));
@@ -115,6 +119,7 @@ function* handleUpdateCategory(action: PayloadAction<UpdateCategoryRequest>) {
       yield put(setDetailErrors(res.listDetailError ?? []));
       toast.error(res.message);
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const errBody = error?.response?.data || {};
     yield put(
@@ -129,8 +134,46 @@ function* handleUpdateCategory(action: PayloadAction<UpdateCategoryRequest>) {
   }
 }
 
+function* fetchMoreCategories(action: PayloadAction<PagingRequest>) {
+  try {
+    yield put(setLoading(true));
+
+    const res: GetCategoryResponsePagingResponseApiResponse = yield call(() =>
+      client.api.v1.categories
+        .get({
+          query: {
+            PageIndex: action.payload.pageIndex,
+            PageSize: action.payload.pageSize,
+          },
+        })
+        .then((r) => r.body)
+    );
+
+    if (res.success && res.data) {
+      yield put(setSuccess(true));
+      yield put(setFetchMoreCategories(res.data.items ?? []));
+      yield put(
+        setPagingInfo({
+          totalItems: res.data.totalItems,
+          pageIndex: res.data.pageIndex,
+          pageSize: res.data.pageSize,
+        })
+      );
+    } else {
+      yield put(setSuccess(false));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error(error);
+  } finally {
+    yield put(setLoading(false));
+  }
+}
+
 export default function* categorySaga() {
   yield takeLatest(createCategoryStart.type, handleCreateCategory);
   yield takeLatest(fetchCategoriesStart.type, fetchCategories);
   yield takeLatest(updateCategoryStart.type, handleUpdateCategory);
+  yield takeLatest(fetchMoreCategoriesStart.type, fetchMoreCategories);
 }

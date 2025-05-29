@@ -42,7 +42,7 @@ const bookSlice = createSlice({
       state.books.push(action.payload);
     },
     setBooks: (state, action: PayloadAction<GetBookResponse[]>) => {
-      state.books = action.payload;
+      state.books = [...state.books, ...action.payload];
     },
     setPagingInfo: (
       state,

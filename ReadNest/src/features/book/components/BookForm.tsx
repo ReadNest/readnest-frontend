@@ -17,7 +17,10 @@ import type { RootState } from "@/store";
 import { clearErrors } from "@/store/error/errorSlice";
 import { TinyMCETextEditor } from "@/components/rich-text-editor/TinyMCETextEditor";
 import { toast } from "react-toastify";
-import { fetchCategoriesStart } from "@/features/category/categorySlice";
+import {
+  fetchCategoriesStart,
+  fetchMoreCategoriesStart,
+} from "@/features/category/categorySlice";
 import { LazyMultiSelectCombobox } from "@/components/ui/LazyMultiSelectCombobox";
 import MultiImageUploader from "@/components/ui/MultiImageUploader";
 
@@ -173,7 +176,7 @@ export default function BookForm({
 
   const handleFetchMoreCategories = (nextPage: number) => {
     dispatch(
-      fetchCategoriesStart({
+      fetchMoreCategoriesStart({
         pageIndex: nextPage,
         pageSize: pageSize || 10,
       })
