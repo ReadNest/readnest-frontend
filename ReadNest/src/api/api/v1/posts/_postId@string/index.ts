@@ -6,12 +6,6 @@ export type Methods = DefineMethods<{
   get: {
     status: 200;
     /** OK */
-    resBody: Types.GetUserResponseApiResponse;
-  };
-
-  delete: {
-    status: 200;
-    /** OK */
-    resBody: Types.StringApiResponse;
+    resBody: Types.GetPostResponseApiResponse;
   };
 }>;

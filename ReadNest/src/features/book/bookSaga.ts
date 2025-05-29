@@ -90,6 +90,7 @@ function* fetchBooks(action: PayloadAction<PagingRequest>) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function* getBookById(action: PayloadAction<any>) {
   try {
     yield put(setLoading(true));

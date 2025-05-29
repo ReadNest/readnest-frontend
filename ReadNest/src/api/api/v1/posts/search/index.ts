@@ -4,14 +4,12 @@ import type * as Types from '../../../../@types';
 
 export type Methods = DefineMethods<{
   get: {
-    status: 200;
-    /** OK */
-    resBody: Types.GetUserResponseApiResponse;
-  };
+    query?: {
+      keyword?: string | undefined;
+    } | undefined;
 
-  delete: {
     status: 200;
     /** OK */
-    resBody: Types.StringApiResponse;
+    resBody: Types.GetPostResponseListApiResponse;
   };
 }>;

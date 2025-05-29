@@ -3,10 +3,16 @@ import type { DefineMethods } from 'aspida';
 import type * as Types from '../../../@types';
 
 export type Methods = DefineMethods<{
+  get: {
+    status: 200;
+    /** OK */
+    resBody: Types.GetPostResponseListApiResponse;
+  };
+
   post: {
     status: 200;
     /** OK */
-    resBody: Types.GetCommentResponseApiResponse;
-    reqBody: Types.CreateCommentRequest;
+    resBody: Types.GetPostResponseApiResponse;
+    reqBody: Types.CreatePostRequest;
   };
 }>;

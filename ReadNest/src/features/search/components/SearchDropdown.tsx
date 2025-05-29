@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 import type { RootState } from "@/store";
 import { clearResults, searchBooksRequest } from "../bookSearchSlice";
@@ -14,9 +14,11 @@ const SearchDropdown = ({ searchText }: SearchDropdownProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const dispatch = useDispatch();
-  const { results, loading, hasMore, page } = useSelector(
+  const { results, loading, hasMore, page, totalItems } = useSelector(
     (state: RootState) => state.bookSearch
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchText) {
@@ -42,7 +44,15 @@ const SearchDropdown = ({ searchText }: SearchDropdownProps) => {
   }, []);
 
   const handleLoadMore = () => {
-    dispatch(searchBooksRequest({ keyword: searchText, page: page + 1 }));
+    navigate("/search", {
+      state: {
+        keyword: searchText,
+        initialResults: results,
+        totalItems: totalItems,
+        page,
+        hasMore,
+      },
+    });
   };
 
   if (!showDropdown || results.length === 0) return null;
@@ -67,10 +77,15 @@ const SearchDropdown = ({ searchText }: SearchDropdownProps) => {
           <div>
             <p className="text-sm font-semibold">{book.title}</p>
             <p className="text-xs text-gray-500">{book.author}</p>
+            <p className="text-xs text-yellow-500">
+              {book.averageRating
+                ? "⭐".repeat(Math.round(book.averageRating))
+                : "Chưa có đánh giá"}
+            </p>
           </div>
         </Link>
       ))}
-      {hasMore && (
+      {
         <button
           className="w-full text-sm text-indigo-600 font-medium py-2 border-t hover:bg-indigo-50"
           onClick={handleLoadMore}
@@ -78,7 +93,7 @@ const SearchDropdown = ({ searchText }: SearchDropdownProps) => {
         >
           {loading ? "Đang tải..." : "Xem thêm"}
         </button>
-      )}
+      }
     </div>
   );
 };
