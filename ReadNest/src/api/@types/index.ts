@@ -1,4 +1,4 @@
- 
+/* eslint-disable */
 export type AffiliateLink = {
   id?: string | undefined;
   createdAt?: string | undefined;
@@ -311,6 +311,7 @@ export type GetUserProfileResponse = {
   roleId?: string | undefined;
   roleName?: string | null | undefined;
   comments?: GetCommentResponse[] | null | undefined;
+  posts?: GetPostResponse[] | null | undefined;
   numberOfPosts?: number | undefined;
   numberOfComments?: number | undefined;
   ratingScores?: number | undefined;

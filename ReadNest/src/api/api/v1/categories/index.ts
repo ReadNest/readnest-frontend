@@ -1,4 +1,4 @@
- 
+/* eslint-disable */
 import type { DefineMethods } from 'aspida';
 import type * as Types from '../../../@types';
 

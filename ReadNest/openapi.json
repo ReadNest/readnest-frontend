@@ -2630,6 +2630,9 @@
           "shortDescription": {
             "type": "string",
             "nullable": true
+          },
+          "isFavorite": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -3048,6 +3051,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GetCommentResponse"
+            },
+            "nullable": true
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetPostResponse"
             },
             "nullable": true
           },
