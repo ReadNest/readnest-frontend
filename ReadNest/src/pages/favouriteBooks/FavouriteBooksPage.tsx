@@ -24,7 +24,7 @@ export default function FavouriteBooksPage() {
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
-  const { pageIndex = 1, pageSize = 8, totalItems = 0 } = pagingInfo;
+  const { pageIndex = 1, pageSize = 4, totalItems = 0 } = pagingInfo;
 
   useEffect(() => {
     if (user?.userId) {

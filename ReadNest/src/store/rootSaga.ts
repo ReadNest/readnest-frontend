@@ -7,6 +7,7 @@ import profileSaga from "@/features/profile/profileSaga";
 import { bookSearchSaga } from "@/features/search/bookSearchSaga";
 import commentSaga from "@/features/review/commentSaga";
 import { all, call } from "redux-saga/effects";
+import postSaga from "@/features/post/postSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -17,6 +18,7 @@ export default function* rootSaga() {
     call(categorySaga),
     call(favoriteSaga),
     call(bookSearchSaga),
-        call(commentSaga),
+    call(commentSaga),
+    call(postSaga),
   ]);
 }

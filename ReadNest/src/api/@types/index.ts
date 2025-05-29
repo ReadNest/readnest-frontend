@@ -35,6 +35,7 @@ export type Book = {
   affiliateLinks?: AffiliateLink[] | null | undefined;
   comments?: Comment[] | null | undefined;
   bookImages?: BookImage[] | null | undefined;
+  posts?: Post[] | null | undefined;
 }
 
 export type BookImage = {
@@ -104,6 +105,13 @@ export type CreateCommentLikeRequest = {
 }
 
 export type CreateCommentRequest = {
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+}
+
+export type CreatePostRequest = {
+  title?: string | null | undefined;
   content?: string | null | undefined;
   bookId?: string | undefined;
   userId?: string | undefined;
@@ -259,6 +267,37 @@ export type GetCommentResponseListApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetPostResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+  book?: Book | undefined;
+  creator?: GetUserResponse | undefined;
+  views?: number | undefined;
+  likesCount?: number | undefined;
+  userLikes?: string[] | null | undefined;
+}
+
+export type GetPostResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPostResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetPostResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPostResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetUserProfileResponse = {
   userId?: string | undefined;
   fullName?: string | null | undefined;
@@ -319,9 +358,29 @@ export type GetUserResponsePagingResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type LikePostRequest = {
+  userId?: string | undefined;
+  postId?: string | undefined;
+}
+
 export type LoginRequest = {
   userName?: string | null | undefined;
   password?: string | null | undefined;
+}
+
+export type Post = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+  views?: number | undefined;
+  book?: Book | undefined;
+  creator?: User | undefined;
+  likes?: User[] | null | undefined;
 }
 
 export type ProblemDetails = {
@@ -428,4 +487,6 @@ export type User = {
   favoriteBooks?: FavoriteBook[] | null | undefined;
   comments?: Comment[] | null | undefined;
   likedComments?: Comment[] | null | undefined;
+  posts?: Post[] | null | undefined;
+  likedPosts?: Post[] | null | undefined;
 }

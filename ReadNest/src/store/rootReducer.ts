@@ -8,6 +8,7 @@ import categoryReducer from "@/features/category/categorySlice";
 import favoriteReducer from "@/features/favouriteBooks/favoriteSlice";
 import bookSearchReducer from "@/features/search/bookSearchSlice";
 import commentReducer from "@/features/review/commentSlice";
+import postReducer from "@/features/post/postSlice";
 
 const rootReducer = combineReducers({
   error: errorReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   categories: categoryReducer,
   favorites: favoriteReducer,
   bookSearch: bookSearchReducer,
+  post: postReducer,
 });
 
 export default rootReducer;
