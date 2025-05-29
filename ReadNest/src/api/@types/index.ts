@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export type AffiliateLink = {
   id?: string | undefined;
   createdAt?: string | undefined;
@@ -192,6 +192,7 @@ export type GetBookSearchResponse = {
   imageUrl?: string | null | undefined;
   averageRating?: number | undefined;
   shortDescription?: string | null | undefined;
+  isFavorite?: boolean | undefined;
 }
 
 export type GetBookSearchResponsePagingResponse = {
