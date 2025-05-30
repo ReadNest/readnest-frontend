@@ -45,6 +45,8 @@ export function UserCommentCard({
             .toUpperCase()
     }
 
+    const {auth} = useSelector((state: RootState) => state)
+
     const dispatch = useDispatch()
 
     // State quản lý việc hiển thị ReviewInput
@@ -64,7 +66,7 @@ export function UserCommentCard({
         const reportData: CreateCommentReportRequest = {
             commentId: commentId ?? "",
             reason: reportReason,
-            reporterId: userId ?? "",
+            reporterId: auth.user.userId ?? "",
         }
         dispatch(reportCommentRequested(reportData));
         setIsReportOpen(false);

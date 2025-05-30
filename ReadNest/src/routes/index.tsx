@@ -27,6 +27,7 @@ import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearErrors } from "@/store/error/errorSlice";
 import CreatePostPage from "@/pages/post/CreatePostPage";
+import CommentReportsPage from "@/pages/commentReport/CommentReportsPage";
 
 
 export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
@@ -211,6 +212,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       allowedRoles: ["user", "admin"],
       element: <CreatePostPage />,
       layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.COMMENT_REPORT,
+      isPrivate: true,
+      // allowedRoles: ["user", "admin"],
+      element: <CommentReportsPage />,
+      layout: adminLayout,
     },
   ];
 

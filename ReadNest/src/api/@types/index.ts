@@ -86,6 +86,14 @@ export type CommentReport = {
   reporter?: User | undefined;
 }
 
+export type CommentReportReponse = {
+  commentReportId?: string | undefined;
+  commentId?: string | undefined;
+  reporter?: GetUserResponse | undefined;
+  reason?: string | null | undefined;
+  createdAt?: string | undefined;
+}
+
 export type CreateAffiliateLinkRequest = {
   affiliateLinkRequests?: AffiliateLinkRequest[] | null | undefined;
 }
@@ -276,6 +284,21 @@ export type GetCommentResponseListApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetCommentResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetReportedCommentsResponse = {
+  commentId?: string | undefined;
+  content?: string | null | undefined;
+  commenter?: GetUserResponse | undefined;
+  reports?: CommentReportReponse[] | null | undefined;
+}
+
+export type GetReportedCommentsResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetReportedCommentsResponse[] | null | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 

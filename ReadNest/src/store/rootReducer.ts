@@ -7,6 +7,7 @@ import affiliateReducer from "@/features/affiliate/affiliateSlice";
 import categoryReducer from "@/features/category/categorySlice";
 import favoriteReducer from "@/features/favouriteBooks/favoriteSlice";
 import commentReducer from "@/features/review/commentSlice";
+import commentReportReducer from "@/features/commentReport/commentReportSlice";
 
 const rootReducer = combineReducers({
   error: errorReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   affiliate: affiliateReducer,
   categories: categoryReducer,
   favorites: favoriteReducer,
+  commentReports: commentReportReducer,
 });
 
 export default rootReducer;
