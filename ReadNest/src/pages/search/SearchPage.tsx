@@ -141,6 +141,7 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
             {books.map((book) => (
               <Card key={book.id}>
                 <BookSearchResult
+                  bookId={book.id ?? ""}
                   bookImage={book.imageUrl ?? ""}
                   bookName={book.title ?? ""}
                   bookAuthor={book.author ?? ""}

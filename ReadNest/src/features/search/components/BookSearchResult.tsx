@@ -1,8 +1,9 @@
-import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RatingStars } from "./RatingStars";
+import { BookFavoriteButton } from "@/features/favouriteBooks/components/BookFavoriteButton";
 
 interface BookSearchResultProps {
+  bookId: string;
   bookImage: string;
   bookName: string;
   bookAuthor: string;
@@ -12,11 +13,11 @@ interface BookSearchResultProps {
 }
 
 export function BookSearchResult({
+  bookId,
   bookImage,
   bookName,
   bookAuthor,
   rating,
-  isFavorite,
   onClick,
 }: BookSearchResultProps) {
   // Tính toán số sao để hiển thị
@@ -40,11 +41,7 @@ export function BookSearchResult({
             (e.target as HTMLImageElement).src = "/default-book-cover.jpg";
           }}
         />
-        <Heart
-          className={`h-5 w-5 absolute top-2 right-2 ${
-            isFavorite ? "text-red-500 fill-current" : "text-gray-300"
-          }`}
-        />
+        <BookFavoriteButton bookId={bookId} />
       </div>
 
       {/* Thông tin sách */}
