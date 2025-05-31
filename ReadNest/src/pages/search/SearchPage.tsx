@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { searchBooksRequestV2 } from "@/features/search/bookSearchSlice";
 import type { RootState } from "@/store";
+import { getFavoritesStart } from "@/features/favouriteBooks/favoriteSlice";
 
 type SearchResultData = {
   items: GetBookSearchResponse[];
@@ -40,6 +41,7 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
   };
 
   const bookSearch = useSelector((state: RootState) => state.bookSearch);
+  const auth = useSelector((state: RootState) => state.auth);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [keyword, setKeyword] = useState<string>(state?.keyword || "");
@@ -67,6 +69,12 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
     if (!searchResult || !keyword) {
       fetchBooks(pageIndex);
     }
+    dispatch(
+      getFavoritesStart({
+        userId: auth.user.userId ?? "",
+        paging: { pageIndex: 1, pageSize: 100 },
+      })
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, keyword]);
 

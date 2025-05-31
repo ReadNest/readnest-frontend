@@ -28,6 +28,7 @@ import {
   getFavoritesStart,
   toggleFavoriteStart,
 } from "@/features/favouriteBooks/favoriteSlice";
+import AffiliateButton from "@/features/affiliate/components/AffiliateButton";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
@@ -145,24 +146,36 @@ export default function BookDetailPage() {
             </div>
           </div>
 
-          <div className="flex gap-4 mt-6">
-            <Button className="bg-blue-600 hover:bg-blue-700">Mua sách</Button>
-            <Button variant="outline">Phát tài liệu</Button>
+          <div className="mt-6">
+            <div className="flex flex-wrap gap-3 mb-4">
+              {book.affiliateLinks?.map((link) => (
+                <AffiliateButton
+                  key={link.id}
+                  partnerName={link.partnerName ?? ""}
+                  affiliateLink={link.affiliateLink ?? ""}
+                />
+              ))}
+            </div>
+            
             <Button
               onClick={handleToggleFavorite}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition 
+              className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300
                 ${
                   isFavorite
-                    ? "bg-red-100 text-red-600 hover:bg-red-200"
-                    : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"
+                    ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
                 }`}
             >
               <HeartIcon
                 className={`h-5 w-5 ${
-                  isFavorite ? "text-red-500" : "text-gray-400"
-                }`}
+                  isFavorite 
+                    ? "fill-red-500 text-red-500 animate-pulse" 
+                    : "text-gray-400 group-hover:text-gray-500"
+                } transition-colors`}
               />
-              {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
+              <span className="group-hover:underline">
+                {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
+              </span>
             </Button>
           </div>
         </Card>
