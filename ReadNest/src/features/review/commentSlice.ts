@@ -4,9 +4,15 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 export const initialState: {
     isLoading: boolean;
     comments: GetCommentResponse[];
+    top3RecentComments: GetCommentResponse[];
+    top3MostLikedComments: GetCommentResponse[];
+    isLoadingTop3: boolean;
 } = {
     isLoading: false,
     comments: [],
+    top3RecentComments: [],
+    top3MostLikedComments: [],
+    isLoadingTop3: false,
 };
 
 const commentSlice = createSlice({
@@ -111,6 +117,32 @@ const commentSlice = createSlice({
             // Xử lý lỗi khi báo cáo bình luận
         },
 
+        // Fetch top 3  recent comments by user
+        fetchTop3RecentCommentsRequested: (_state, _action: PayloadAction<string>) => { },
+        fetchTop3RecentCommentsStart: (state) => {
+            state.isLoadingTop3 = true;
+        },
+        fetchTop3RecentCommentsSuccess: (state, action) => {
+            state.isLoadingTop3 = false;
+            state.top3RecentComments = action.payload;
+        },
+        fetchTop3RecentCommentsFailure: (state) => {
+            state.isLoadingTop3 = false;
+        },
+
+        // Fetch top 3 most liked comments
+        fetchTop3MostLikedCommentsRequested: (_state, _action) => { },
+        fetchTop3MostLikedCommentsStart: (state) => {
+            state.isLoadingTop3 = true;
+        },
+        fetchTop3MostLikedCommentsSuccess: (state, action) => {
+            state.isLoadingTop3 = false;
+            state.top3MostLikedComments = action.payload;
+        },
+        fetchTop3MostLikedCommentsFailure: (state) => {
+            state.isLoadingTop3 = false;
+        },
+
     },
 });
 
@@ -146,6 +178,17 @@ export const {
     reportCommentStart,
     reportCommentSuccess,
     reportCommentFailure,
+    // Actions for fetching top 3 recent comments
+    fetchTop3RecentCommentsRequested,
+    fetchTop3RecentCommentsStart,
+    fetchTop3RecentCommentsSuccess,
+    fetchTop3RecentCommentsFailure,
+    // Actions for fetching top 3 most liked comments
+    fetchTop3MostLikedCommentsRequested,
+    fetchTop3MostLikedCommentsStart,
+    fetchTop3MostLikedCommentsSuccess,
+    fetchTop3MostLikedCommentsFailure,
+
 
 } = commentSlice.actions;
 export default commentSlice.reducer;

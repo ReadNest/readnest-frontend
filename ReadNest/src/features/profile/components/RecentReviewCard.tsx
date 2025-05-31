@@ -11,9 +11,6 @@ interface ReviewCardProps {
 export function RecentReviewCard({ bookImage, bookName, author, likes, content }: ReviewCardProps) {
   return (
     <div className="w-full p-6 space-y-4 border rounded-lg shadow-sm bg-white">
-      {/* Tiêu đề phần */}
-      <h2 className="text-xl font-semibold">Đánh giá gần đây</h2>
-      
       {/* Thông tin sách */}
       <div className="flex items-start gap-4">
         {/* Ảnh sách */}

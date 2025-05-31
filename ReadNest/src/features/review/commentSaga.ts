@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addCommentRequested, addCommentStart, addCommentSuccess, deleteCommentRequested, deleteCommentStart, deleteCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, reportCommentFailure, reportCommentRequested, reportCommentStart, reportCommentSuccess, unlikeCommentSuccess, updateCommentRequested, updateCommentStart, updateCommentSuccess } from "./commentSlice";
+import { addCommentRequested, addCommentStart, addCommentSuccess, deleteCommentRequested, deleteCommentStart, deleteCommentSuccess, fetchCommentsRequested, fetchCommentsStart, fetchCommentsSuccess, fetchTop3MostLikedCommentsRequested, fetchTop3MostLikedCommentsStart, fetchTop3MostLikedCommentsSuccess, fetchTop3RecentCommentsFailure, fetchTop3RecentCommentsRequested, fetchTop3RecentCommentsStart, fetchTop3RecentCommentsSuccess, likeCommentRequested, likeCommentStart, likeCommentSuccess, reportCommentFailure, reportCommentRequested, reportCommentStart, reportCommentSuccess, unlikeCommentSuccess, updateCommentRequested, updateCommentStart, updateCommentSuccess } from "./commentSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { CreateCommentLikeRequest, CreateCommentReportRequest, CreateCommentRequest, GetCommentResponse, UpdateCommentRequest } from "@/api/@types";
 import client from "@/lib/api/axiosClient";
@@ -158,6 +158,51 @@ function* reportComment(action: PayloadAction<CreateCommentReportRequest>) {
     }
 }
 
+function* fetchTop3RecentCommentsByUser(action: PayloadAction<string>) {
+    try {
+        yield put(fetchTop3RecentCommentsStart());
+        const response: { data: GetCommentResponse[]; success: boolean } = yield call(() =>
+            client.api.v1.Comment.top_3_recent_comments._userName(action.payload).$get()
+        );
+        console.log("Top 3 recent comments response:", response);
+        if (response.success) {
+            yield put(fetchTop3RecentCommentsSuccess(response.data));
+        }
+    } catch (error: any) {
+        const errBody = error?.response.data || {};
+        yield put(
+            setMessage({
+                message: errBody.message ?? "",
+                messageId: errBody.messageId ?? "",
+            })
+        );
+        yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(fetchTop3RecentCommentsFailure());
+    }
+}
+
+function* fetchTop3MostLikedComments() {
+    try {
+        yield put(fetchTop3MostLikedCommentsStart());
+        const response: { data: GetCommentResponse[]; success: boolean } = yield call(() =>
+            client.api.v1.Comment.top_3_most_liked_comments.$get()
+        );
+        if (response.success) {
+            yield put(fetchTop3MostLikedCommentsSuccess(response.data));
+        }
+    } catch (error: any) {
+        const errBody = error?.response.data || {};
+        yield put(
+            setMessage({
+                message: errBody.message ?? "",
+                messageId: errBody.messageId ?? "",
+            })
+        );
+        yield put(setDetailErrors(errBody.listDetailError ?? []));
+        yield put(fetchTop3RecentCommentsFailure());
+    }
+}
+
 export default function* commentSaga() {
     yield takeLatest(fetchCommentsRequested.type, fetchComments);
     yield takeLatest(addCommentRequested.type, addComment);
@@ -165,4 +210,6 @@ export default function* commentSaga() {
     yield takeLatest(updateCommentRequested.type, updateComment);
     yield takeLatest(deleteCommentRequested.type, deleteComment);
     yield takeLatest(reportCommentRequested.type, reportComment);
+    yield takeLatest(fetchTop3RecentCommentsRequested.type, fetchTop3RecentCommentsByUser);
+    yield takeLatest(fetchTop3MostLikedCommentsRequested.type, fetchTop3MostLikedComments);
 }
