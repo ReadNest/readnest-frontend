@@ -164,7 +164,6 @@ function* fetchTop3RecentCommentsByUser(action: PayloadAction<string>) {
         const response: { data: GetCommentResponse[]; success: boolean } = yield call(() =>
             client.api.v1.Comment.top_3_recent_comments._userName(action.payload).$get()
         );
-        console.log("Top 3 recent comments response:", response);
         if (response.success) {
             yield put(fetchTop3RecentCommentsSuccess(response.data));
         }

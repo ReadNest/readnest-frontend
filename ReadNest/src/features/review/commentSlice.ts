@@ -47,11 +47,9 @@ const commentSlice = createSlice({
 
         // Action to request like a comment
         likeCommentRequested: (_state, _action: PayloadAction<CreateCommentLikeRequest>) => { },
-        likeCommentStart: (state) => {
-            state.isLoading = true;
+        likeCommentStart: (_state) => {
         },
         likeCommentSuccess: (state, action) => {
-            state.isLoading = false;
             // Cập nhật cho comments
             const updateLike = (arr: GetCommentResponse[] | undefined) => {
                 if (!arr) return;
@@ -68,7 +66,6 @@ const commentSlice = createSlice({
             updateLike(state.top3MostLikedComments);
         },
         unlikeCommentSuccess: (state, action) => {
-            state.isLoading = false;
             const updateUnlike = (arr: GetCommentResponse[] | undefined) => {
                 if (!arr) return;
                 const comment = arr.find(c => c.commentId === action.payload.commentId);
@@ -82,7 +79,6 @@ const commentSlice = createSlice({
             updateUnlike(state.top3MostLikedComments);
         },
         likeCommentFailure: (state) => {
-            state.isLoading = false;
         },
 
         // Update comment

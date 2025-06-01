@@ -35,6 +35,7 @@ export default function BookDetailPage() {
   const { bookId } = useParams(); // URL dạng /books/:bookId
   const book = useSelector((state: RootState) => state.book.selectedBook);
   const loading = useSelector((state: RootState) => state.book.loading);
+  const commentLoading = useSelector((state: RootState) => state.comment.isLoading);
   const auth = useSelector((state: RootState) => state.auth);
   const comments = useSelector((state: RootState) => state.comment.comments);
   const favorites = useSelector(
@@ -98,10 +99,9 @@ export default function BookDetailPage() {
     );
   };
 
-  if (loading || !book) {
+  if ((loading || !book)) {
     return <div className="text-center py-10">Đang tải dữ liệu sách...</div>;
   }
-
   return (
     <div className="container mx-auto py-8 px-10">
       <div className="flex space-x-6 mb-6">
@@ -262,7 +262,7 @@ export default function BookDetailPage() {
 
       {/* User Comments Section */}
       <div className="space-y-4">
-        {(showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
+        {!commentLoading && (showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
           <UserCommentCard
             key={comment.commentId}
             avatarSrc={comment.creator?.avatarUrl || ""}

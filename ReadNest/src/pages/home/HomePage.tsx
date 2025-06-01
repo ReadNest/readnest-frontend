@@ -30,12 +30,7 @@ function HomePage() {
 
   useEffect(() => {
     dispatch(fetchTop3MostLikedCommentsRequested({}));
-    console.log("Fetching top 3 most liked comments...");
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log("Top 3 recent comments:", comment.top3MostLikedComments);
-  }, [comment]);
 
   return (
     <div className="bg-[#f5f6ff]">
@@ -98,7 +93,7 @@ function HomePage() {
                 Hiện tại chưa có bài post nào đã được đăng tải gần đây
               </div>
             ) : (
-              comment.top3MostLikedComments.map((review) => (
+              comment.top3MostLikedComments.map((review : any) => (
                 <ReviewCard
                   key={review.commentId}
                   creator={review.creator ?? ""}
