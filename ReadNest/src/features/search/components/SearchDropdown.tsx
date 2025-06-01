@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import type { RootState } from "@/store";
-import { clearResults, searchBooksRequest } from "../bookSearchSlice";
+import { clearResults } from "../bookSearchSlice";
+import { fetchDropdownBooksStart } from "../bookDropdownSlice";
 
 interface SearchDropdownProps {
   searchText: string;
@@ -14,15 +15,15 @@ const SearchDropdown = ({ searchText }: SearchDropdownProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const dispatch = useDispatch();
-  const { results, loading, hasMore, page, totalItems } = useSelector(
-    (state: RootState) => state.bookSearch
+  const { results, loading } = useSelector(
+    (state: RootState) => state.bookDropdown
   );
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (searchText) {
-      dispatch(searchBooksRequest({ keyword: searchText, page: 1 }));
+      dispatch(fetchDropdownBooksStart(searchText));
       setShowDropdown(true);
     } else {
       dispatch(clearResults());
@@ -44,15 +45,7 @@ const SearchDropdown = ({ searchText }: SearchDropdownProps) => {
   }, []);
 
   const handleLoadMore = () => {
-    navigate("/search", {
-      state: {
-        keyword: searchText,
-        initialResults: results,
-        totalItems: totalItems,
-        page,
-        hasMore,
-      },
-    });
+    navigate(`/search?keyword=${encodeURIComponent(searchText)}`);
   };
 
   if (!showDropdown || results.length === 0) return null;

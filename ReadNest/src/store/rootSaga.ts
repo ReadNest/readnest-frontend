@@ -8,6 +8,8 @@ import { bookSearchSaga } from "@/features/search/bookSearchSaga";
 import commentSaga from "@/features/review/commentSaga";
 import { all, call } from "redux-saga/effects";
 import postSaga from "@/features/post/postSaga";
+import { bookDropdownSaga } from "@/features/search/bookDropdownSaga";
+import { bookSearchPageSaga } from "@/features/search/bookSearchPageSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -20,5 +22,7 @@ export default function* rootSaga() {
     call(bookSearchSaga),
     call(commentSaga),
     call(postSaga),
+    call(bookDropdownSaga),
+    call(bookSearchPageSaga),
   ]);
 }

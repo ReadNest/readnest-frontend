@@ -11,10 +11,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { searchBooksRequestV2 } from "@/features/search/bookSearchSlice";
 import type { RootState } from "@/store";
+import { fetchBooksStart } from "@/features/search/bookSearchPageSlice";
 
 type SearchResultData = {
   items: GetBookSearchResponse[];
@@ -30,33 +30,25 @@ type SearchPageProps = {
 export default function SearchPage({ searchResult }: SearchPageProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const state = location.state as {
-    keyword?: string;
-    initialResults?: GetBookSearchResponse[];
-    page?: number;
-    totalItems: number;
-    hasMore?: boolean;
-  };
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword") ?? "";
 
-  const bookSearch = useSelector((state: RootState) => state.bookSearch);
+  const bookSearch = useSelector((state: RootState) => state.bookSearchPage);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [keyword, setKeyword] = useState<string>(state?.keyword || "");
   const [books, setBooks] = useState<GetBookSearchResponse[]>(
-    state?.initialResults || searchResult?.items || []
+    searchResult?.items || []
   );
   const [totalItems, setTotalItems] = useState<number>(
-    state?.totalItems || bookSearch?.totalItems || 0
+    bookSearch?.totalItems || 0
   );
-  const [pageIndex, setPageIndex] = useState<number>(state?.page || 1);
+  const [pageIndex, setPageIndex] = useState<number>(bookSearch?.page || 1);
   const [pageSize] = useState<number>(6);
 
   const totalPages = Math.ceil(totalItems / pageSize);
 
   const fetchBooks = async (page: number) => {
     dispatch(
-      searchBooksRequestV2({
+      fetchBooksStart({
         keyword: keyword,
         page: page,
       })

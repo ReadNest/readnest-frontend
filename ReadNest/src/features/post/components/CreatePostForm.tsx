@@ -1,15 +1,21 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import PostEditor from './PostEditor';
-import PostPreview from './PostPreview';
-import { createPostRequested, resetPostStatus } from '@/features/post/postSlice';
-import type { RootState } from '@/store';
-import { clearResults, searchBooksRequest } from '@/features/search/bookSearchSlice';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import PostEditor from "./PostEditor";
+import PostPreview from "./PostPreview";
+import {
+  createPostRequested,
+  resetPostStatus,
+} from "@/features/post/postSlice";
+import type { RootState } from "@/store";
+import {
+  clearResults,
+  searchBooksRequest,
+} from "@/features/search/bookSearchSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function CreatePostForm() {
   const dispatch = useDispatch();
@@ -18,15 +24,15 @@ export default function CreatePostForm() {
   const postState = useSelector((state: RootState) => state.post);
   const { results } = useSelector((state: RootState) => state.bookSearch);
 
-  const [bookName, setBookName] = useState('');
-  const [bookId, setBookId] = useState('');
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [bookName, setBookName] = useState("");
+  const [bookId, setBookId] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
-  
+
   useEffect(() => {
     if (postState.isSuccess) {
-      navigate('/posts');
+      navigate("/posts");
       dispatch(resetPostStatus());
     }
   }, [postState.isSuccess, navigate, dispatch]);
@@ -46,16 +52,18 @@ export default function CreatePostForm() {
   const handleSubmit = () => {
     console.log("data: ", bookId, ", ", title, ", ", content, ", ", bookName);
     if (!title.trim() || !content.trim() || !bookId) {
-      alert('Vui lòng điền đầy đủ tiêu đề, nội dung và chọn sách.');
+      alert("Vui lòng điền đầy đủ tiêu đề, nội dung và chọn sách.");
       return;
     }
 
-    dispatch(createPostRequested({
-      title,
-      content,
-      bookId,
-      userId: user?.userId,
-    }));
+    dispatch(
+      createPostRequested({
+        title,
+        content,
+        bookId,
+        userId: user?.userId,
+      })
+    );
   };
 
   return (
@@ -78,10 +86,12 @@ export default function CreatePostForm() {
                   <div
                     key={book.id}
                     className="flex items-start gap-2 p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleSelectBook(book.id ?? "", book.title ?? "")}
+                    onClick={() =>
+                      handleSelectBook(book.id ?? "", book.title ?? "")
+                    }
                   >
                     <img
-                      src={book.imageUrl ?? ''}
+                      src={book.imageUrl ?? ""}
                       alt={book.title ?? ""}
                       className="w-10 h-14 object-cover rounded"
                     />
@@ -122,9 +132,11 @@ export default function CreatePostForm() {
           avatarUrl={user?.avatarUrl ?? ""}
         />
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => window.history.back()}>Hủy</Button>
+          <Button variant="outline" onClick={() => window.history.back()}>
+            Hủy
+          </Button>
           <Button onClick={handleSubmit} disabled={postState.isLoading}>
-            {postState.isLoading ? 'Đang đăng...' : 'Đăng bài'}
+            {postState.isLoading ? "Đang đăng..." : "Đăng bài"}
           </Button>
         </div>
       </div>
