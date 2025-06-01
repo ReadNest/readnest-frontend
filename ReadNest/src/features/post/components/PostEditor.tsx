@@ -25,12 +25,12 @@ export default function PostEditor({ onContentChange }: PostEditorProps) {
           value={content}
           onChange={handleChange}
         />
-        <button
+        {/* <button
           onClick={() => console.log(content)}
           className="px-4 py-2 bg-blue-600 text-white rounded"
         >
           Log Content
-        </button>
+        </button> */}
       </div>
     </div>
   );

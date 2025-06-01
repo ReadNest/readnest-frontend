@@ -33,7 +33,14 @@ import type {
     reducers: {
       toggleFavoriteStart: (_state, _action: PayloadAction<ToggleFavoriteBookRequest>) => {},
       getFavoritesStart: (_state, _action: PayloadAction<{ userId: string; paging: PagingRequest }>) => {},
-  
+      toggleFavoriteOptimistic: (state, action: PayloadAction<{ bookId: string; bookData?: GetBookResponse }>) => {
+        const index = state.favorites.findIndex(fav => fav.id === action.payload.bookId);
+        if (index >= 0) {
+          state.favorites.splice(index, 1);
+        } else if (action.payload.bookData) {
+          state.favorites.push(action.payload.bookData);
+        }
+      },
       setLoading: (state, action: PayloadAction<boolean>) => {
         state.loading = action.payload;
       },
@@ -60,6 +67,7 @@ import type {
   export const {
     toggleFavoriteStart,
     getFavoritesStart,
+    toggleFavoriteOptimistic,
     setLoading,
     setSuccess,
     setFavorites,

@@ -16,7 +16,7 @@ export type AffiliateLink = {
   affiliateLink: string;
 };
 
-const dummyPartners = ["Amazon", "Tiki", "Fahasa"];
+const dummyPartners = ["Amazon", "Tiki", "Tiktok", "Shoppee", "Lazada"];
 
 export default function AffiliateLinksForm({
   bookId,

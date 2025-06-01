@@ -17,7 +17,10 @@ import type { RootState } from "@/store";
 import { clearErrors } from "@/store/error/errorSlice";
 import { TinyMCETextEditor } from "@/components/rich-text-editor/TinyMCETextEditor";
 import { toast } from "react-toastify";
-import { fetchCategoriesStart } from "@/features/category/categorySlice";
+import {
+  fetchCategoriesStart,
+  fetchMoreCategoriesStart,
+} from "@/features/category/categorySlice";
 import { LazyMultiSelectCombobox } from "@/components/ui/LazyMultiSelectCombobox";
 import MultiImageUploader from "@/components/ui/MultiImageUploader";
 
@@ -26,6 +29,15 @@ interface BookFormProps {
   onSubmit: (data: CreateBookRequest) => void;
   isSubmitting?: boolean;
 }
+
+const languagesFromApi = [
+  { id: "vi", name: "Tiếng Việt" },
+  { id: "en", name: "Tiếng Anh" },
+  { id: "jp", name: "Tiếng Nhật" },
+  { id: "fr", name: "Tiếng Pháp" },
+  { id: "zh", name: "Tiếng Trung" },
+  { id: "ko", name: "Tiếng Hàn" },
+];
 
 export default function BookForm({
   defaultValues,
@@ -173,7 +185,7 @@ export default function BookForm({
 
   const handleFetchMoreCategories = (nextPage: number) => {
     dispatch(
-      fetchCategoriesStart({
+      fetchMoreCategoriesStart({
         pageIndex: nextPage,
         pageSize: pageSize || 10,
       })
@@ -253,8 +265,9 @@ export default function BookForm({
                   <SelectValue placeholder="Chọn ngôn ngữ" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="vi">Vietnamese</SelectItem>
+                  {languagesFromApi.map(({ id, name }) => (
+                    <SelectItem value={id}>{name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             )}

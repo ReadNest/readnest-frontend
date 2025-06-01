@@ -29,7 +29,6 @@ import { clearErrors } from "@/store/error/errorSlice";
 import CreatePostPage from "@/pages/post/CreatePostPage";
 import CommentReportsPage from "@/pages/commentReport/CommentReportsPage";
 
-
 export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -125,7 +124,7 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.SEARCH,
-      isPrivate: true,
+      isPrivate: false,
       // allowedRoles: ["user", "admin"],
       element: <SearchPage />,
       layout: defaultLayout,
@@ -139,7 +138,7 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.BOOK_DETAIL,
-      isPrivate: true,
+      isPrivate: false,
       // allowedRoles: ["user", "admin"],
       element: <BookDetailPage />,
       layout: defaultLayout,

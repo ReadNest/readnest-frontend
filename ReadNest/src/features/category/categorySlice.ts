@@ -1,4 +1,9 @@
-import type { CreateCategoryRequest, GetCategoryResponse, UpdateCategoryRequest } from "@/api/@types";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type {
+  CreateCategoryRequest,
+  GetCategoryResponse,
+  UpdateCategoryRequest,
+} from "@/api/@types";
 import type { PagingRequest } from "@/lib/api/base/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
@@ -26,19 +31,29 @@ const categorySlice = createSlice({
   name: "category",
   initialState,
   reducers: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createCategoryStart: (_state, _action: PayloadAction<CreateCategoryRequest>) => {},
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updateCategoryStart: (_state, _action: PayloadAction<UpdateCategoryRequest>) => {},
-    updateCategoryInList: (state, action: PayloadAction<GetCategoryResponse>) => {
+    createCategoryStart: (
+      _state,
+      _action: PayloadAction<CreateCategoryRequest>
+    ) => {},
+    updateCategoryStart: (
+      _state,
+      _action: PayloadAction<UpdateCategoryRequest>
+    ) => {},
+    updateCategoryInList: (
+      state,
+      action: PayloadAction<GetCategoryResponse>
+    ) => {
       const updated = action.payload;
       const index = state.categories.findIndex((cat) => cat.id === updated.id);
       if (index !== -1) {
         state.categories[index] = updated;
       }
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchCategoriesStart: (_state, _action: PayloadAction<PagingRequest>) => {},
+    fetchMoreCategoriesStart: (
+      _state,
+      _action: PayloadAction<PagingRequest>
+    ) => {},
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -50,6 +65,12 @@ const categorySlice = createSlice({
     },
     setCategories: (state, action: PayloadAction<GetCategoryResponse[]>) => {
       state.categories = action.payload;
+    },
+    setFetchMoreCategories: (
+      state,
+      action: PayloadAction<GetCategoryResponse[]>
+    ) => {
+      state.categories = [...state.categories, ...action.payload];
     },
     setPagingInfo: (
       state,
@@ -72,6 +93,8 @@ export const {
   updateCategoryStart,
   updateCategoryInList,
   fetchCategoriesStart,
+  fetchMoreCategoriesStart,
+  setFetchMoreCategories,
   setLoading,
   setSuccess,
   addCategory,
