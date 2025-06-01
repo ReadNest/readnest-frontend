@@ -75,7 +75,7 @@ const settingsItems = [
 
 export default function Sidebar({ roleName }: SidebarProps) {
   const navigate = useNavigate();
-  const sidebarItems = roleName === RoleEnum.USER ? adminSidebarItems : [];
+  const sidebarItems = roleName === RoleEnum.ADMIN ? adminSidebarItems : [];
   const [open, setOpen] = useState<Record<string, boolean>>({
     management: true,
   });
