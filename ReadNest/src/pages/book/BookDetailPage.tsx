@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { BookRating } from "@/features/favouriteBooks/components/BookRating";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "@radix-ui/react-separator";
-import { HeartIcon, PenToolIcon, StarIcon } from "lucide-react";
+import { HeartIcon, PenToolIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -28,6 +28,7 @@ import {
   getFavoritesStart,
   toggleFavoriteStart,
 } from "@/features/favouriteBooks/favoriteSlice";
+import AffiliateButton from "@/features/affiliate/components/AffiliateButton";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
@@ -145,24 +146,36 @@ export default function BookDetailPage() {
             </div>
           </div>
 
-          <div className="flex gap-4 mt-6">
-            <Button className="bg-blue-600 hover:bg-blue-700">Mua sách</Button>
-            <Button variant="outline">Phát tài liệu</Button>
+          <div className="mt-6">
+            <div className="flex flex-wrap gap-3 mb-4">
+              {book.affiliateLinks?.map((link) => (
+                <AffiliateButton
+                  key={link.id}
+                  partnerName={link.partnerName ?? ""}
+                  affiliateLink={link.affiliateLink ?? ""}
+                />
+              ))}
+            </div>
+            
             <Button
               onClick={handleToggleFavorite}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition 
+              className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300
                 ${
                   isFavorite
-                    ? "bg-red-100 text-red-600 hover:bg-red-200"
-                    : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"
+                    ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
                 }`}
             >
               <HeartIcon
                 className={`h-5 w-5 ${
-                  isFavorite ? "text-red-500" : "text-gray-400"
-                }`}
+                  isFavorite 
+                    ? "fill-red-500 text-red-500 animate-pulse" 
+                    : "text-gray-400 group-hover:text-gray-500"
+                } transition-colors`}
               />
-              {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
+              <span className="group-hover:underline">
+                {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
+              </span>
             </Button>
           </div>
         </Card>
@@ -188,78 +201,52 @@ export default function BookDetailPage() {
       <Separator className="mb-10" />
 
       <Card className="p-4">
-        {/* Reviews Section */}
         <div className="mb-12">
-          {/* Header with title */}
-          <h2 className="text-4xl font-bold mb-6 text-left">
-            Đánh giá sản phẩm
-          </h2>
+          <h2 className="text-3xl font-bold mb-8 text-left">Đánh giá & Nhận xét cuốn sách {book.title}</h2>
 
-          {/* Rating Summary */}
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
-            {/* Group: 4.2/5 + Star */}
-            <div className="w-full md:w-1/4 flex flex-col items-center md:items-start">
-              <div className="flex flex-col items-center w-full">
-                <div className="text-3xl font-bold text-center mb-1">
-                  4.2<span className="text-lg text-gray-500">/5</span>
-                </div>
-                <div className="flex justify-center mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <StarIcon
-                      key={i}
-                      className={`h-5 w-5 ${
-                        i < 4
-                          ? "text-yellow-500 fill-yellow-500"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Thanh đếm số lượng đánh giá */}
-            <div className="w-full md:w-1/2" style={{ marginLeft: "-100px" }}>
-              <div className="space-y-3">
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <div key={star} className="flex items-center">
-                    <span className="w-16">{star} sao</span>
-                    <div className="flex-1 mx-2 h-4 bg-gray-200 rounded-full">
-                      <div
-                        className="h-full bg-yellow-500 rounded-full"
-                        style={{
-                          width:
-                            star === 5
-                              ? "40%"
-                              : star === 4
-                              ? "40%"
-                              : star === 3
-                              ? "20%"
-                              : "0%",
-                        }}
-                      ></div>
-                    </div>
-                    <span className="w-12 text-gray-600">
-                      {star === 5
-                        ? "40%"
-                        : star === 4
-                        ? "40%"
-                        : star === 3
-                        ? "20%"
-                        : "0%"}
-                    </span>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+            {/* Circle rating */}
+            <div className="flex-1 flex justify-center">
+              <div className="relative w-32 h-32 flex items-center justify-center">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <circle
+                    className="text-gray-200"
+                    strokeWidth="8"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="40"
+                    cx="50"
+                    cy="50"
+                  />
+                  <circle
+                    className="text-yellow-500"
+                    strokeWidth="8"
+                    strokeDasharray="251.2"
+                    strokeDashoffset={251.2 - (251.2 * (book.averageRating || 0) / 5)}
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="40"
+                    cx="50"
+                    cy="50"
+                  />
+                </svg>
+                <div className="absolute text-center">
+                  <div className="text-3xl font-bold">
+                    {book.averageRating?.toFixed(1) || "0.0"}
                   </div>
-                ))}
+                  <div className="text-sm text-gray-500">/5</div>
+                </div>
               </div>
             </div>
 
             {/* Nút viết đánh giá */}
-            <div className="w-full md:w-1/4 flex md:justify-end items-start mt-6 md:mt-0">
+            <div className="flex-1 flex justify-center">
               <button
-                className="flex items-center bg-white border border-gray-400 text-gray-800 font-medium py-2 px-4 rounded transition-colors duration-150 hover:bg-violet-600 hover:text-white hover:border-violet-600"
+                className="flex items-center bg-gradient-to-r from-violet-600 to-blue-500 text-white font-medium py-3 px-6 rounded-lg hover:shadow-lg transition"
                 onClick={() => setIsModalOpen(true)}
               >
-                <PenToolIcon className="h-4 w-4 mr-2" />
+                <PenToolIcon className="h-5 w-5 mr-2" />
                 Viết đánh giá
               </button>
             </div>
@@ -275,13 +262,14 @@ export default function BookDetailPage() {
           <UserCommentCard
             key={comment.commentId}
             avatarSrc={comment.creator?.avatarUrl || ""}
-            username={comment.creator?.fullName || "Người dùng ẩn danh"}
+            fullName={comment.creator?.fullName || "Người dùng ẩn danh"}
             createdAt={comment.createdAt || new Date().toISOString()}
             comment={comment.content ?? ""}
             likeCount={comment.numberOfLikes || 0}
             userLikes={comment.userLikes || []}
-            curUserId={auth.user?.userId}
+            userId={comment.creator?.userId || ""}
             onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
+            commentId={comment.commentId || ""}
           />
         ))}
         {comments.length > 4 && !showAllComments && (
@@ -384,6 +372,7 @@ export default function BookDetailPage() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitReview}
         book={book}
+        isUpdate={false} // Chỉ sử dụng khi cần cập nhật đánh giá
       />
     </div>
   );

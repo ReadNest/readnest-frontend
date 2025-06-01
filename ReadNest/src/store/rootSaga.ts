@@ -2,6 +2,7 @@ import affiliateSaga from "@/features/affiliate/affiliateSaga";
 import authSaga from "@/features/auth/authSaga";
 import bookSaga from "@/features/book/bookSaga";
 import categorySaga from "@/features/category/categorySaga";
+import commentReportSaga from "@/features/commentReport/commentReportSaga";
 import favoriteSaga from "@/features/favouriteBooks/favoriteSaga";
 import profileSaga from "@/features/profile/profileSaga";
 import { bookSearchSaga } from "@/features/search/bookSearchSaga";
@@ -22,6 +23,7 @@ export default function* rootSaga() {
     call(favoriteSaga),
     call(bookSearchSaga),
     call(commentSaga),
+    call(commentReportSaga),
     call(postSaga),
     call(bookDropdownSaga),
     call(bookSearchPageSaga),

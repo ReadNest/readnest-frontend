@@ -8,6 +8,7 @@ import categoryReducer from "@/features/category/categorySlice";
 import favoriteReducer from "@/features/favouriteBooks/favoriteSlice";
 import bookSearchReducer from "@/features/search/bookSearchSlice";
 import commentReducer from "@/features/review/commentSlice";
+import commentReportReducer from "@/features/commentReport/commentReportSlice";
 import postReducer from "@/features/post/postSlice";
 import bookDropdownReducer from "@/features/search/bookDropdownSlice";
 import bookSearchPageReducer from "@/features/search/bookSearchPageSlice";
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   affiliate: affiliateReducer,
   categories: categoryReducer,
   favorites: favoriteReducer,
+  commentReports: commentReportReducer,
   bookSearch: bookSearchReducer,
   post: postReducer,
   bookDropdown: bookDropdownReducer,
