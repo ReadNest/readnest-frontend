@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import InputSearch from "./InputSearch";
 import type { GetCategoryResponse } from "@/api/@types";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type FilterSidebarProps = {
   genres: GetCategoryResponse[];
@@ -110,6 +111,46 @@ export function FilterSidebar({
     </ScrollArea>
   );
 
+  const renderLanguageFilterList = (
+    items: { id: string; name: string }[],
+    selected: string[],
+    setSelected: React.Dispatch<React.SetStateAction<string[]>>
+  ) => (
+    <RadioGroup
+      value={selected[0] || ""}
+      onValueChange={(val) => {
+        setSelected([val]);
+        updateFilter(selectedGenres, [val]);
+      }}
+      className="space-y-1 px-1"
+    >
+      {items.length ? (
+        items.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-center gap-2 px-2 py-1 rounded hover:bg-indigo-50 transition cursor-pointer"
+          >
+            <RadioGroupItem
+              value={item.id}
+              id={`language-${item.id}`}
+              className="border-gray-300 text-indigo-600"
+            />
+            <label
+              htmlFor={`language-${item.id}`}
+              className="text-sm text-gray-700"
+            >
+              {item.name}
+            </label>
+          </div>
+        ))
+      ) : (
+        <p className="text-sm text-gray-500 px-2 italic">
+          Không tìm thấy kết quả.
+        </p>
+      )}
+    </RadioGroup>
+  );
+
   return (
     <div className="w-full bg-white rounded-lg shadow p-4 border border-gray-200 space-y-4">
       <Accordion type="multiple" className="space-y-4">
@@ -142,11 +183,10 @@ export function FilterSidebar({
               onSearch={setLanguageSearchText}
               disableNavigate={true}
             />
-            {renderFilterList(
+            {renderLanguageFilterList(
               filteredLanguages,
               selectedLanguages,
-              setSelectedLanguages,
-              false
+              setSelectedLanguages
             )}
           </AccordionContent>
         </AccordionItem>

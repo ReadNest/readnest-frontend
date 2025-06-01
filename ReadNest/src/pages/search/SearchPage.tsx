@@ -13,7 +13,10 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import { fetchBooksStart } from "@/features/search/bookSearchPageSlice";
+import {
+  fetchBooksStart,
+  filterBooksStart,
+} from "@/features/search/bookSearchPageSlice";
 import { FilterSidebar } from "@/features/search/components/FilterSidebar";
 import { fetchCategoriesRequest } from "@/features/search/categoryFilterSlice";
 
@@ -83,6 +86,20 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
     dispatch(fetchCategoriesRequest());
   }, [dispatch]);
 
+  const handleOnChange = (filters: {
+    genres: string[];
+    languages: string[];
+  }) => {
+    dispatch(
+      filterBooksStart({
+        categoryIds: filters.genres,
+        keyword: keyword,
+        languageIds: filters.languages,
+        page: pageIndex,
+      })
+    );
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="flex flex-col md:flex-row gap-8">
@@ -91,7 +108,11 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Bộ lọc</h2>
               <div>
-                <FilterSidebar genres={results} languages={languagesFromApi} />
+                <FilterSidebar
+                  genres={results}
+                  languages={languagesFromApi}
+                  onFilterChange={handleOnChange}
+                />
               </div>
             </div>
           </Card>
@@ -142,7 +163,6 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
                     const startPage = Math.max(2, pageIndex - 1);
                     const endPage = Math.min(totalPages - 1, pageIndex + 1);
 
-                    // Always show first page
                     pages.push(
                       <PaginationItem key={1}>
                         <PaginationLink

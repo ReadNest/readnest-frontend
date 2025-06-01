@@ -32,6 +32,19 @@ const bookSearchPageSlice = createSlice({
       state.page = action.payload.page;
       state.loading = true;
     },
+    filterBooksStart(
+      state,
+      action: PayloadAction<{
+        categoryIds: string[];
+        languageIds: string[];
+        keyword: string;
+        page: number;
+      }>
+    ) {
+      state.keyword = action.payload.keyword;
+      state.page = action.payload.page;
+      state.loading = true;
+    },
     fetchBooksSuccess(state, action: PayloadAction<GetBookSearchResponse[]>) {
       state.results = action.payload;
       state.loading = false;
@@ -47,6 +60,7 @@ const bookSearchPageSlice = createSlice({
 });
 
 export const {
+  filterBooksStart,
   fetchBooksStart,
   fetchBooksSuccess,
   fetchBooksFailure,
