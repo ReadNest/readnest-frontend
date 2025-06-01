@@ -20,7 +20,7 @@ const profileSlice = createSlice({
     },
     fetchUserProfileStart: (state) => {
       state.isLoading = true;
-      state.isProfileNotFound = false;
+      state.isProfileNotFound = false; // Reset khi bắt đầu fetch
     },
     fetchUserProfileSuccess: (state, action) => {
       state.isLoading = false;

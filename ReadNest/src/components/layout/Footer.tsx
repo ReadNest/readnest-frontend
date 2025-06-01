@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import readnestLogo from "@/assets/readnest_logo.svg";
 import facebookIcon from "@/assets/facebook-color-svgrepo-com.svg";
-import twitterIcon from "@/assets/twitter-color-svgrepo-com.svg";
+import tiktokIcon from "@/assets/tiktok-logo-logo-svgrepo-com.svg";
 import instagramIcon from "@/assets/instagram-1-svgrepo-com.svg";
 import linkedinIcon from "@/assets/linkedin-svgrepo-com.svg";
 
@@ -85,14 +85,14 @@ export default function Footer() {
           <h3 className="text-white font-semibold mb-4">Theo dõi chúng tôi</h3>
           <div className="flex space-x-4">
             <a
-              href="https://twitter.com"
+              href="https://vt.tiktok.com/ZSkNLoE8x/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img src={twitterIcon} alt="Twitter" className="w-5 h-5" />
+              <img src={tiktokIcon} alt="Twitter" className="w-5 h-5" />
             </a>
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/share/16JsfA5HWE/?mibextid=wwXIfr"
               target="_blank"
               rel="noopener noreferrer"
             >

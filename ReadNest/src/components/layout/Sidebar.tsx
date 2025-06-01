@@ -14,6 +14,7 @@ import {
   LayoutDashboard,
   Settings,
   Home,
+  FlagIcon,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -59,6 +60,14 @@ const adminSidebarItems = [
       { label: "Create New", path: ROUTE_PATHS.MANAGE_AFFILIATE },
     ],
   },
+  {
+    label: "Reports",
+    icon: <FlagIcon size={18} />,
+    key: "reports",
+    items: [
+      { label: "Comment Reports", path: ROUTE_PATHS.COMMENT_REPORT },
+    ],
+  },
 ];
 
 const settingsItems = [
@@ -75,7 +84,7 @@ const settingsItems = [
 
 export default function Sidebar({ roleName }: SidebarProps) {
   const navigate = useNavigate();
-  const sidebarItems = roleName === RoleEnum.USER ? adminSidebarItems : [];
+  const sidebarItems = roleName === RoleEnum.ADMIN ? adminSidebarItems : [];
   const [open, setOpen] = useState<Record<string, boolean>>({
     management: true,
   });

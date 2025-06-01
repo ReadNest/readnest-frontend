@@ -2,7 +2,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
 import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard";
 import { CameraIcon, FrameIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
@@ -18,6 +17,8 @@ import type { RootState } from "@/store";
 import { EditProfileModal } from "@/features/profile/components/EditProfileModal";
 import { toast } from "react-toastify";
 import { uploadFileToCloudinary } from "@/lib/utils";
+import { fetchTop3RecentCommentsRequested } from "@/features/review/commentSlice";
+import { setAvatarUrl } from "@/features/auth/authSlice";
 
 export default function ProfilePage() {
   const [showModalAvatar, setShowModalAvatar] = useState(false);
@@ -25,11 +26,13 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { username } = useParams<{ username: string }>();
   const { profile } = useSelector((state: RootState) => state.profile);
+  const { isLoading } = useSelector((state: RootState) => state.profile);
   // Removed incorrect and unused profileError destructuring
   const isProfileNotFound = useSelector(
     (state: RootState) => state.profile.isProfileNotFound
   );
   const { user } = useSelector((state: RootState) => state.auth);
+  const comment = useSelector((state: RootState) => state.comment);
 
   // ========== Avatar Upload ========== //
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -73,6 +76,7 @@ export default function ProfilePage() {
       };
       // Gọi API update profile (chỉ update avatar)
       dispatch(updateProfileRequested(data));
+      dispatch(setAvatarUrl(uploadResult));
       // toast.success("Cập nhật avatar thành công!");
       setShowModalAvatar(false);
       setAvatarPreview(null);
@@ -97,6 +101,20 @@ export default function ProfilePage() {
       navigate("/404");
     }
   }, [isProfileNotFound, navigate]);
+
+  //Call API to get user data
+  useEffect(() => {
+    if (username) {
+      dispatch(fetchTop3RecentCommentsRequested(username));
+      dispatch(fetchUserProfileRequested(username));
+    }
+  }, [username]);
+  // Navigate to 404 if user not found
+  useEffect(() => {
+    if (isProfileNotFound && isLoading === false) {
+      navigate("/404");
+    }
+  }, [isProfileNotFound, isLoading, navigate]);
 
   return (
     <div className="container mx-auto py-8 px-10">
@@ -234,24 +252,27 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <RecentPostCard
-                  bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                  bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                  bookAuthor="Mark Manson"
-                  likes={124}
-                />
-                <RecentPostCard
-                  bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                  bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                  bookAuthor="Mark Manson"
-                  likes={124}
-                />
-                <RecentPostCard
-                  bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                  bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                  bookAuthor="Mark Manson"
-                  likes={124}
-                />
+                {/* <RecentPostCard
+                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
+                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
+                                    bookAuthor="Mark Manson"
+                                    likes={124}
+                                />
+                                <RecentPostCard
+                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
+                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
+                                    bookAuthor="Mark Manson"
+                                    likes={124}
+                                />
+                                <RecentPostCard
+                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
+                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
+                                    bookAuthor="Mark Manson"
+                                    likes={124}
+                                /> */}
+                <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                  Hiện tại chưa có bài post nào đã được đăng tải gần đây
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -264,20 +285,35 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <RecentReviewCard
-                bookImage="https://cdn1.fahasa.com/media/flashmagazine/images/page_images/nhung_nguoi_khon_kho_hop_3_cuon/2022_06_07_15_45_42_9-390x510.jpg"
-                bookName="Những người khốn khổ"
-                author="Victor Hugo"
-                likes={245}
-                content="Một tác phẩm kinh điển về tình người và sự cứu rỗi. Câu chuyện về Jean Valjean đã để lại trong tôi nhiều suy ngẫm về ý nghĩa của cuộc sống và sự tha thứ."
-              />
-              <RecentReviewCard
-                bookImage="https://cdn1.fahasa.com/media/flashmagazine/images/page_images/nhung_nguoi_khon_kho_hop_3_cuon/2022_06_07_15_45_42_9-390x510.jpg"
-                bookName="Những người khốn khổ"
-                author="Victor Hugo"
-                likes={245}
-                content="Một tác phẩm kinh điển về tình người và sự cứu rỗi. Câu chuyện về Jean Valjean đã để lại trong tôi nhiều suy ngẫm về ý nghĩa của cuộc sống và sự tha thứ."
-              />
+              {comment.isLoadingTop3 ? (
+                <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                  Đang tải đánh giá gần đây...
+                </div>
+              ) : !comment.top3RecentComments ||
+                comment.top3RecentComments.length === 0 ? (
+                <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                  Hiện tại chưa có bài post nào đã được đăng tải gần đây
+                </div>
+              ) : (
+                comment.top3RecentComments.map((review) => (
+                  <RecentReviewCard
+                    key={review.commentId}
+                    // bookImage={review.book?.imageUrl ?? "https://via.placeholder.com/150"}
+                    // bookName={review.book?.title ?? "Chưa cập nhật tên sách"}
+                    book={
+                      review.book ?? {
+                        imageUrl: "",
+                        title: "Chưa cập nhật tên sách",
+                      }
+                    }
+                    author={review.book?.author ?? "Chưa cập nhật tác giả"}
+                    likes={review.numberOfLikes ?? 0}
+                    content={review.content ?? "Chưa có nội dung đánh giá"}
+                    userLikes={review.userLikes ?? []}
+                    commentId={review.commentId ?? ""} // Ensure commentId is passed correctly
+                  />
+                ))
+              )}
             </CardContent>
           </Card>
         </div>

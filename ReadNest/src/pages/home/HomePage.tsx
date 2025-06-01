@@ -1,8 +1,37 @@
 import { Button } from "@/components/ui/button";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 import ReviewCard from "@/features/home/components/ReviewCard";
+import { WelcomePopup } from "@/features/home/components/WelcomePopup";
+import { fetchTop3MostLikedCommentsRequested } from "@/features/review/commentSlice";
+import { formatTimeAgo } from "@/lib/utils";
+import type { RootState } from "@/store";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const comment = useSelector((state: RootState) => state.comment);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const userId = useSelector((state: RootState) => state.auth.user?.userId);
+
+  useEffect(() => {
+    if (!userId) return; // Chưa đăng nhập thì không show popup
+    const key = `hasSeenWelcome_${userId}`;
+    const hasSeenWelcome = localStorage.getItem(key);
+
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+      localStorage.setItem(key, "true");
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    dispatch(fetchTop3MostLikedCommentsRequested({}));
+  }, [dispatch]);
+
   return (
     <div className="bg-[#f5f6ff]">
       {/* Hero Section */}
@@ -18,10 +47,16 @@ function HomePage() {
               Khám phá, đánh giá và trao đổi sách với những người đọc khác.
             </p>
             <div className="flex gap-4">
-              <Button className="bg-[#5a4bff] text-white hover:bg-[#4739e6] px-6 py-3 text-base font-medium rounded-full shadow-md">
+              <Button
+                className="bg-[#5a4bff] text-white hover:bg-[#4739e6] px-6 py-3 text-base font-medium rounded-full shadow-md"
+                onClick={() => navigate("/search?keyword=")}
+              >
                 Khám phá ngay
               </Button>
               <Button
+                onClick={() => {
+                  navigate(ROUTE_PATHS.SEARCH);
+                }}
                 variant="outline"
                 className="px-6 py-3 text-base font-medium rounded-full border-2 border-[#5a4bff] text-[#5a4bff] hover:bg-[#eee]"
               >
@@ -48,33 +83,36 @@ function HomePage() {
             Đánh giá phổ biến
           </h2>
           <div className="flex flex-wrap gap-6 justify-between">
-            <ReviewCard
-              avatar={1}
-              name="Vũ Đạt"
-              book="Project Hail Mary"
-              desc="A masterpiece of science fiction that combines hard science with heart..."
-              time="2 giờ trước"
-              likes="124"
-            />
-            <ReviewCard
-              avatar={1}
-              name="Quang Long"
-              book="Tomorrow, and Tomorrow..."
-              desc="An emotional journey through time and memory that leaves you..."
-              time="5 giờ trước"
-              likes="89"
-            />
-            <ReviewCard
-              avatar={1}
-              name="Nhật Anh"
-              book="The Midnight Library"
-              desc="A philosophical take on life's infinite possibilities and the choices..."
-              time="1 ngày trước"
-              likes="156"
-            />
+            {comment.isLoadingTop3 ? (
+              <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                Đang tải đánh giá gần đây...
+              </div>
+            ) : !comment.top3MostLikedComments ||
+              comment.top3MostLikedComments.length === 0 ? (
+              <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                Hiện tại chưa có bài post nào đã được đăng tải gần đây
+              </div>
+            ) : (
+              comment.top3MostLikedComments.map((review : any) => (
+                <ReviewCard
+                  key={review.commentId}
+                  creator={review.creator ?? ""}
+                  book={review.book ?? "Chưa cập nhật tên sách"}
+                  desc={review.content ?? "Chưa cập nhật nội dung đánh giá"}
+                  time={formatTimeAgo(review.createdAt ?? new Date())}
+                  likes={review.numberOfLikes?.toString() ?? "0"}
+                  userLikes={review.userLikes ?? []}
+                  commentId={review.commentId ?? ""}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>
+      <WelcomePopup
+        isOpen={showWelcome}
+        onClose={() => setShowWelcome(false)}
+      />
     </div>
   );
 }

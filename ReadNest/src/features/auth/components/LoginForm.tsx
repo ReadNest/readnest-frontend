@@ -20,6 +20,7 @@ import {
 import { showToastMessage } from "@/lib/utils";
 import { RoleEnum } from "@/constants/enum";
 import { Lock, User } from "lucide-react";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -72,8 +73,10 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (auth.isAuthenticated) {
-      if (auth.user.roleName === RoleEnum.ADMIN) navigate("/dashboard");
-      else if (auth.user.roleName === RoleEnum.USER) navigate("/");
+      if (auth.user.roleName === RoleEnum.ADMIN) {
+        setTimeout(() => navigate(ROUTE_PATHS.BOOK), 0);
+      } else if (auth.user.roleName === RoleEnum.USER)
+        navigate(ROUTE_PATHS.DEFAULT);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.isAuthenticated]);

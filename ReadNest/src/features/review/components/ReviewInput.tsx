@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -17,15 +17,19 @@ interface ReviewInputProps {
     onSubmit: (review: string) => void
     book: GetBookResponse
     initialContent?: string
+    isUpdate?: boolean
 }
 
-export default function ReviewInput({ isOpen, onClose, onSubmit, book, initialContent = "" }: ReviewInputProps) {
+export default function ReviewInput({ isOpen, onClose, onSubmit, book, initialContent = "", isUpdate }: ReviewInputProps) {
     const maxLength = 255;
 
-    const { profile } = useSelector((state: RootState) => state.profile);
+    const { user } = useSelector((state: RootState) => state.auth);
     const selectedBook = book;
 
     const [reviewContent, setReviewContent] = useState(initialContent)
+    useEffect(() => {
+        setReviewContent(initialContent);
+    }, [initialContent, isOpen]);
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const remainingChars = maxLength - reviewContent.length
@@ -52,7 +56,7 @@ export default function ReviewInput({ isOpen, onClose, onSubmit, book, initialCo
                     <div className="flex items-center gap-6">
                         <Avatar className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0">
                             <AvatarImage
-                                src={profile.avatarUrl ?? "https://github.com/shadcn.png"}
+                                src={user.avatarUrl ?? "https://github.com/shadcn.png"}
                                 className="w-full h-full object-cover rounded-full"
                             />
                             <AvatarFallback className="w-full h-full flex items-center justify-center rounded-full bg-gray-200">
@@ -61,10 +65,14 @@ export default function ReviewInput({ isOpen, onClose, onSubmit, book, initialCo
                         </Avatar>
                         <div>
                             <DialogTitle>
-                                Chia sẻ cảm nhận về cuốn sách
-                                <span className="text-blue-600 font-semibold">
-                                    {` "${selectedBook.title}"`}
-                                </span>
+                                {isUpdate ? "Cập nhật đánh giá" : (
+                                    <>
+                                        Viết đánh giá cho cuốn sách
+                                        <span className="text-blue-600 font-semibold">
+                                            {` "${selectedBook.title}"`}
+                                        </span>
+                                    </>
+                                )}
                             </DialogTitle>
                             <DialogDescription>
                                 Đánh giá của bạn sẽ giúp người khác hiểu hơn về cuốn sách này.
@@ -109,7 +117,7 @@ export default function ReviewInput({ isOpen, onClose, onSubmit, book, initialCo
                             {isSubmitting ? "Đang gửi..." : (
                                 <>
                                     <SendIcon className="inline-block mr-2" />
-                                    Gửi đánh giá
+                                    {isUpdate ? "Cập nhật" : "Gửi đánh giá"}
                                 </>
                             )}
                         </button>

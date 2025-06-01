@@ -71,6 +71,28 @@ export type Comment = {
   book?: Book | undefined;
   creator?: User | undefined;
   likes?: User[] | null | undefined;
+  reports?: CommentReport[] | null | undefined;
+}
+
+export type CommentReport = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  reporterId?: string | undefined;
+  commentId?: string | undefined;
+  reason?: string | null | undefined;
+  status?: string | null | undefined;
+  comment?: Comment | undefined;
+  reporter?: User | undefined;
+}
+
+export type CommentReportReponse = {
+  commentReportId?: string | undefined;
+  commentId?: string | undefined;
+  reporter?: GetUserResponse | undefined;
+  reason?: string | null | undefined;
+  createdAt?: string | undefined;
 }
 
 export type CreateAffiliateLinkRequest = {
@@ -102,6 +124,12 @@ export type CreateCategoryRequest = {
 export type CreateCommentLikeRequest = {
   userId?: string | undefined;
   commentId?: string | undefined;
+}
+
+export type CreateCommentReportRequest = {
+  commentId?: string | undefined;
+  reporterId?: string | undefined;
+  reason?: string | null | undefined;
 }
 
 export type CreateCommentRequest = {
@@ -252,7 +280,7 @@ export type GetCommentResponse = {
   content?: string | null | undefined;
   bookId?: string | undefined;
   userId?: string | undefined;
-  book?: Book | undefined;
+  book?: GetBookResponse | undefined;
   creator?: GetUserResponse | undefined;
   creatorName?: string | null | undefined;
   userLikes?: string[] | null | undefined;
@@ -304,6 +332,21 @@ export type GetPostResponseListApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetPostResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetReportedCommentsResponse = {
+  commentId?: string | undefined;
+  content?: string | null | undefined;
+  commenter?: GetUserResponse | undefined;
+  reports?: CommentReportReponse[] | null | undefined;
+}
+
+export type GetReportedCommentsResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetReportedCommentsResponse[] | null | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -470,6 +513,11 @@ export type UpdateCategoryRequest = {
   description?: string | null | undefined;
 }
 
+export type UpdateCommentRequest = {
+  commentId?: string | undefined;
+  content?: string | null | undefined;
+}
+
 export type UpdateUserRequest = {
   userId?: string | undefined;
   fullName?: string | null | undefined;
@@ -497,6 +545,7 @@ export type User = {
   favoriteBooks?: FavoriteBook[] | null | undefined;
   comments?: Comment[] | null | undefined;
   likedComments?: Comment[] | null | undefined;
+  reports?: CommentReport[] | null | undefined;
   posts?: Post[] | null | undefined;
   likedPosts?: Post[] | null | undefined;
 }

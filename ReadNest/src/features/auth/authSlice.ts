@@ -68,6 +68,9 @@ const authSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
+    setAvatarUrl: (state, action: PayloadAction<string>) => {
+      state.user.avatarUrl = action.payload;
+    },
   },
 });
 
@@ -86,6 +89,7 @@ export const {
   resetInitialRegisterState,
   setUser,
   setLoading,
+  setAvatarUrl,
 } = authSlice.actions;
 
 export default authSlice.reducer;

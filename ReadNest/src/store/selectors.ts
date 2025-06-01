@@ -9,6 +9,7 @@ export const selectGlobalLoading = createSelector(
 
     (state: RootState) => state.categories.loading,
     (state: RootState) => state.profile.isLoading,
+    (state: RootState) => state.favorites.loading,
   ],
-  (authLoading, bookLoading /* ... */) => authLoading || bookLoading // || ...
+  (authLoading, bookLoading, favoriteLoading /* ... */) => authLoading || bookLoading || favoriteLoading // || ...
 );
