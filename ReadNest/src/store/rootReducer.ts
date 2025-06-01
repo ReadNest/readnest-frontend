@@ -1,4 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
+import { logout } from "@/features/auth/authSlice";
+
 import errorReducer from "@/store/error/errorSlice";
 import authReducer from "@/features/auth/authSlice";
 import profileReducer from "@/features/profile/profileSlice";
@@ -14,7 +16,7 @@ import bookDropdownReducer from "@/features/search/bookDropdownSlice";
 import bookSearchPageReducer from "@/features/search/bookSearchPageSlice";
 import categoryFilterReducer from "@/features/search/categoryFilterSlice";
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   error: errorReducer,
   auth: authReducer,
   profile: profileReducer,
@@ -30,5 +32,13 @@ const rootReducer = combineReducers({
   bookSearchPage: bookSearchPageReducer,
   categoryFilter: categoryFilterReducer,
 });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rootReducer = (state: any, action: any) => {
+  if (action.type === logout.type) {
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
 
 export default rootReducer;

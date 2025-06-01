@@ -41,6 +41,9 @@ const bookSlice = createSlice({
     addBook: (state, action: PayloadAction<GetBookResponse>) => {
       state.books.push(action.payload);
     },
+    setBooksV1: (state, action: PayloadAction<GetBookResponse[]>) => {
+      state.books = [...state.books, ...action.payload];
+    },
     setBooks: (state, action: PayloadAction<GetBookResponse[]>) => {
       state.books = [...state.books, ...action.payload];
     },
@@ -73,6 +76,7 @@ export const {
   setLoading,
   setSuccess,
   addBook,
+  setBooksV1,
   setBooks,
   setSelectedBook,
   setPagingInfo,

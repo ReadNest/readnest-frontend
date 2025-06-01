@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 import ReviewCard from "@/features/home/components/ReviewCard";
 import { WelcomePopup } from "@/features/home/components/WelcomePopup";
@@ -7,9 +8,11 @@ import { formatTimeAgo } from "@/lib/utils";
 import type { RootState } from "@/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const comment = useSelector((state: RootState) => state.comment);
   const [showWelcome, setShowWelcome] = useState(false);
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
@@ -53,6 +56,9 @@ function HomePage() {
                 Khám phá ngay
               </Button>
               <Button
+                onClick={() => {
+                  navigate(ROUTE_PATHS.SEARCH);
+                }}
                 variant="outline"
                 className="px-6 py-3 text-base font-medium rounded-full border-2 border-[#5a4bff] text-[#5a4bff] hover:bg-[#eee]"
               >
@@ -83,7 +89,8 @@ function HomePage() {
               <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
                 Đang tải đánh giá gần đây...
               </div>
-            ) : !comment.top3MostLikedComments || comment.top3MostLikedComments.length === 0 ? (
+            ) : !comment.top3MostLikedComments ||
+              comment.top3MostLikedComments.length === 0 ? (
               <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
                 Hiện tại chưa có bài post nào đã được đăng tải gần đây
               </div>

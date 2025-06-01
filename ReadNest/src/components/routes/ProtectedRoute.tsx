@@ -16,7 +16,6 @@ export const ProtectedRoute = ({
   children,
 }: ProtectedRouteProps) => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
-
   useEffect(() => {
     if (allowedRoles && !allowedRoles.includes(user?.roleName ?? "")) {
       const timer = setTimeout(() => {
