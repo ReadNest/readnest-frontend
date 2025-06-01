@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { BookSearchResult } from "@/features/search/components/BookSearchResult";
 import type { GetBookSearchResponse } from "@/api/@types";
@@ -15,6 +14,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { fetchBooksStart } from "@/features/search/bookSearchPageSlice";
+import { FilterSidebar } from "@/features/search/components/FilterSidebar";
 
 type SearchResultData = {
   items: GetBookSearchResponse[];
@@ -26,6 +26,25 @@ type SearchResultData = {
 type SearchPageProps = {
   searchResult?: SearchResultData;
 };
+
+const genresFromApi = [
+  { id: "novel", name: "Tiểu thuyết" },
+  { id: "detective", name: "Trinh thám" },
+  { id: "fantasy", name: "Giả tưởng" },
+  { id: "science", name: "Khoa học" },
+  { id: "history", name: "Lịch sử" },
+  { id: "romance", name: "Lãng mạn" },
+  { id: "horror", name: "Kinh dị" },
+  { id: "biography", name: "Tiểu sử" },
+  // ... bổ sung thêm tùy bạn
+];
+
+const languagesFromApi = [
+  { id: "vi", name: "Tiếng Việt" },
+  { id: "en", name: "Tiếng Anh" },
+  { id: "jp", name: "Tiếng Nhật" },
+  { id: "fr", name: "Tiếng Pháp" },
+];
 
 export default function SearchPage({ searchResult }: SearchPageProps) {
   const dispatch = useDispatch();
@@ -71,51 +90,15 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Filter Sidebar */}
         <div className="w-full md:w-1/4 space-y-8">
           <Card className="p-4">
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Bộ lọc</h2>
-
-              {/* Thể loại */}
-              <div className="ml-2">
-                <h3 className="font-medium mb-2">Thể loại</h3>
-                <div className="space-y-2">
-                  {[
-                    "Tiểu thuyết",
-                    "Trinh thám",
-                    "Phát triển bản thân",
-                    "Lịch sử",
-                  ].map((genre) => (
-                    <div key={genre} className="flex items-center space-x-2">
-                      <Checkbox
-                        className="data-[state=checked]:bg-indigo-600"
-                        id={genre}
-                      />
-                      <label htmlFor={genre} className="text-sm">
-                        {genre}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Ngôn ngữ */}
-              <div className="ml-2">
-                <h3 className="font-medium mb-2">Ngôn ngữ</h3>
-                <div className="space-y-2">
-                  {["Tiếng Việt", "Tiếng Anh", "Tiếng Nhật"].map((language) => (
-                    <div key={language} className="flex items-center space-x-2">
-                      <Checkbox
-                        className="data-[state=checked]:bg-indigo-600"
-                        id={language}
-                      />
-                      <label htmlFor={language} className="text-sm">
-                        {language}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+              <div>
+                <FilterSidebar
+                  genres={genresFromApi}
+                  languages={languagesFromApi}
+                />
               </div>
             </div>
           </Card>

@@ -19,7 +19,6 @@ export function BookSearchResult({
   isFavorite,
   onClick,
 }: BookSearchResultProps) {
-  // Tính toán số sao để hiển thị
   if (rating < 0) {
     rating = 0;
   }
@@ -29,7 +28,6 @@ export function BookSearchResult({
 
   return (
     <div className="flex flex-col gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow h-full">
-      {/* Ảnh bìa sách */}
       <div className="w-full relative bg-gray-100 rounded border">
         <img
           src={bookImage}
@@ -47,21 +45,18 @@ export function BookSearchResult({
         />
       </div>
 
-      {/* Thông tin sách */}
       <div className="">
         <h3 className="font-medium text-lg">{bookName}</h3>
         <p className="text-sm text-gray-600">bởi {bookAuthor}</p>
       </div>
 
-      {/* Đánh giá */}
       <RatingStars rating={rating} showText={true} />
 
-      {/* Nút Xem Thông Tin */}
       <Button
         onClick={onClick}
         variant="outline"
         size="sm"
-        className="mt-3 bg-blue-600 text-white hover:bg-blue-700"
+        className="w-full py-2 rounded-md border border-indigo-600 text-indigo-600 font-medium hover:bg-indigo-600 hover:text-white transition"
       >
         Xem Thông Tin
       </Button>

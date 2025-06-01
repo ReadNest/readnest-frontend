@@ -6,9 +6,16 @@ import { useNavigate } from "react-router-dom";
 
 interface InputSearchProps {
   onSearch: (value: string) => void;
+  placeholder?: string;
+  disableNavigate?: boolean;
+  className?: string;
 }
 
-const InputSearch = ({ onSearch }: InputSearchProps) => {
+const InputSearch = ({
+  onSearch,
+  placeholder = "Tìm kiếm...",
+  disableNavigate = false,
+}: InputSearchProps) => {
   const [searchText, setSearchText] = useState("");
   const debouncedSearch = useDebounce(searchText, 300);
   const navigate = useNavigate();
@@ -23,12 +30,12 @@ const InputSearch = ({ onSearch }: InputSearchProps) => {
         <Search className="h-4 w-4 text-muted-foreground" />
       </div>
       <Input
-        placeholder="Tìm kiếm sách..."
+        placeholder={placeholder}
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
         className="pl-8 pr-2 py-2 w-40 md:w-60 h-full"
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-          if (e.key === "Enter") {
+          if (e.key === "Enter" && !disableNavigate) {
             navigate(`/search?keyword=${encodeURIComponent(searchText)}`);
           }
         }}

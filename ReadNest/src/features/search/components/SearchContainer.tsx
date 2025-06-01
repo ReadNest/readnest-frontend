@@ -7,7 +7,7 @@ const SearchContainer = () => {
 
   return (
     <div className="relative">
-      <InputSearch onSearch={setSearchText} />
+      <InputSearch onSearch={setSearchText} placeholder="Tìm kiếm sách..." />
       <SearchDropdown searchText={searchText} />
     </div>
   );
