@@ -42,7 +42,7 @@ const bookSlice = createSlice({
       state.books.push(action.payload);
     },
     setBooks: (state, action: PayloadAction<GetBookResponse[]>) => {
-      state.books = action.payload;
+      state.books = [...state.books, ...action.payload];
     },
     setPagingInfo: (
       state,
@@ -57,8 +57,8 @@ const bookSlice = createSlice({
     resetState: (state) => {
       Object.assign(state, initialState);
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     getBookByIdStart: (_state, _action: PayloadAction<any>) => {},
-
     setSelectedBook: (state, action: PayloadAction<GetBookResponse | null>) => {
       // Lưu thông tin cuốn sách được chọn
       state.selectedBook = action.payload;

@@ -21,10 +21,13 @@ export type Book = {
   updatedAt?: string | undefined;
   isDeleted?: boolean | undefined;
   title?: string | null | undefined;
+  titleNormalized?: string | null | undefined;
   author?: string | null | undefined;
+  authorNormalized?: string | null | undefined;
   imageUrl?: string | null | undefined;
   avarageRating?: number | undefined;
   description?: string | null | undefined;
+  descriptionNormalized?: string | null | undefined;
   isbn?: string | null | undefined;
   language?: string | null | undefined;
   favoriteBooks?: FavoriteBook[] | null | undefined;
@@ -32,6 +35,7 @@ export type Book = {
   affiliateLinks?: AffiliateLink[] | null | undefined;
   comments?: Comment[] | null | undefined;
   bookImages?: BookImage[] | null | undefined;
+  posts?: Post[] | null | undefined;
 }
 
 export type BookImage = {
@@ -63,6 +67,7 @@ export type Comment = {
   content?: string | null | undefined;
   bookId?: string | undefined;
   userId?: string | undefined;
+  status?: string | null | undefined;
   book?: Book | undefined;
   creator?: User | undefined;
   likes?: User[] | null | undefined;
@@ -92,6 +97,24 @@ export type CreateBookRequest = {
 export type CreateCategoryRequest = {
   name?: string | null | undefined;
   description?: string | null | undefined;
+}
+
+export type CreateCommentLikeRequest = {
+  userId?: string | undefined;
+  commentId?: string | undefined;
+}
+
+export type CreateCommentRequest = {
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+}
+
+export type CreatePostRequest = {
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
 }
 
 export type DetailError = {
@@ -162,6 +185,31 @@ export type GetBookResponsePagingResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetBookSearchResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  averageRating?: number | undefined;
+  shortDescription?: string | null | undefined;
+  isFavorite?: boolean | undefined;
+}
+
+export type GetBookSearchResponsePagingResponse = {
+  items?: GetBookSearchResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetBookSearchResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookSearchResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetCategoryResponse = {
   id?: string | undefined;
   name?: string | null | undefined;
@@ -173,6 +221,14 @@ export type GetCategoryResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetCategoryResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetCategoryResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCategoryResponse[] | null | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -197,8 +253,58 @@ export type GetCommentResponse = {
   bookId?: string | undefined;
   userId?: string | undefined;
   book?: Book | undefined;
+  creator?: GetUserResponse | undefined;
   creatorName?: string | null | undefined;
+  userLikes?: string[] | null | undefined;
   numberOfLikes?: number | undefined;
+  createdAt?: string | undefined;
+}
+
+export type GetCommentResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCommentResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetCommentResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCommentResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetPostResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+  book?: Book | undefined;
+  creator?: GetUserResponse | undefined;
+  views?: number | undefined;
+  likesCount?: number | undefined;
+  userLikes?: string[] | null | undefined;
+}
+
+export type GetPostResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPostResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetPostResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPostResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type GetUserProfileResponse = {
@@ -213,6 +319,7 @@ export type GetUserProfileResponse = {
   roleId?: string | undefined;
   roleName?: string | null | undefined;
   comments?: GetCommentResponse[] | null | undefined;
+  posts?: GetPostResponse[] | null | undefined;
   numberOfPosts?: number | undefined;
   numberOfComments?: number | undefined;
   ratingScores?: number | undefined;
@@ -261,9 +368,29 @@ export type GetUserResponsePagingResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type LikePostRequest = {
+  userId?: string | undefined;
+  postId?: string | undefined;
+}
+
 export type LoginRequest = {
   userName?: string | null | undefined;
   password?: string | null | undefined;
+}
+
+export type Post = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+  views?: number | undefined;
+  book?: Book | undefined;
+  creator?: User | undefined;
+  likes?: User[] | null | undefined;
 }
 
 export type ProblemDetails = {
@@ -298,6 +425,24 @@ export type StringApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: string | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type ToggleFavoriteBookRequest = {
+  userId?: string | undefined;
+  bookId?: string | undefined;
+}
+
+export type ToggleFavoriteBookResponse = {
+  bookId?: string | undefined;
+  isFavorited?: boolean | undefined;
+}
+
+export type ToggleFavoriteBookResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: ToggleFavoriteBookResponse | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -352,4 +497,6 @@ export type User = {
   favoriteBooks?: FavoriteBook[] | null | undefined;
   comments?: Comment[] | null | undefined;
   likedComments?: Comment[] | null | undefined;
+  posts?: Post[] | null | undefined;
+  likedPosts?: Post[] | null | undefined;
 }

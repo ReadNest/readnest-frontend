@@ -3,8 +3,8 @@ import { Card } from "@/components/ui/card";
 import { BookRating } from "@/features/favouriteBooks/components/BookRating";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "@radix-ui/react-separator";
-import { HeartIcon, StarIcon } from "lucide-react";
-import { useEffect } from "react";
+import { HeartIcon, PenToolIcon, StarIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import type { RootState } from "@/store";
@@ -12,18 +12,90 @@ import { getBookByIdStart } from "@/features/book/bookSlice";
 import BookImageGallery, {
   type BookImage,
 } from "@/components/ui/BookImageGallery";
+import ReviewInput from "@/features/review/components/ReviewInput";
+import { UserCommentCard } from "@/features/review/components/UserCommentCard";
+import {
+  addCommentRequested,
+  fetchCommentsRequested,
+  likeCommentRequested,
+} from "@/features/review/commentSlice";
+import type {
+  CreateCommentLikeRequest,
+  CreateCommentRequest,
+} from "@/api/@types";
+import { toast } from "react-toastify";
+import {
+  getFavoritesStart,
+  toggleFavoriteStart,
+} from "@/features/favouriteBooks/favoriteSlice";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
   const { bookId } = useParams(); // URL dạng /books/:bookId
   const book = useSelector((state: RootState) => state.book.selectedBook);
   const loading = useSelector((state: RootState) => state.book.loading);
+  const auth = useSelector((state: RootState) => state.auth);
+  const comments = useSelector((state: RootState) => state.comment.comments);
+  const favorites = useSelector(
+    (state: RootState) => state.favorites.favorites
+  );
+  const isFavorite = book ? favorites.some((fav) => fav.id === book.id) : false;
+  const [showAllComments, setShowAllComments] = useState(false);
 
   useEffect(() => {
     if (bookId) {
       dispatch(getBookByIdStart(bookId));
+      // Fetch comments for the book when the component mounts
+      dispatch(fetchCommentsRequested(bookId));
+      dispatch(
+        getFavoritesStart({
+          userId: auth.user.userId ?? "",
+          paging: { pageIndex: 1, pageSize: 100 },
+        })
+      );
     }
   }, [dispatch, bookId]);
+
+  // State quản lý việc hiển thị ReviewInput
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Hàm để xử lý lưu đánh giá vào database ở đây
+  const handleSubmitReview = (reviewContent: string) => {
+    const commentData: CreateCommentRequest = {
+      bookId: book?.id ?? "",
+      userId: auth.user?.userId ?? "",
+      content: reviewContent,
+    };
+    dispatch(addCommentRequested(commentData));
+    setIsModalOpen(false); // Ẩn form sau khi submit
+    // Xử lý lưu đánh giá vào database ở đây
+  };
+  // Hàm để xử lý sự kiện click vào nút "Thích" trong UserCommentCard
+  const handleOnLikeClick = (commentId: string) => {
+    if (commentId === "") {
+      toast.info("Đã xãy ra lỗi, vui lòng thử lại sau");
+      return;
+    }
+    const likeData: CreateCommentLikeRequest = {
+      commentId: commentId,
+      userId: auth.user?.userId ?? "",
+    };
+    dispatch(likeCommentRequested(likeData));
+  };
+
+  const handleToggleFavorite = () => {
+    if (!auth.user?.userId) {
+      toast.info("Bạn cần đăng nhập để lưu yêu thích");
+      return;
+    }
+    if (!book?.id) return;
+
+    dispatch(
+      toggleFavoriteStart({
+        bookId: book.id,
+        userId: auth.user.userId,
+      })
+    );
+  };
 
   if (loading || !book) {
     return <div className="text-center py-10">Đang tải dữ liệu sách...</div>;
@@ -76,7 +148,22 @@ export default function BookDetailPage() {
           <div className="flex gap-4 mt-6">
             <Button className="bg-blue-600 hover:bg-blue-700">Mua sách</Button>
             <Button variant="outline">Phát tài liệu</Button>
-            <Button variant="outline">Lưu yêu thích</Button>
+            <Button
+              onClick={handleToggleFavorite}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition 
+                ${
+                  isFavorite
+                    ? "bg-red-100 text-red-600 hover:bg-red-200"
+                    : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"
+                }`}
+            >
+              <HeartIcon
+                className={`h-5 w-5 ${
+                  isFavorite ? "text-red-500" : "text-gray-400"
+                }`}
+              />
+              {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
+            </Button>
           </div>
         </Card>
       </div>
@@ -103,31 +190,36 @@ export default function BookDetailPage() {
       <Card className="p-4">
         {/* Reviews Section */}
         <div className="mb-12">
-          {/* Header with title and write review button */}
-
-          <h2 className="text-2xl font-bold">Đánh giá sản phẩm</h2>
+          {/* Header with title */}
+          <h2 className="text-4xl font-bold mb-6 text-left">
+            Đánh giá sản phẩm
+          </h2>
 
           {/* Rating Summary */}
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="w-full md:w-1/3">
-              <div className="text-4xl font-bold mb-2">
-                4.2<span className="text-2xl text-gray-500">/5</span>
-              </div>
-              <div className="flex mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    className={`h-5 w-5 ${
-                      i < 4
-                        ? "text-yellow-500 fill-yellow-500"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            {/* Group: 4.2/5 + Star */}
+            <div className="w-full md:w-1/4 flex flex-col items-center md:items-start">
+              <div className="flex flex-col items-center w-full">
+                <div className="text-3xl font-bold text-center mb-1">
+                  4.2<span className="text-lg text-gray-500">/5</span>
+                </div>
+                <div className="flex justify-center mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <StarIcon
+                      key={i}
+                      className={`h-5 w-5 ${
+                        i < 4
+                          ? "text-yellow-500 fill-yellow-500"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="w-full md:w-3/3">
+            {/* Thanh đếm số lượng đánh giá */}
+            <div className="w-full md:w-1/2" style={{ marginLeft: "-100px" }}>
               <div className="space-y-3">
                 {[5, 4, 3, 2, 1].map((star) => (
                   <div key={star} className="flex items-center">
@@ -160,8 +252,14 @@ export default function BookDetailPage() {
                 ))}
               </div>
             </div>
-            <div className="flex justify-between items-center mb-6">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
+
+            {/* Nút viết đánh giá */}
+            <div className="w-full md:w-1/4 flex md:justify-end items-start mt-6 md:mt-0">
+              <button
+                className="flex items-center bg-white border border-gray-400 text-gray-800 font-medium py-2 px-4 rounded transition-colors duration-150 hover:bg-violet-600 hover:text-white hover:border-violet-600"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <PenToolIcon className="h-4 w-4 mr-2" />
                 Viết đánh giá
               </button>
             </div>
@@ -173,64 +271,39 @@ export default function BookDetailPage() {
 
       {/* User Comments Section */}
       <div className="space-y-4">
-        {/* Comment 1 */}
-        <Card className="p-4">
-          <div className="flex gap-4">
-            <div className="relative flex flex-col items-center text-center">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>QL</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="flex-1">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-semibold text-lg">Quang Long</h3>
-                  <p className="text-gray-500 text-sm">3 giờ trước</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  className="text-gray-500 hover:bg-transparent"
-                >
-                  <HeartIcon className="h-4 w-4 mr-1" />
-                  <span>245</span>
-                </Button>
-              </div>
-              <p className="text-gray-700">
-                Cuốn sách thật sự rất hay. Nó làm tôi nhớ về cội nguồn cuộc
-                sống, nơi tôi chìm đắm trong sự thơ mộng của nghệ thuật.
-              </p>
-            </div>
+        {(showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
+          <UserCommentCard
+            key={comment.commentId}
+            avatarSrc={comment.creator?.avatarUrl || ""}
+            username={comment.creator?.fullName || "Người dùng ẩn danh"}
+            createdAt={comment.createdAt || new Date().toISOString()}
+            comment={comment.content ?? ""}
+            likeCount={comment.numberOfLikes || 0}
+            userLikes={comment.userLikes || []}
+            curUserId={auth.user?.userId}
+            onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
+          />
+        ))}
+        {comments.length > 4 && !showAllComments && (
+          <div className="flex justify-end">
+            <button
+              className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+              onClick={() => setShowAllComments(true)}
+            >
+              Xem thêm bình luận
+            </button>
           </div>
-        </Card>
-
-        {/* Comment 2 */}
-        <Card className="p-4">
-          <div className="flex gap-4">
-            <div className="relative flex flex-col items-center text-center">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>DH</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="flex-1">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-semibold text-lg">Đạt Huỳnh</h3>
-                  <p className="text-gray-500 text-sm">2 giờ trước</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  className="text-gray-500 hover:bg-transparent"
-                >
-                  <HeartIcon className="h-4 w-4 mr-1" />
-                  <span>140</span>
-                </Button>
-              </div>
-              <p className="text-gray-700">Mọi người nên mua cuốn sách này.</p>
-            </div>
+        )}
+        {comments.length > 4 && showAllComments && (
+          <div className="flex justify-end">
+            <button
+              className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+              onClick={() => setShowAllComments(false)}
+            >
+              Ẩn bớt bình luận
+            </button>
           </div>
-        </Card>
+        )}
       </div>
 
       {/* Related Articles Section */}
@@ -305,6 +378,13 @@ export default function BookDetailPage() {
           </div>
         </div>
       </div>
+      {/* Review Input Modal */}
+      <ReviewInput
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmitReview}
+        book={book}
+      />
     </div>
   );
 }

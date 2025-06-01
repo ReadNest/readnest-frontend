@@ -43,7 +43,6 @@ export function ProfileForm({ onClose, initialData }: ProfileFormProps) {
 
   const onSubmit = (data: ProfileData) => {
     data.userId = user?.userId;
-    console.log("data", data);
     dispatch(updateProfileRequested(data));
     onClose();
   };

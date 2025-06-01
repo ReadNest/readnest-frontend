@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-import { ZoomInIcon } from "lucide-react";
+import { ZoomInIcon, ChevronLeft, ChevronRight } from "lucide-react";
 
 export type BookImage = {
   id: string;
@@ -16,13 +16,9 @@ type Props = {
 const MAX_THUMBNAILS = 4;
 
 const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
-  const [mainImage, setMainImage] = useState<BookImage>(bookImages[0]);
-  const [isZoomOpen, setIsZoomOpen] = useState(false);
-
   const sortedImages = [...bookImages].sort((a, b) => a.order - b.order);
-  const visibleThumbnails = sortedImages.slice(0, MAX_THUMBNAILS);
-  const hasExtraImages = sortedImages.length > MAX_THUMBNAILS;
-  const extraImagesCount = sortedImages.length - MAX_THUMBNAILS;
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
 
   if (sortedImages.length === 0) {
     return (
@@ -32,9 +28,23 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
     );
   }
 
+  const mainImage = sortedImages[currentImageIndex];
+  const visibleThumbnails = sortedImages.slice(0, MAX_THUMBNAILS);
+  const hasExtraImages = sortedImages.length > MAX_THUMBNAILS;
+  const extraImagesCount = sortedImages.length - MAX_THUMBNAILS;
+
+  const handleNext = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % sortedImages.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? sortedImages.length - 1 : prev - 1
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4 w-full">
-      {/* Main Image with Zoom */}
       <Dialog open={isZoomOpen} onOpenChange={setIsZoomOpen}>
         <DialogTrigger asChild>
           <Card className="relative w-full aspect-square max-w-[500px] mx-auto rounded-xl shadow-md overflow-hidden group cursor-zoom-in">
@@ -51,15 +61,33 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
           </Card>
         </DialogTrigger>
 
-        <DialogContent className="w-auto h-auto max-w-[80vw] max-h-[80vh] p-0 bg-transparent border-none shadow-xl rounded-lg overflow-hidden">
-          <div className="relative">
-            <div className="flex items-center justify-center p-4">
-              <img
-                src={mainImage.imageUrl}
-                alt="Zoomed Book Cover"
-                className="max-w-[70vw] max-h-[70vh] object-contain shadow-lg rounded-md"
-              />
-            </div>
+        <DialogContent className="w-auto h-auto max-w-[80vw] max-h-[80vh] p-0 bg-transparent border-none shadow-xl rounded-lg overflow-visible">
+          <div className="relative flex items-center justify-center">
+            <button
+              onClick={handlePrev}
+              className="absolute -left-6 sm:-left-8 top-1/2 -translate-y-1/2 
+                 z-10 p-2 sm:p-3 rounded-full bg-black/30 
+                 hover:bg-black/60 text-white 
+                 shadow-md transition-all hover:ring-2 hover:ring-white/60"
+            >
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            <img
+              src={mainImage.imageUrl}
+              alt="Zoomed Book Cover"
+              className="max-w-[70vw] max-h-[70vh] object-contain shadow-lg rounded-md"
+            />
+
+            <button
+              onClick={handleNext}
+              className="absolute -right-6 sm:-right-8 top-1/2 -translate-y-1/2 
+                 z-10 p-2 sm:p-3 rounded-full bg-black/30 
+                 hover:bg-black/60 text-white 
+                 shadow-md transition-all hover:ring-2 hover:ring-white/60"
+            >
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
           </div>
         </DialogContent>
       </Dialog>
@@ -73,7 +101,11 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
                 ? "ring-2 ring-blue-500 scale-105"
                 : "opacity-80 hover:opacity-100 hover:scale-105"
             }`}
-            onClick={() => setMainImage(img)}
+            onClick={() =>
+              setCurrentImageIndex(
+                sortedImages.findIndex((i) => i.id === img.id)
+              )
+            }
           >
             <img
               src={img.imageUrl}
@@ -104,7 +136,9 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
                         : "hover:ring-1 hover:ring-gray-300"
                     }`}
                     onClick={() => {
-                      setMainImage(img);
+                      setCurrentImageIndex(
+                        sortedImages.findIndex((i) => i.id === img.id)
+                      );
                       setIsZoomOpen(false);
                     }}
                   >

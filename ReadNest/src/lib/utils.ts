@@ -77,3 +77,39 @@ export const uploadFileToCloudinary = async (file: File) => {
     toast.error("Error uploading to Cloudinary");
   }
 };
+
+export const formatTimeAgo = (dateString: string | Date): string => {
+  const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  // Less than 1 minute
+  if (diffInSeconds < 60) {
+    return 'vừa xong';
+  }
+
+  // Less than 1 hour
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} phút trước`;
+  }
+
+  // Less than 24 hours
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return `${diffInHours} giờ trước`;
+  }
+
+  // Less than 7 days
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays <= 7) {
+    return `${diffInDays} ngày trước`;
+  }
+
+  // More than 7 days - show formatted date
+  return date.toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+};

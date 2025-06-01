@@ -5,11 +5,14 @@ interface BookCardProps {
   author: string;
   rating: number;
   image: string;
+  onClick?: () => void;
 }
 
-export const BookCard = ({ title, author, rating, image }: BookCardProps) => {
+export const BookCard = ({ title, author, rating, image, onClick }: BookCardProps) => {
   return (
-    <div className="w-full max-w-xs overflow-hidden rounded-lg border shadow-sm bg-white">
+    <div
+      onClick={onClick} 
+      className="cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-200 ease-in-out rounded-lg border p-4">
             <div
                 className="h-48 w-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${image})` }}
