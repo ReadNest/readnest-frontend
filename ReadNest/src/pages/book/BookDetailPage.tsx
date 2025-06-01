@@ -110,11 +110,11 @@ export default function BookDetailPage() {
             bookImages={
               book.bookImages?.map(
                 (x) =>
-                  ({
-                    id: x.id ?? "",
-                    imageUrl: x.imageUrl ?? "",
-                    order: x.order,
-                  } as BookImage)
+                ({
+                  id: x.id ?? "",
+                  imageUrl: x.imageUrl ?? "",
+                  order: x.order,
+                } as BookImage)
               ) ?? []
             }
           />
@@ -156,22 +156,20 @@ export default function BookDetailPage() {
                 />
               ))}
             </div>
-            
+
             <Button
               onClick={handleToggleFavorite}
               className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300
-                ${
-                  isFavorite
-                    ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
+                ${isFavorite
+                  ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
+                  : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
                 }`}
             >
               <HeartIcon
-                className={`h-5 w-5 ${
-                  isFavorite 
-                    ? "fill-red-500 text-red-500 animate-pulse" 
-                    : "text-gray-400 group-hover:text-gray-500"
-                } transition-colors`}
+                className={`h-5 w-5 ${isFavorite
+                  ? "fill-red-500 text-red-500 animate-pulse"
+                  : "text-gray-400 group-hover:text-gray-500"
+                  } transition-colors`}
               />
               <span className="group-hover:underline">
                 {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
@@ -242,13 +240,19 @@ export default function BookDetailPage() {
 
             {/* Nút viết đánh giá */}
             <div className="flex-1 flex justify-center">
-              <button
-                className="flex items-center bg-gradient-to-r from-violet-600 to-blue-500 text-white font-medium py-3 px-6 rounded-lg hover:shadow-lg transition"
-                onClick={() => setIsModalOpen(true)}
-              >
-                <PenToolIcon className="h-5 w-5 mr-2" />
-                Viết đánh giá
-              </button>
+              {!auth.isAuthenticated ? (
+                <div className="bg-violet-50 border border-violet-300 text-violet-800 rounded px-4 py-3 font-semibold text-center shadow-sm">
+                  Hãy đăng nhập để có thể viết đánh giá!
+                </div>
+              ) : (
+                <button
+                  className="flex items-center bg-gradient-to-r from-violet-600 to-blue-500 text-white font-medium py-3 px-6 rounded-lg hover:shadow-lg transition"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <PenToolIcon className="h-5 w-5 mr-2" />
+                  Viết đánh giá
+                </button>
+              )}
             </div>
           </div>
         </div>

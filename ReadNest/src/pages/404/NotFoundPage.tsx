@@ -6,7 +6,7 @@ export default function NotFoundPage() {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-gray-900 p-4 text-center">
-            <div className="space-y-6 max-w-md">
+            <div className="space-y-6 max-w-2xl">
                 {/* Số 404 lớn */}
                 <h1 className="text-9xl font-bold text-gray-800 dark:text-gray-100">404</h1>
 
@@ -17,7 +17,9 @@ export default function NotFoundPage() {
 
                 {/* Mô tả */}
                 <p className="text-lg text-gray-600 dark:text-gray-300">
-                    Oops! Trang bạn đang tìm kiếm không tồn tại hoặc có lỗi xảy ra.
+                    Oops! Trang bạn đang tìm kiếm không tồn tại hoặc đang được phát triển.<br />
+                    Vui lòng kiểm tra lại đường dẫn hoặc quay về trang chủ.<br />
+                    Nếu bạn nghi ngờ có lỗi xảy ra, vui lòng báo cho admin nhé!
                 </p>
 
                 {/* Nút hành động */}
@@ -32,7 +34,7 @@ export default function NotFoundPage() {
                     <Button
                         size="lg"
                         variant="outline"
-                        onClick={() => navigate("/explore")}
+                        onClick={() => navigate("/search?keyword=")}
                         className="border-indigo-600 text-indigo-600 hover:bg-indigo-50"
                     >
                         Khám phá sách

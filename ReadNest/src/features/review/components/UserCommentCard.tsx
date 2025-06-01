@@ -129,58 +129,61 @@ export function UserCommentCard({
                             <p className="text-gray-500 text-sm">{formatTimeAgo(createdAt)}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button
-                                variant="ghost"
-                                className="text-gray-500 hover:bg-transparent"
-                                onClick={onLikeClick}
-                            >
-                                <HeartIcon
-                                    className={`h-4 w-4 mr-1 ${userLikes.includes(user.userId ?? "") ? "text-red-500 fill-red-500" : ""}`}
-                                />
-                                <span>{likeCount}</span>
-                            </Button>
-
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="ml-1 p-1 h-6 w-6 text-gray-500 hover:bg-gray-200"
-                                    >
-                                        <MoreVertical className="w-4 h-4" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="start"
-                                    className="bg-white shadow-2xl rounded-lg p-2"
+                            {auth.isAuthenticated &&
+                                <Button
+                                    variant="ghost"
+                                    className="text-gray-500 hover:bg-transparent"
+                                    onClick={onLikeClick}
                                 >
-                                    {user.userId == userId &&
-                                        <DropdownMenuItem
-                                            className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
-                                            onClick={() => setIsModalOpen(true)}
+                                    <HeartIcon
+                                        className={`h-4 w-4 mr-1 ${userLikes.includes(user.userId ?? "") ? "text-red-500 fill-red-500" : ""}`}
+                                    />
+                                    <span>{likeCount}</span>
+                                </Button>
+                            }
+                            {auth.isAuthenticated &&
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="ml-1 p-1 h-6 w-6 text-gray-500 hover:bg-gray-200"
                                         >
-                                            Chỉnh sửa
-                                        </DropdownMenuItem>
-                                    }
-                                    {user.userId == userId &&
-                                        <DropdownMenuItem
-                                            className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
-                                            onClick={() => handleDelteComment(commentId ?? "")}
-                                        >
-                                            Xóa
-                                        </DropdownMenuItem>
-                                    }
-                                    {user.userId !== userId &&
+                                            <MoreVertical className="w-4 h-4" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="start"
+                                        className="bg-white shadow-2xl rounded-lg p-2"
+                                    >
+                                        {user.userId == userId &&
+                                            <DropdownMenuItem
+                                                className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
+                                                onClick={() => setIsModalOpen(true)}
+                                            >
+                                                Chỉnh sửa
+                                            </DropdownMenuItem>
+                                        }
+                                        {user.userId == userId &&
+                                            <DropdownMenuItem
+                                                className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
+                                                onClick={() => handleDelteComment(commentId ?? "")}
+                                            >
+                                                Xóa
+                                            </DropdownMenuItem>
+                                        }
+                                        {user.userId !== userId &&
 
-                                        <DropdownMenuItem
-                                            className="cursor-pointer bg-white hover:bg-gray-100 rounded first:mt-0 last:mb-0"
-                                            onClick={() => setIsReportOpen(true)}
-                                        >
-                                            Báo cáo bình luận
-                                        </DropdownMenuItem>
-                                    }
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                                            <DropdownMenuItem
+                                                className="cursor-pointer bg-white hover:bg-gray-100 rounded first:mt-0 last:mb-0"
+                                                onClick={() => setIsReportOpen(true)}
+                                            >
+                                                Báo cáo bình luận
+                                            </DropdownMenuItem>
+                                        }
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            }
                         </div>
                     </div>
                     <p className="text-gray-700">{comment}</p>

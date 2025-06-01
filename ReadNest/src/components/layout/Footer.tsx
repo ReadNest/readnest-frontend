@@ -92,7 +92,7 @@ export default function Footer() {
               <img src={twitterIcon} alt="Twitter" className="w-5 h-5" />
             </a>
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/share/16JsfA5HWE/?mibextid=wwXIfr"
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ReviewCard({ creator, book, desc, time, likes, userLikes, commentId }: any) {
   const { user } = useSelector((state: RootState) => state.auth);
+  const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -78,16 +79,18 @@ function ReviewCard({ creator, book, desc, time, likes, userLikes, commentId }: 
       </p>
       <div className="flex justify-between text-sm text-gray-500 items-center">
         <span>{time}</span>
-        <Button
-          variant="ghost"
-          className="text-gray-500 hover:bg-transparent"
-          onClick={() => onLikeClick(commentId ?? "")}
-        >
-          <HeartIcon
-            className={`h-4 w-4 mr-1 ${userLikes.includes(user.userId ?? "") ? "text-red-500 fill-red-500" : ""}`}
-          />
-          <span>{likes.toLocaleString()}</span>
-        </Button>
+        {auth.isAuthenticated &&
+          <Button
+            variant="ghost"
+            className="text-gray-500 hover:bg-transparent"
+            onClick={() => onLikeClick(commentId ?? "")}
+          >
+            <HeartIcon
+              className={`h-4 w-4 mr-1 ${userLikes.includes(user.userId ?? "") ? "text-red-500 fill-red-500" : ""}`}
+            />
+            <span>{likes.toLocaleString()}</span>
+          </Button>
+        }
       </div>
     </div>
   );

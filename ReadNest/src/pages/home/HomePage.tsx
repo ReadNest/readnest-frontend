@@ -52,7 +52,10 @@ function HomePage() {
               Khám phá, đánh giá và trao đổi sách với những người đọc khác.
             </p>
             <div className="flex gap-4">
-              <Button className="bg-[#5a4bff] text-white hover:bg-[#4739e6] px-6 py-3 text-base font-medium rounded-full shadow-md">
+              <Button
+                className="bg-[#5a4bff] text-white hover:bg-[#4739e6] px-6 py-3 text-base font-medium rounded-full shadow-md"
+                onClick={() => navigate("/search?keyword=")}
+              >
                 Khám phá ngay
               </Button>
               <Button
@@ -111,9 +114,9 @@ function HomePage() {
           </div>
         </div>
       </section>
-      <WelcomePopup 
-        isOpen={showWelcome} 
-        onClose={() => setShowWelcome(false)} 
+      <WelcomePopup
+        isOpen={showWelcome}
+        onClose={() => setShowWelcome(false)}
       />
     </div>
   );
