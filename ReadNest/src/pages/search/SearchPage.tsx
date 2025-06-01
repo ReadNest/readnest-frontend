@@ -19,6 +19,7 @@ import {
 } from "@/features/search/bookSearchPageSlice";
 import { FilterSidebar } from "@/features/search/components/FilterSidebar";
 import { fetchCategoriesRequest } from "@/features/search/categoryFilterSlice";
+import { getFavoritesStart } from "@/features/favouriteBooks/favoriteSlice";
 
 type SearchResultData = {
   items: GetBookSearchResponse[];
@@ -48,6 +49,7 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
 
   const bookSearch = useSelector((state: RootState) => state.bookSearchPage);
   const { results } = useSelector((state: RootState) => state.categoryFilter);
+  const auth = useSelector((state: RootState) => state.auth);
 
   const [books, setBooks] = useState<GetBookSearchResponse[]>(
     searchResult?.items || []
@@ -73,6 +75,12 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
     if (!searchResult || !keyword) {
       fetchBooks(pageIndex);
     }
+    dispatch(
+      getFavoritesStart({
+        userId: auth.user.userId ?? "",
+        paging: { pageIndex: 1, pageSize: 100 },
+      })
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, keyword]);
 
@@ -130,6 +138,7 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
             {books.map((book) => (
               <Card key={book.id}>
                 <BookSearchResult
+                  bookId={book.id ?? ""}
                   bookImage={book.imageUrl ?? ""}
                   bookName={book.title ?? ""}
                   bookAuthor={book.author ?? ""}
