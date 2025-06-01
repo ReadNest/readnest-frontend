@@ -52,21 +52,34 @@ const commentSlice = createSlice({
         },
         likeCommentSuccess: (state, action) => {
             state.isLoading = false;
-            const comment = state.comments.find(c => c.commentId === action.payload.commentId);
-            if (comment) {
-                comment.numberOfLikes = (comment.numberOfLikes ?? 0) + 1; // Tăng số lượng likes
-                if (action.payload.userId && !comment.userLikes?.includes(action.payload.userId)) {
-                    comment.userLikes?.push(action.payload.userId); // Thêm userId vào mảng userLikes nếu chưa có
+            // Cập nhật cho comments
+            const updateLike = (arr: GetCommentResponse[] | undefined) => {
+                if (!arr) return;
+                const comment = arr.find(c => c.commentId === action.payload.commentId);
+                if (comment) {
+                    comment.numberOfLikes = (comment.numberOfLikes ?? 0) + 1;
+                    if (action.payload.userId && !comment.userLikes?.includes(action.payload.userId)) {
+                        comment.userLikes?.push(action.payload.userId);
+                    }
                 }
-            }
+            };
+            updateLike(state.comments);
+            updateLike(state.top3RecentComments);
+            updateLike(state.top3MostLikedComments);
         },
         unlikeCommentSuccess: (state, action) => {
             state.isLoading = false;
-            const comment = state.comments.find(c => c.commentId === action.payload.commentId);
-            if (comment) {
-                comment.numberOfLikes = (comment.numberOfLikes ?? 1) - 1; // Giảm số lượng likes
-                comment.userLikes = comment.userLikes?.filter(userId => userId !== action.payload.userId); // Loại bỏ userId khỏi mảng userLikes
-            }
+            const updateUnlike = (arr: GetCommentResponse[] | undefined) => {
+                if (!arr) return;
+                const comment = arr.find(c => c.commentId === action.payload.commentId);
+                if (comment) {
+                    comment.numberOfLikes = Math.max((comment.numberOfLikes ?? 1) - 1, 0); // Không để âm
+                    comment.userLikes = comment.userLikes?.filter(userId => userId !== action.payload.userId);
+                }
+            };
+            updateUnlike(state.comments);
+            updateUnlike(state.top3RecentComments);
+            updateUnlike(state.top3MostLikedComments);
         },
         likeCommentFailure: (state) => {
             state.isLoading = false;

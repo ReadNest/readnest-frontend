@@ -2,14 +2,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
 import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard";
 import { CameraIcon, FrameIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { fetchUserProfileRequested, setIsProfileNotFound, updateProfileRequested } from "@/features/profile/profileSlice";
+import { fetchUserProfileRequested, updateProfileRequested } from "@/features/profile/profileSlice";
 import type { RootState } from "@/store";
 import { EditProfileModal } from "@/features/profile/components/EditProfileModal";
 import { toast } from "react-toastify";
@@ -22,6 +21,7 @@ export default function ProfilePage() {
     const navigate = useNavigate();
     const { username } = useParams<{ username: string }>();
     const { profile } = useSelector((state: RootState) => state.profile);
+    const { isLoading } = useSelector((state: RootState) => state.profile);
     // Removed incorrect and unused profileError destructuring
     const isProfileNotFound = useSelector((state: RootState) => state.profile.isProfileNotFound);
     const { user } = useSelector((state: RootState) => state.auth);
@@ -84,7 +84,6 @@ export default function ProfilePage() {
 
     //Call API to get user data
     useEffect(() => {
-        dispatch(setIsProfileNotFound(false));
         if (username) {
             dispatch(fetchTop3RecentCommentsRequested(username));
             dispatch(fetchUserProfileRequested(username));
@@ -92,10 +91,10 @@ export default function ProfilePage() {
     }, [username]);
     // Navigate to 404 if user not found
     useEffect(() => {
-        if (isProfileNotFound) {
+        if (isProfileNotFound && isLoading === false) {
             navigate('/404');
         }
-    }, [isProfileNotFound, navigate]);
+    }, [isProfileNotFound, isLoading, navigate]);
 
     return (
         <div className="container mx-auto py-8 px-10">
@@ -268,11 +267,14 @@ export default function ProfilePage() {
                                 comment.top3RecentComments.map((review) => (
                                     <RecentReviewCard
                                         key={review.commentId}
-                                        bookImage={review.book?.imageUrl ?? "https://via.placeholder.com/150"}
-                                        bookName={review.book?.title ?? "Chưa cập nhật tên sách"}
+                                        // bookImage={review.book?.imageUrl ?? "https://via.placeholder.com/150"}
+                                        // bookName={review.book?.title ?? "Chưa cập nhật tên sách"}
+                                        book={review.book ?? { imageUrl: "", title: "Chưa cập nhật tên sách" }}
                                         author={review.book?.author ?? "Chưa cập nhật tác giả"}
                                         likes={review.numberOfLikes ?? 0}
                                         content={review.content ?? "Chưa có nội dung đánh giá"}
+                                        userLikes={review.userLikes ?? []}
+                                        commentId={review.commentId ?? ""} // Ensure commentId is passed correctly
                                     />
                                 ))
                             )}

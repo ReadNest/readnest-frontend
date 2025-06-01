@@ -1,8 +1,25 @@
 import { Button } from "@/components/ui/button";
 
 import ReviewCard from "@/features/home/components/ReviewCard";
+import { fetchTop3MostLikedCommentsRequested } from "@/features/review/commentSlice";
+import { formatTimeAgo } from "@/lib/utils";
+import type { RootState } from "@/store";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 function HomePage() {
+  const dispatch = useDispatch();
+  const comment = useSelector((state: RootState) => state.comment);
+
+  useEffect(() => {
+    dispatch(fetchTop3MostLikedCommentsRequested({}));
+    console.log("Fetching top 3 most liked comments...");
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log("Top 3 recent comments:", comment.top3MostLikedComments);
+  }, [comment]);
+
   return (
     <div className="bg-[#f5f6ff]">
       {/* Hero Section */}
@@ -48,30 +65,28 @@ function HomePage() {
             Đánh giá phổ biến
           </h2>
           <div className="flex flex-wrap gap-6 justify-between">
-            <ReviewCard
-              avatar={1}
-              name="Vũ Đạt"
-              book="Project Hail Mary"
-              desc="A masterpiece of science fiction that combines hard science with heart..."
-              time="2 giờ trước"
-              likes="124"
-            />
-            <ReviewCard
-              avatar={1}
-              name="Quang Long"
-              book="Tomorrow, and Tomorrow..."
-              desc="An emotional journey through time and memory that leaves you..."
-              time="5 giờ trước"
-              likes="89"
-            />
-            <ReviewCard
-              avatar={1}
-              name="Nhật Anh"
-              book="The Midnight Library"
-              desc="A philosophical take on life's infinite possibilities and the choices..."
-              time="1 ngày trước"
-              likes="156"
-            />
+            {comment.isLoadingTop3 ? (
+              <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                Đang tải đánh giá gần đây...
+              </div>
+            ) : !comment.top3MostLikedComments || comment.top3MostLikedComments.length === 0 ? (
+              <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                Hiện tại chưa có bài post nào đã được đăng tải gần đây
+              </div>
+            ) : (
+              comment.top3MostLikedComments.map((review) => (
+                <ReviewCard
+                  key={review.commentId}
+                  creator={review.creator ?? ""}
+                  book={review.book ?? "Chưa cập nhật tên sách"}
+                  desc={review.content ?? "Chưa cập nhật nội dung đánh giá"}
+                  time={formatTimeAgo(review.createdAt ?? new Date())}
+                  likes={review.numberOfLikes?.toString() ?? "0"}
+                  userLikes={review.userLikes ?? []}
+                  commentId={review.commentId ?? ""}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>
