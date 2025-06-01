@@ -298,22 +298,6 @@ export default function ProfilePage() {
                         </CardContent>
                     </Card>
                 </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-3 text-center mt-6">
-                    <div>
-                        <p className="text-2xl font-bold">{profile.numberOfPosts}</p>
-                        <p className="text-sm text-gray-500">Bài viết</p>
-                    </div>
-                    <div>
-                        <p className="text-2xl font-bold">{profile.numberOfComments}</p>
-                        <p className="text-sm text-gray-500">Lượt đánh giá</p>
-                    </div>
-                    <div>
-                        <p className="text-2xl font-bold">{profile.ratingScores}</p>
-                        <p className="text-sm text-gray-500">Điểm đánh giá</p>
-                    </div>
-                </div>
             </div>
             <div className="w-full flex justify-end">
                 {/* Edit Profile Button */}

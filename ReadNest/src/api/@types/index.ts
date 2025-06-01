@@ -1,7 +1,90 @@
 /* eslint-disable */
+export type AffiliateLink = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  link?: string | null | undefined;
+  partnerName?: string | null | undefined;
+  bookId?: string | undefined;
+  book?: Book | undefined;
+}
+
 export type AffiliateLinkRequest = {
   partnerName?: string | null | undefined;
   affiliateLink?: string | null | undefined;
+}
+
+export type Book = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  title?: string | null | undefined;
+  titleNormalized?: string | null | undefined;
+  author?: string | null | undefined;
+  authorNormalized?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  avarageRating?: number | undefined;
+  description?: string | null | undefined;
+  descriptionNormalized?: string | null | undefined;
+  isbn?: string | null | undefined;
+  language?: string | null | undefined;
+  favoriteBooks?: FavoriteBook[] | null | undefined;
+  categories?: Category[] | null | undefined;
+  affiliateLinks?: AffiliateLink[] | null | undefined;
+  comments?: Comment[] | null | undefined;
+  bookImages?: BookImage[] | null | undefined;
+  posts?: Post[] | null | undefined;
+}
+
+export type BookImage = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  bookId?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+  book?: Book | undefined;
+}
+
+export type Category = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+  books?: Book[] | null | undefined;
+}
+
+export type Comment = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+  status?: string | null | undefined;
+  book?: Book | undefined;
+  creator?: User | undefined;
+  likes?: User[] | null | undefined;
+  reports?: CommentReport[] | null | undefined;
+}
+
+export type CommentReport = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  reporterId?: string | undefined;
+  commentId?: string | undefined;
+  reason?: string | null | undefined;
+  status?: string | null | undefined;
+  comment?: Comment | undefined;
+  reporter?: User | undefined;
 }
 
 export type CommentReportReponse = {
@@ -55,11 +138,29 @@ export type CreateCommentRequest = {
   userId?: string | undefined;
 }
 
+export type CreatePostRequest = {
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+}
+
 export type DetailError = {
   field?: string | null | undefined;
   value?: string | null | undefined;
   messageId?: string | null | undefined;
   message?: string | null | undefined;
+}
+
+export type FavoriteBook = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  userId?: string | undefined;
+  bookId?: string | undefined;
+  user?: User | undefined;
+  book?: Book | undefined;
 }
 
 export type GetAffiliateLinkResponse = {
@@ -119,6 +220,7 @@ export type GetBookSearchResponse = {
   imageUrl?: string | null | undefined;
   averageRating?: number | undefined;
   shortDescription?: string | null | undefined;
+  isFavorite?: boolean | undefined;
 }
 
 export type GetBookSearchResponsePagingResponse = {
@@ -147,6 +249,14 @@ export type GetCategoryResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetCategoryResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetCategoryResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCategoryResponse[] | null | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -194,6 +304,37 @@ export type GetCommentResponseListApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetPostResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+  book?: Book | undefined;
+  creator?: GetUserResponse | undefined;
+  views?: number | undefined;
+  likesCount?: number | undefined;
+  userLikes?: string[] | null | undefined;
+}
+
+export type GetPostResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPostResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetPostResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPostResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetReportedCommentsResponse = {
   commentId?: string | undefined;
   content?: string | null | undefined;
@@ -221,6 +362,7 @@ export type GetUserProfileResponse = {
   roleId?: string | undefined;
   roleName?: string | null | undefined;
   comments?: GetCommentResponse[] | null | undefined;
+  posts?: GetPostResponse[] | null | undefined;
   numberOfPosts?: number | undefined;
   numberOfComments?: number | undefined;
   ratingScores?: number | undefined;
@@ -269,9 +411,29 @@ export type GetUserResponsePagingResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type LikePostRequest = {
+  userId?: string | undefined;
+  postId?: string | undefined;
+}
+
 export type LoginRequest = {
   userName?: string | null | undefined;
   password?: string | null | undefined;
+}
+
+export type Post = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
+  views?: number | undefined;
+  book?: Book | undefined;
+  creator?: User | undefined;
+  likes?: User[] | null | undefined;
 }
 
 export type ProblemDetails = {
@@ -290,6 +452,15 @@ export type RegisterRequest = {
   fullName?: string | null | undefined;
   address?: string | null | undefined;
   dateOfBirth?: string | undefined;
+}
+
+export type Role = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  roleName?: string | null | undefined;
+  users?: User[] | null | undefined;
 }
 
 export type StringApiResponse = {
@@ -354,4 +525,27 @@ export type UpdateUserRequest = {
   dateOfBirth?: string | null | undefined;
   avatarUrl?: string | null | undefined;
   bio?: string | null | undefined;
+}
+
+export type User = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  fullName?: string | null | undefined;
+  userName?: string | null | undefined;
+  bio?: string | null | undefined;
+  email?: string | null | undefined;
+  hashPassword?: string | null | undefined;
+  address?: string | null | undefined;
+  dateOfBirth?: string | undefined;
+  avatarUrl?: string | null | undefined;
+  roleId?: string | undefined;
+  role?: Role | undefined;
+  favoriteBooks?: FavoriteBook[] | null | undefined;
+  comments?: Comment[] | null | undefined;
+  likedComments?: Comment[] | null | undefined;
+  reports?: CommentReport[] | null | undefined;
+  posts?: Post[] | null | undefined;
+  likedPosts?: Post[] | null | undefined;
 }
