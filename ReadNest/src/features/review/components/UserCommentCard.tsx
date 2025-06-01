@@ -12,10 +12,12 @@ import type { CreateCommentReportRequest, GetBookResponse, UpdateCommentRequest 
 import { deleteCommentRequested, reportCommentRequested, updateCommentRequested } from "../commentSlice"
 import { ReportDialog } from "./ReportDialog"
 import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
 interface UserCommentCardProps {
     avatarSrc?: string
     fullName: string
+    userName?: string
     createdAt: string
     comment: string
     likeCount: number
@@ -28,6 +30,7 @@ interface UserCommentCardProps {
 export function UserCommentCard({
     avatarSrc,
     fullName,
+    userName,
     createdAt,
     comment,
     likeCount,
@@ -36,6 +39,8 @@ export function UserCommentCard({
     commentId,
     onLikeClick,
 }: UserCommentCardProps) {
+    const auth = useSelector((state: RootState) => state.auth)
+
     // Get initials for fallback avatar
     const getInitials = (name: string) => {
         return name
@@ -45,7 +50,7 @@ export function UserCommentCard({
             .toUpperCase()
     }
 
-    const {auth} = useSelector((state: RootState) => state)
+    const navigate = useNavigate()
 
     const dispatch = useDispatch()
 
@@ -91,11 +96,22 @@ export function UserCommentCard({
 
     const { user } = useSelector((state: RootState) => state.auth);
 
+    const onNavigateToCreatorProfile = () => {
+        console.log("Navigating to creator profile:", userName);
+        if (!userName) {
+            toast.error("Không tìm thấy thông tin người dùng");
+            return;
+        }
+        navigate(`/profile/${userName}`);
+    }
+
     return (
         <Card className="p-4">
             <div className="flex gap-4">
                 <div className="relative flex flex-col items-center text-center">
-                    <Avatar className="h-10 w-10 rounded-full overflow-hidden">
+                    <Avatar className="h-10 w-10 rounded-full overflow-hidden cursor-pointer"
+                        onClick={() => onNavigateToCreatorProfile()}
+                    >
                         <AvatarImage src={avatarSrc} className="w-full h-full object-cover rounded-full" />
                         <AvatarFallback className="w-full h-full flex items-center justify-center rounded-full bg-gray-200">
                             {getInitials(fullName)}
@@ -105,7 +121,11 @@ export function UserCommentCard({
                 <div className="flex-1">
                     <div className="flex justify-between items-start mb-2">
                         <div>
-                            <h3 className="font-semibold text-lg">{fullName}</h3>
+                            <h3 className="font-semibold text-lg cursor-pointer"
+                                onClick={() => onNavigateToCreatorProfile()}
+                            >
+                                {fullName}
+                            </h3>
                             <p className="text-gray-500 text-sm">{formatTimeAgo(createdAt)}</p>
                         </div>
                         <div className="flex items-center gap-2">

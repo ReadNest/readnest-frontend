@@ -299,19 +299,65 @@ export default function ProfilePage() {
                     </Card>
                 </div>
             </div>
-            <div className="w-full flex justify-end">
-                {/* Edit Profile Button */}
-                {user.userId == profile.userId && (
-                    <EditProfileModal
-                        profileData={{
-                            fullName: profile.fullName ?? "",
-                            dateOfBirth: profile.dateOfBirth?.split("T")[0] ?? "",
-                            bio: profile.bio ?? "",
-                            address: profile.address ?? "",
-                        }}
-                    />
+            {/* Modal for Avatar Change */}
+            {
+                showModalAvatar && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-lg font-semibold mb-4 text-center">Thay đổi Avatar</h2>
+                            <Separator className="mb-4 w-full" />
+                            <div className="flex flex-col items-center space-y-4">
+                                <div className="flex items-center space-x-4">
+                                    <label className="cursor-pointer inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                                        <PlusIcon className="mr-2" /> Chọn ảnh
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleAvatarChange}
+                                        />
+                                    </label>
+                                    <Button
+                                        className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
+                                        onClick={() => {
+                                            toast.info("Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt.");
+                                        }}
+                                    >
+                                        <FrameIcon className="mr-2" /> Chọn khung
+                                    </Button>
+                                </div>
+                                {showModalAvatar && (
+                                    <div className="flex flex-col items-center space-y-4">
+                                        <Avatar className="h-25 w-25">
+                                            <AvatarImage src={avatarPreview ?? profile.avatarUrl ?? ""} />
+                                            <AvatarFallback>N/A</AvatarFallback>
+                                        </Avatar>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-end space-x-2">
+                                <Button
+                                    className="bg-blue-500 hover:bg-blue-600 text-white"
+                                    onClick={handleSaveAvatar}
+                                    disabled={isUploading}
+                                >
+                                    {isUploading ? "Đang lưu..." : "Lưu"}
+                                </Button>
+                                <Button
+                                    className="bg-gray-300 hover:bg-gray-400 text-black"
+                                    onClick={() => {
+                                        setShowModalAvatar(false);
+                                        setAvatarPreview(null);
+                                        setAvatarFile(null);
+                                    }}
+                                    disabled={isUploading}
+                                >
+                                    Hủy
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                 )}
-            </div>
         </div>
     );
 }

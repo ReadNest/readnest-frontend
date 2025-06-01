@@ -270,6 +270,7 @@ export default function BookDetailPage() {
             userId={comment.creator?.userId || ""}
             onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
             commentId={comment.commentId || ""}
+            userName={comment.creator?.userName || ""}
           />
         ))}
         {comments.length > 4 && !showAllComments && (

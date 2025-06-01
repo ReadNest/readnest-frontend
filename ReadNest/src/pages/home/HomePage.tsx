@@ -1,15 +1,29 @@
 import { Button } from "@/components/ui/button";
 
 import ReviewCard from "@/features/home/components/ReviewCard";
+import { WelcomePopup } from "@/features/home/components/WelcomePopup";
 import { fetchTop3MostLikedCommentsRequested } from "@/features/review/commentSlice";
 import { formatTimeAgo } from "@/lib/utils";
 import type { RootState } from "@/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function HomePage() {
   const dispatch = useDispatch();
   const comment = useSelector((state: RootState) => state.comment);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const userId = useSelector((state: RootState) => state.auth.user?.userId);
+
+  useEffect(() => {
+    if (!userId) return; // Chưa đăng nhập thì không show popup
+    const key = `hasSeenWelcome_${userId}`;
+    const hasSeenWelcome = localStorage.getItem(key);
+
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+      localStorage.setItem(key, "true");
+    }
+  }, [userId]);
 
   useEffect(() => {
     dispatch(fetchTop3MostLikedCommentsRequested({}));
@@ -90,6 +104,10 @@ function HomePage() {
           </div>
         </div>
       </section>
+      <WelcomePopup 
+        isOpen={showWelcome} 
+        onClose={() => setShowWelcome(false)} 
+      />
     </div>
   );
 }
