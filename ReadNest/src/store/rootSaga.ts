@@ -10,6 +10,7 @@ import { all, call } from "redux-saga/effects";
 import postSaga from "@/features/post/postSaga";
 import { bookDropdownSaga } from "@/features/search/bookDropdownSaga";
 import { bookSearchPageSaga } from "@/features/search/bookSearchPageSaga";
+import { categoryFilterSaga } from "@/features/search/categoryFilterSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -24,5 +25,6 @@ export default function* rootSaga() {
     call(postSaga),
     call(bookDropdownSaga),
     call(bookSearchPageSaga),
+    call(categoryFilterSaga),
   ]);
 }

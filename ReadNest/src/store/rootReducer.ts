@@ -11,6 +11,7 @@ import commentReducer from "@/features/review/commentSlice";
 import postReducer from "@/features/post/postSlice";
 import bookDropdownReducer from "@/features/search/bookDropdownSlice";
 import bookSearchPageReducer from "@/features/search/bookSearchPageSlice";
+import categoryFilterReducer from "@/features/search/categoryFilterSlice";
 
 const rootReducer = combineReducers({
   error: errorReducer,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   post: postReducer,
   bookDropdown: bookDropdownReducer,
   bookSearchPage: bookSearchPageReducer,
+  categoryFilter: categoryFilterReducer,
 });
 
 export default rootReducer;

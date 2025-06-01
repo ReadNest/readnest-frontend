@@ -8,9 +8,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import InputSearch from "./InputSearch";
+import type { GetCategoryResponse } from "@/api/@types";
 
 type FilterSidebarProps = {
-  genres: { id: string; name: string }[];
+  genres: GetCategoryResponse[];
   languages: { id: string; name: string }[];
   onFilterChange?: (filters: { genres: string[]; languages: string[] }) => void;
 };
@@ -28,7 +29,7 @@ export function FilterSidebar({
   const filteredGenres = useMemo(() => {
     return genreSearchText
       ? genres.filter((g) =>
-          g.name.toLowerCase().includes(genreSearchText.toLowerCase())
+          g?.name?.toLowerCase().includes(genreSearchText.toLowerCase())
         )
       : genres;
   }, [genreSearchText, genres]);
@@ -73,7 +74,8 @@ export function FilterSidebar({
   };
 
   const renderFilterList = (
-    items: { id: string; name: string }[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items: any[],
     selected: string[],
     setSelected: React.Dispatch<React.SetStateAction<string[]>>,
     isGenre: boolean
@@ -119,6 +121,7 @@ export function FilterSidebar({
             <InputSearch
               placeholder="Tìm thể loại..."
               onSearch={setGenreSearchText}
+              disableNavigate={true}
             />
             {renderFilterList(
               filteredGenres,
@@ -137,6 +140,7 @@ export function FilterSidebar({
             <InputSearch
               placeholder="Tìm ngôn ngữ..."
               onSearch={setLanguageSearchText}
+              disableNavigate={true}
             />
             {renderFilterList(
               filteredLanguages,

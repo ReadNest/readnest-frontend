@@ -224,6 +224,14 @@ export type GetCategoryResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetCategoryResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetCategoryResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetCategoryResponsePagingResponse = {
   items?: GetCategoryResponse[] | null | undefined;
   totalItems?: number | undefined;

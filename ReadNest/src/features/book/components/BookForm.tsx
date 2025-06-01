@@ -30,6 +30,15 @@ interface BookFormProps {
   isSubmitting?: boolean;
 }
 
+const languagesFromApi = [
+  { id: "vi", name: "Tiếng Việt" },
+  { id: "en", name: "Tiếng Anh" },
+  { id: "jp", name: "Tiếng Nhật" },
+  { id: "fr", name: "Tiếng Pháp" },
+  { id: "zh", name: "Tiếng Trung" },
+  { id: "ko", name: "Tiếng Hàn" },
+];
+
 export default function BookForm({
   defaultValues,
   onSubmit,
@@ -256,8 +265,9 @@ export default function BookForm({
                   <SelectValue placeholder="Chọn ngôn ngữ" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="vi">Vietnamese</SelectItem>
+                  {languagesFromApi.map(({ id, name }) => (
+                    <SelectItem value={id}>{name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             )}

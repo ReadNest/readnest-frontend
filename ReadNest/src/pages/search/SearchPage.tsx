@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { fetchBooksStart } from "@/features/search/bookSearchPageSlice";
 import { FilterSidebar } from "@/features/search/components/FilterSidebar";
+import { fetchCategoriesRequest } from "@/features/search/categoryFilterSlice";
 
 type SearchResultData = {
   items: GetBookSearchResponse[];
@@ -27,23 +28,13 @@ type SearchPageProps = {
   searchResult?: SearchResultData;
 };
 
-const genresFromApi = [
-  { id: "novel", name: "Tiểu thuyết" },
-  { id: "detective", name: "Trinh thám" },
-  { id: "fantasy", name: "Giả tưởng" },
-  { id: "science", name: "Khoa học" },
-  { id: "history", name: "Lịch sử" },
-  { id: "romance", name: "Lãng mạn" },
-  { id: "horror", name: "Kinh dị" },
-  { id: "biography", name: "Tiểu sử" },
-  // ... bổ sung thêm tùy bạn
-];
-
 const languagesFromApi = [
   { id: "vi", name: "Tiếng Việt" },
   { id: "en", name: "Tiếng Anh" },
   { id: "jp", name: "Tiếng Nhật" },
   { id: "fr", name: "Tiếng Pháp" },
+  { id: "zh", name: "Tiếng Trung" },
+  { id: "ko", name: "Tiếng Hàn" },
 ];
 
 export default function SearchPage({ searchResult }: SearchPageProps) {
@@ -53,6 +44,7 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
   const keyword = searchParams.get("keyword") ?? "";
 
   const bookSearch = useSelector((state: RootState) => state.bookSearchPage);
+  const { results } = useSelector((state: RootState) => state.categoryFilter);
 
   const [books, setBooks] = useState<GetBookSearchResponse[]>(
     searchResult?.items || []
@@ -87,6 +79,10 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
     setPageIndex(bookSearch?.page ?? 1);
   }, [bookSearch]);
 
+  useEffect(() => {
+    dispatch(fetchCategoriesRequest());
+  }, [dispatch]);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="flex flex-col md:flex-row gap-8">
@@ -95,10 +91,7 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Bộ lọc</h2>
               <div>
-                <FilterSidebar
-                  genres={genresFromApi}
-                  languages={languagesFromApi}
-                />
+                <FilterSidebar genres={results} languages={languagesFromApi} />
               </div>
             </div>
           </Card>
