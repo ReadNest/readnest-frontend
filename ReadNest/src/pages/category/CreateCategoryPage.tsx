@@ -1,5 +1,5 @@
 // app/category/CreateCategoryPage.tsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCategoryStart } from "@/features/category/categorySlice";
 import { Input } from "@/components/ui/input";
@@ -12,9 +12,7 @@ import { Card } from "@/components/ui/card";
 export default function CreateCategoryPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, isSuccess } = useSelector(
-    (state: RootState) => state.categories
-  );
+  const { loading } = useSelector((state: RootState) => state.categories);
 
   const [form, setForm] = useState({ name: "", description: "" });
 

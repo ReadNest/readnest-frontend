@@ -1,3 +1,5 @@
+import React, { lazy, Suspense, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import type { GetUserResponse } from "@/api/@types";
 import Footer from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -7,27 +9,49 @@ import { ProtectedRoute } from "@/components/routes/ProtectedRoute";
 import { PublicRoute } from "@/components/routes/PublicRoute";
 import { RoleEnum } from "@/constants/enum";
 import { ROUTE_PATHS } from "@/constants/routePaths";
-import NotFoundPage from "@/pages/404/NotFoundPage";
-import LoginPage from "@/pages/auth/LoginPage";
-import RegisterPage from "@/pages/auth/RegisterPage";
-import BookDetailPage from "@/pages/book/BookDetailPage";
-import BookPage from "@/pages/book/BookPage";
-import BookExchangePage from "@/pages/book/BookExchangePage";
-import FavoriteBooksPage from "@/pages/favouriteBooks/FavouriteBooksPage";
-import HomePage from "@/pages/home/HomePage";
-import ProfilePage from "@/pages/profile/ProfilePage";
-import CommunityRanking from "@/pages/rank/CommunityRanking";
-import SearchPage from "@/pages/search/SearchPage";
-import CreateBookPage from "@/pages/book/CreateBookPage";
-import CreateBookAffiliateLinks from "@/pages/affliate/CreateBookAffiliateLinks";
-import CategoryPage from "@/pages/category/CategoryPage";
-import CreateCategoryPage from "@/pages/category/CreateCategoryPage";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { clearErrors } from "@/store/error/errorSlice";
-import CreatePostPage from "@/pages/post/CreatePostPage";
-import CommentReportsPage from "@/pages/commentReport/CommentReportsPage";
+import { useDispatch } from "react-redux";
+
+// Dùng lazy import cho các page
+const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
+const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
+const RegisterPage = lazy(() => import("@/pages/auth/RegisterPage"));
+const BookDetailPage = lazy(() => import("@/pages/book/BookDetailPage"));
+const BookPage = lazy(() => import("@/pages/book/BookPage"));
+const BookExchangePage = lazy(() => import("@/pages/book/BookExchangePage"));
+const FavoriteBooksPage = lazy(
+  () => import("@/pages/favouriteBooks/FavouriteBooksPage")
+);
+const HomePage = lazy(() => import("@/pages/home/HomePage"));
+const ProfilePage = lazy(() => import("@/pages/profile/ProfilePage"));
+const CommunityRanking = lazy(() => import("@/pages/rank/CommunityRanking"));
+const SearchPage = lazy(() => import("@/pages/search/SearchPage"));
+const CreateBookPage = lazy(() => import("@/pages/book/CreateBookPage"));
+const CreateBookAffiliateLinks = lazy(
+  () => import("@/pages/affliate/CreateBookAffiliateLinks")
+);
+const CategoryPage = lazy(() => import("@/pages/category/CategoryPage"));
+const CreateCategoryPage = lazy(
+  () => import("@/pages/category/CreateCategoryPage")
+);
+const CreatePostPage = lazy(() => import("@/pages/post/CreatePostPage"));
+const CommentReportsPage = lazy(
+  () => import("@/pages/commentReport/CommentReportsPage")
+);
+
+const SuspenseWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
+  <Suspense
+    fallback={
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+        <div className="w-16 h-16 border-4 border-gray-300 border-t-indigo-600 rounded-full animate-spin" />
+      </div>
+    }
+  >
+    {children}
+  </Suspense>
+);
 
 export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
   const location = useLocation();
@@ -247,7 +271,7 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
 
       return {
         path,
-        element: wrappedElement,
+        element: <SuspenseWrapper>{wrappedElement}</SuspenseWrapper>,
       };
     }
   );
