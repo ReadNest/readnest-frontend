@@ -93,7 +93,7 @@ function HomePage() {
                 Hiện tại chưa có bài post nào đã được đăng tải gần đây
               </div>
             ) : (
-              comment.top3MostLikedComments.map((review : any) => (
+              comment.top3MostLikedComments.map((review: any) => (
                 <ReviewCard
                   key={review.commentId}
                   creator={review.creator ?? ""}
@@ -109,10 +109,14 @@ function HomePage() {
           </div>
         </div>
       </section>
-      <WelcomePopup
-        isOpen={showWelcome}
-        onClose={() => setShowWelcome(false)}
-      />
+      {showWelcome && (
+        <div className="mx-auto my-10 max-w-3xl bg-white rounded-xl shadow-lg p-6">
+          <WelcomePopup
+            isOpen={showWelcome}
+            onClose={() => setShowWelcome(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }
