@@ -44,6 +44,7 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           script: |
             cd /var/readnest/readnest
+            docker pull ${{ secrets.DOCKER_TAG }}:${{ github.sha }}
             docker create --name tmp-frontend ${{ secrets.DOCKER_TAG }}:${{ github.sha }}
             rm -rf ./nginx/html
             docker cp tmp-frontend:/usr/share/nginx/html ./nginx/html
