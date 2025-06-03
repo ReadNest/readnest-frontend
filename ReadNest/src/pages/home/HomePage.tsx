@@ -147,7 +147,7 @@ function HomePage() {
               <Button
                 onClick={() => navigate(ROUTE_PATHS.SEARCH)}
                 variant="outline"
-                className="px-8 py-4 text-lg font-semibold rounded-full border-2 border-white text-white bg-transparent hover:bg-white/10 hover:border-[#5a4bff] transition-all duration-300"
+                className="px-8 py-4 text-lg font-semibold rounded-full border-2 border-white text-white bg-transparent hover:bg-white/10 hover:border-[#5a4bff] hover:text-[#5a4bff] transition-all duration-300"
               >
                 <span className="flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
