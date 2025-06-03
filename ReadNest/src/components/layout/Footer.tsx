@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import readnestLogo from "@/assets/readnest_logo.svg";
 import facebookIcon from "@/assets/facebook-color-svgrepo-com.svg";
 import tiktokIcon from "@/assets/tiktok-logo-logo-svgrepo-com.svg";
-import instagramIcon from "@/assets/instagram-1-svgrepo-com.svg";
-import linkedinIcon from "@/assets/linkedin-svgrepo-com.svg";
 
 export default function Footer() {
   return (
@@ -82,35 +80,25 @@ export default function Footer() {
 
         {/* Social */}
         <div>
-          <h3 className="text-white font-semibold mb-4">Theo dõi chúng tôi</h3>
-          <div className="flex space-x-4">
+          <h3 className="text-white font-semibold mb-4 text-lg">
+            Theo dõi chúng tôi
+          </h3>
+          <div className="flex items-center space-x-4">
+            <a
+              href="https://www.facebook.com/profile.php?id=61576737382029"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:scale-110 transition-transform duration-200"
+            >
+              <img src={facebookIcon} alt="Facebook" className="w-6 h-6" />
+            </a>
             <a
               href="https://vt.tiktok.com/ZSkNLoE8x/"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:scale-110 transition-transform duration-200"
             >
-              <img src={tiktokIcon} alt="Twitter" className="w-5 h-5" />
-            </a>
-            <a
-              href="https://www.facebook.com/share/16JsfA5HWE/?mibextid=wwXIfr"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={facebookIcon} alt="Facebook" className="w-5 h-5" />
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={instagramIcon} alt="Instagram" className="w-5 h-5" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={linkedinIcon} alt="LinkedIn" className="w-5 h-5" />
+              <img src={tiktokIcon} alt="TikTok" className="w-6 h-6" />
             </a>
           </div>
         </div>

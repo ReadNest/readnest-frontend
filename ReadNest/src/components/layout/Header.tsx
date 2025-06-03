@@ -79,7 +79,12 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
 
   return (
     <header className="w-full px-6 py-4 shadow-md bg-white flex items-center justify-between z-20 relative">
-      <div className="flex items-center gap-2">
+      <div
+        className="flex items-center gap-2 hover:cursor-pointer"
+        onClick={() => {
+          navigate("/");
+        }}
+      >
         <img src={readnestLogo} alt="Logo" className="w-8 h-8" />
         <span className="text-xl font-bold">ReadNest</span>
       </div>

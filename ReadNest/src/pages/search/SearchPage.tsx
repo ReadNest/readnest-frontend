@@ -58,7 +58,7 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
     bookSearch?.totalItems || 0
   );
   const [pageIndex, setPageIndex] = useState<number>(bookSearch?.page || 1);
-  const [pageSize] = useState<number>(6);
+  const [pageSize] = useState<number>(12);
 
   const totalPages = Math.ceil(totalItems / pageSize);
 

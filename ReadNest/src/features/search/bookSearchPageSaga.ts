@@ -17,7 +17,7 @@ function* handleSearchBooks(action: ReturnType<typeof fetchBooksStart>) {
         query: {
           keyword: keyword,
           PageIndex: page,
-          PageSize: 6,
+          PageSize: 12,
         },
       })
     );
@@ -39,7 +39,7 @@ function* handleFilterBooks(action: ReturnType<typeof filterBooksStart>) {
           Keyword: action.payload.keyword ?? "",
           LanguageIds: action.payload.languageIds ?? [],
           PageIndex: action.payload.page ?? 1,
-          PageSize: 6,
+          PageSize: 12,
         },
       })
     );
