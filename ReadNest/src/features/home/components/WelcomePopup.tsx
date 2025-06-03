@@ -1,9 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { BugIcon, Contact2Icon, FacebookIcon, Link2Icon, MailIcon, MessageCircleMoreIcon, PhoneIcon, RefreshCcwIcon, RocketIcon, SearchCheckIcon, StarIcon, TargetIcon, Users2Icon } from "lucide-react";
+import { BugIcon, Contact2Icon, FacebookIcon, MailIcon, MessageCircleMoreIcon, PhoneIcon, RefreshCcwIcon, RepeatIcon, RocketIcon, SearchCheckIcon, StarIcon, TargetIcon, Users2Icon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface WelcomePopupProps {
@@ -74,9 +73,9 @@ export function WelcomePopup({ isOpen, onClose }: WelcomePopupProps) {
                                         </li>
                                         <li className="flex items-start bg-gray-100 p-2 rounded-lg">
                                             <span className="mr-2">
-                                                <Link2Icon className="text-green-500" />
+                                                <RepeatIcon className="text-green-500" />
                                             </span>
-                                            <span>Tích hợp liên kết tiếp thị liên kết</span>
+                                            <span>Trao đổi sách</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -173,17 +172,8 @@ export function WelcomePopup({ isOpen, onClose }: WelcomePopupProps) {
 
                         <div className="border-t border-gray-200 pt-3 text-center text-sm">
                             <p>Cảm ơn bạn đã sử dụng nền tảng của chúng tôi</p>
-                            <p className="text-gray-500 mt-1">© ReadNest 2025</p>
+                            <p className="text-gray-500 my-2">© ReadNest 2025</p>
                         </div>
-                    </div>
-
-                    <div className="flex justify-center">
-                        <Button
-                            onClick={onClose}
-                            className="px-8 py-2 bg-violet-600 hover:bg-violet-700 text-white"
-                        >
-                            Đã hiểu
-                        </Button>
                     </div>
                 </div>
             </DialogContent>

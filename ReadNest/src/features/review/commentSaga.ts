@@ -62,11 +62,11 @@ function* likeComment(action: PayloadAction<CreateCommentLikeRequest>) {
             // Update the comment's like count in the state
             if (response.data === "Like successfully") {
                 yield put(likeCommentSuccess({ commentId: action.payload.commentId, userId: action.payload.userId }));
-                toast.success("Bạn đã thích bình luận này!");
+                // toast.success("Bạn đã thích bình luận này!");
             }
             else if (response.data === "Unlike successfully") {
                 yield put(unlikeCommentSuccess({ commentId: action.payload.commentId, userId: action.payload.userId }));
-                toast.success("Bạn đã bỏ thích bình luận này!");
+                // toast.success("Bạn đã bỏ thích bình luận này!");
             }
         }
 

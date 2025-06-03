@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { ZoomInIcon, ChevronLeft, ChevronRight } from "lucide-react";
@@ -13,12 +13,28 @@ type Props = {
   bookImages: BookImage[];
 };
 
-const MAX_THUMBNAILS = 4;
-
 const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
   const sortedImages = [...bookImages].sort((a, b) => a.order - b.order);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+
+  // Responsive MAX_THUMBNAILS
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [maxThumbnails, setMaxThumbnails] = useState(4);
+
+  useEffect(() => {
+    function updateMaxThumbnails() {
+      const width = containerRef.current?.offsetWidth || window.innerWidth;
+      // 88 = 80px thumbnail + 8px gap
+      let count = Math.floor((width - 32) / 88) - 1; // Trừ thêm 1 để tránh tràn dòng
+      count = Math.max(1, Math.min(count, sortedImages.length));
+      setMaxThumbnails(count);
+    }
+    updateMaxThumbnails();
+    console.log("Max thumbnails updated:", maxThumbnails);
+    window.addEventListener("resize", updateMaxThumbnails);
+    return () => window.removeEventListener("resize", updateMaxThumbnails);
+  }, [sortedImages.length]);
 
   if (sortedImages.length === 0) {
     return (
@@ -29,9 +45,9 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
   }
 
   const mainImage = sortedImages[currentImageIndex];
-  const visibleThumbnails = sortedImages.slice(0, MAX_THUMBNAILS);
-  const hasExtraImages = sortedImages.length > MAX_THUMBNAILS;
-  const extraImagesCount = sortedImages.length - MAX_THUMBNAILS;
+  const visibleThumbnails = sortedImages.slice(0, maxThumbnails);
+  const hasExtraImages = sortedImages.length > maxThumbnails;
+  const extraImagesCount = sortedImages.length - maxThumbnails;
 
   const handleNext = () => {
     setCurrentImageIndex((prev) => (prev + 1) % sortedImages.length);
@@ -44,10 +60,10 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-wrap justify-center gap-2 px-4" ref={containerRef}>
       <Dialog open={isZoomOpen} onOpenChange={setIsZoomOpen}>
         <DialogTrigger asChild>
-          <Card className="relative w-full aspect-square max-w-[500px] mx-auto rounded-xl shadow-md overflow-hidden group cursor-zoom-in">
+          <Card className="relative w-full aspect-square max-w-[220px] sm:max-w-[300px] mx-auto rounded-xl shadow-md overflow-hidden group cursor-zoom-in">
             <CardContent className="p-0 w-full h-full">
               <img
                 src={mainImage.imageUrl}
@@ -55,7 +71,7 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
                 className="w-full h-full object-contain bg-white"
               />
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
-                <ZoomInIcon className="h-10 w-10 text-white" />
+                <ZoomInIcon className="h-8 w-8 text-white" />
               </div>
             </CardContent>
           </Card>
@@ -96,11 +112,10 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
         {visibleThumbnails.map((img) => (
           <Card
             key={img.id}
-            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
-              mainImage.id === img.id
-                ? "ring-2 ring-blue-500 scale-105"
-                : "opacity-80 hover:opacity-100 hover:scale-105"
-            }`}
+            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${mainImage.id === img.id
+              ? "ring-2 ring-blue-500 scale-105"
+              : "opacity-80 hover:opacity-100 hover:scale-105"
+              }`}
             onClick={() =>
               setCurrentImageIndex(
                 sortedImages.findIndex((i) => i.id === img.id)
@@ -130,11 +145,10 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
                 {sortedImages.map((img) => (
                   <Card
                     key={img.id}
-                    className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${
-                      mainImage.id === img.id
-                        ? "ring-2 ring-blue-500"
-                        : "hover:ring-1 hover:ring-gray-300"
-                    }`}
+                    className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${mainImage.id === img.id
+                      ? "ring-2 ring-blue-500"
+                      : "hover:ring-1 hover:ring-gray-300"
+                      }`}
                     onClick={() => {
                       setCurrentImageIndex(
                         sortedImages.findIndex((i) => i.id === img.id)

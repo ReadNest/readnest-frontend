@@ -88,7 +88,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
         <img src={readnestLogo} alt="Logo" className="w-8 h-8" />
         <span className="text-xl font-bold">ReadNest</span>
       </div>
-      <nav className="hidden md:flex gap-8 text-sm font-medium">
+      <nav className="hidden md:flex gap-8 text-sm font-medium mr-auto ml-20">
         {navItems.map(({ to, label, icon }) => (
           <NavLink
             key={to}
