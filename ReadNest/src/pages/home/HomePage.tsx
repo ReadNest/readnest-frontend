@@ -108,7 +108,7 @@ function HomePage() {
         {/* Enhanced Background with Parallax Effect */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.pexels.com/photos/1387022/pexels-photo-1387022.jpeg"
+            src="/book_background.png"
             alt="Book lovers background"
             className="w-full h-full object-cover object-center scale-110"
             style={{ filter: "brightness(0.7)" }}
