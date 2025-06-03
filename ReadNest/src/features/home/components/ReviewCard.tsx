@@ -1,6 +1,7 @@
 import type { CreateCommentLikeRequest } from "@/api/@types";
 import { Button } from "@/components/ui/button";
 import { likeCommentRequested } from "@/features/review/commentSlice";
+import { RatingStars } from "@/features/search/components/RatingStars";
 import type { RootState } from "@/store";
 import { HeartIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,7 +44,7 @@ function ReviewCard({ creator, book, desc, time, likes, userLikes, commentId }: 
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 w-full max-w-sm">
+    <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
       <div className="flex items-center gap-3 mb-4">
         <img
           src={creator?.avatarUrl || "/default-avatar.png"}
@@ -65,8 +66,9 @@ function ReviewCard({ creator, book, desc, time, likes, userLikes, commentId }: 
       >
         {book?.title}
       </h3>
+      <RatingStars rating={book.averageRating} showText={true} />
       <p
-        className="text-sm text-gray-600 mb-4 line-clamp-3"
+        className="text-sm text-gray-600 my-4 line-clamp-3"
         style={{
           minHeight: "3.6em", // 3 dòng với line-height mặc định ~1.2em
           display: "-webkit-box",

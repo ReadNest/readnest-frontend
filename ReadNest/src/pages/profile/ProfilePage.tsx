@@ -271,7 +271,7 @@ export default function ProfilePage() {
                                     likes={124}
                                 /> */}
                 <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
-                  Hiện tại chưa có bài post nào đã được đăng tải gần đây
+                  Hiện tại chưa có bài post nào được đăng tải gần đây
                 </div>
               </div>
             </CardContent>
@@ -292,7 +292,7 @@ export default function ProfilePage() {
               ) : !comment.top3RecentComments ||
                 comment.top3RecentComments.length === 0 ? (
                 <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
-                  Hiện tại chưa có bài post nào đã được đăng tải gần đây
+                  Hiện tại chưa có review nào được đăng tải gần đây
                 </div>
               ) : (
                 comment.top3RecentComments.map((review) => (

@@ -1,6 +1,7 @@
 import type { CreateCommentLikeRequest, GetBookResponse } from '@/api/@types';
 import { Button } from '@/components/ui/button';
 import { likeCommentRequested } from '@/features/review/commentSlice';
+import { RatingStars } from '@/features/search/components/RatingStars';
 import type { RootState } from '@/store';
 import { HeartIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -72,6 +73,9 @@ export function RecentReviewCard({ book, author, likes, content, userLikes, comm
             onClick={() => onNavigateToBookDetail()}
           >
             {author}</p>
+        </div>
+        <div className='ml-auto flex items-center gap-2 mt-5'>
+          <RatingStars rating={book.averageRating ?? 0} showText={true} />
         </div>
       </div>
 
