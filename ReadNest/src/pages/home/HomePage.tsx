@@ -104,41 +104,59 @@ function HomePage() {
   return (
     <div className="bg-[#f5f6ff]">
       {/* Hero Section */}
-      <section className="py-24">
-        <div className="container mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-          {/* Left */}
-          <div>
-            <h1 className="text-5xl font-extrabold text-gray-900 leading-tight mb-6">
-              Your Next Great <br /> Read Awaits
+      <section className="relative py-32 bg-gray-900 overflow-hidden">
+        {/* Enhanced Background with Parallax Effect */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.pexels.com/photos/1387022/pexels-photo-1387022.jpeg"
+            alt="Book lovers background"
+            className="w-full h-full object-cover object-center scale-110"
+            style={{ filter: "brightness(0.7)" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30"></div>
+        </div>
+
+        {/* Content with Animation Ready Classes */}
+        <div className="container mx-auto max-w-7xl px-6 relative z-10">
+          <div className="max-w-2xl mx-auto text-center transform transition-all duration-500 hover:scale-105">
+            <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
+              Your Next Great<br />
+              <span className="text-[#5a4bff] bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+                Read Awaits
+              </span>
             </h1>
-            <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-              Tham gia cộng đồng những người yêu sách của chúng tôi. <br />
-              Khám phá, đánh giá và trao đổi sách với những người đọc khác.
+            
+            <p className="text-gray-200 text-lg md:text-xl mb-10 leading-relaxed max-w-lg mx-auto">
+              Tham gia cộng đồng những người yêu sách của chúng tôi để khám phá, 
+              <span className="block md:inline"> đánh giá và trao đổi sách với những người đọc khác.</span>
             </p>
-            <div className="flex gap-4">
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                className="bg-[#5a4bff] text-white hover:bg-[#4739e6] px-6 py-3 text-base font-medium rounded-full shadow-md"
+                className="bg-[#5a4bff] hover:bg-[#4739e6] text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 onClick={() => navigate("/search?keyword=")}
               >
-                Khám phá ngay
+                <span className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                  </svg>
+                  Khám phá ngay
+                </span>
               </Button>
+              
               <Button
                 onClick={() => navigate(ROUTE_PATHS.SEARCH)}
                 variant="outline"
-                className="px-6 py-3 text-base font-medium rounded-full border-2 border-[#5a4bff] text-[#5a4bff] hover:bg-[#eee]"
+                className="px-8 py-4 text-lg font-semibold rounded-full border-2 border-white text-white bg-transparent hover:bg-white/10 hover:border-[#5a4bff] transition-all duration-300"
               >
-                Sách hay
+                <span className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  Sách hay
+                </span>
               </Button>
             </div>
-          </div>
-  
-          {/* Right Image */}
-          <div className="flex justify-center">
-            <img
-              src="/image_home.png"
-              alt="Magical Stack of Books"
-              className="rounded-2xl shadow-2xl max-w-md"
-            />
           </div>
         </div>
       </section>
