@@ -15,14 +15,26 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN_FE }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Set image tag with commit SHA
-        run: echo "IMAGE_TAG=${{ secrets.DOCKER_TAG }}:${{ github.sha }}" >> $GITHUB_ENV
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image with tag
-        run: docker build ./ReadNest -f ./ReadNest/Dockerfile -t $IMAGE_TAG
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
-      - name: Push Docker image to registry
-        run: docker push $IMAGE_TAG
+      - name: Build and push (with cache)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ReadNest
+          file: ./ReadNest/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_TAG }}:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: SSH to Server and Run Commands
         uses: appleboy/ssh-action@v0.1.9
