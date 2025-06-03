@@ -36,4 +36,5 @@ jobs:
             rm -rf ./nginx/html
             docker cp tmp-frontend:/usr/share/nginx/html ./nginx/html
             docker rm tmp-frontend
-            docker-compose restart nginx
+            cd /var/readnest/readnest
+            docker compose restart nginx
