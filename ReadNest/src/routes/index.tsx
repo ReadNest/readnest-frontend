@@ -11,7 +11,6 @@ import { RoleEnum } from "@/constants/enum";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import { clearErrors } from "@/store/error/errorSlice";
 import { useDispatch } from "react-redux";
-import DetailPostPage from "@/pages/post/DetailPostPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -244,13 +243,6 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       element: <CommentReportsPage />,
       layout: adminLayout,
     },
-    {
-      path: ROUTE_PATHS.DETAIL_POST,
-      isPrivate: false,
-      // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
-      element: <DetailPostPage />,
-      layout: defaultLayout,
-    }
   ];
 
   return routeConfigs.map(
