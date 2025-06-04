@@ -19,6 +19,9 @@ import { toast } from "react-toastify";
 import { uploadFileToCloudinary } from "@/lib/utils";
 import { fetchTop3RecentCommentsRequested } from "@/features/review/commentSlice";
 import { setAvatarUrl } from "@/features/auth/authSlice";
+import { FirstParticipantAvatar } from "@/features/home/components/avatar/FirstParticipantAvatar";
+import { TopContributorBadge } from "@/features/home/components/avatar/TopContributorBadge";
+import { TopUserBadge } from "@/features/home/components/avatar/TopUserBadgeProps ";
 
 export default function ProfilePage() {
   const [showModalAvatar, setShowModalAvatar] = useState(false);
@@ -123,12 +126,29 @@ export default function ProfilePage() {
         <div className="flex items-center space-x-4 mb-1">
           {/* Profile Header */}
           <div className="relative flex flex-col items-center text-center">
-            <Avatar className="h-40 w-40 mb-4">
+            {/* <Avatar className="h-40 w-40 mb-4">
               <AvatarImage
                 src={profile.avatarUrl ?? "https://github.com/shadcn.png"}
               />
               <AvatarFallback>Avatar</AvatarFallback>
-            </Avatar>
+            </Avatar> */}
+            <div className="flex flex-col items-center">
+              {/* <FirstParticipantAvatar
+                avatarUrl={profile.avatarUrl ?? ""}
+                className="mb-3"
+              /> */}
+              {/* <TopContributorBadge
+                avatarUrl={profile.avatarUrl ?? ""}
+                rank={1}
+                contributionCount={42}
+              /> */}
+              <TopUserBadge
+                avatarUrl={profile.avatarUrl ?? ""}
+                type="mostActive"
+                value={1250}
+                className="mx-2"
+              />
+            </div>
             {user.userId == profile.userId && (
               <Button
                 className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
@@ -231,10 +251,10 @@ export default function ProfilePage() {
                 </svg>
                 {profile.dateOfBirth
                   ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
                   : "Chưa cập nhật ngày sinh"}
               </li>
             </ul>
@@ -350,12 +370,23 @@ export default function ProfilePage() {
               </div>
               {showModalAvatar && (
                 <div className="flex flex-col items-center space-y-4">
-                  <Avatar className="h-25 w-25">
+                  {/* <Avatar className="h-25 w-25">
                     <AvatarImage
                       src={avatarPreview ?? profile.avatarUrl ?? ""}
                     />
                     <AvatarFallback>N/A</AvatarFallback>
-                  </Avatar>
+                  </Avatar> */}
+                  <div className="flex flex-col items-center mb-5">
+                    {/* <FirstParticipantAvatar
+                      avatarUrl={avatarPreview ?? profile.avatarUrl ?? ""}
+                      className="mb-3"
+                    /> */}
+                    <TopContributorBadge
+                      avatarUrl={profile.avatarUrl ?? ""}
+                      rank={1}
+                      contributionCount={42}
+                    />
+                  </div>
                 </div>
               )}
             </div>
