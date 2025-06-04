@@ -13,6 +13,7 @@ import { deleteCommentRequested, reportCommentRequested, updateCommentRequested 
 import { ReportDialog } from "./ReportDialog"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import { FirstParticipantAvatar } from "@/features/home/components/avatar/FirstParticipantAvatar"
 
 interface UserCommentCardProps {
     avatarSrc?: string
@@ -109,14 +110,26 @@ export function UserCommentCard({
         <Card className="p-4">
             <div className="flex gap-4">
                 <div className="relative flex flex-col items-center text-center">
-                    <Avatar className="h-10 w-10 rounded-full overflow-hidden cursor-pointer"
+                    {/* <Avatar className="h-10 w-10 rounded-full overflow-hidden cursor-pointer"
                         onClick={() => onNavigateToCreatorProfile()}
                     >
                         <AvatarImage src={avatarSrc} className="w-full h-full object-cover rounded-full" />
                         <AvatarFallback className="w-full h-full flex items-center justify-center rounded-full bg-gray-200">
                             {getInitials(fullName)}
                         </AvatarFallback>
-                    </Avatar>
+                    </Avatar> */}
+                    <div onClick={onNavigateToCreatorProfile} style={{ cursor: "pointer" }}>
+                        <FirstParticipantAvatar
+                            avatarUrl={avatarSrc || "/default-avatar.png"}
+                            className="mb-3"
+                            avatarClassName="sm:h-10 sm:w-10 md:h-14 md:w-14"
+                            badgePosClassName="-top-2 right-0 transform translate-x-1/4 -translate-y-1/4 z-10"
+                            badgeClassName="font-medium px-2 py-0.5 text-[10px]"
+                            iconClassName="h-4 w-4 sm:h-4 sm:w-4"
+                            optionalDecorativeClassName1="sm:h-5 sm:w-5 md:h-6 md:w-6"
+                            optionalDecorativeClassName2="sm:h-4 sm:w-4 md:h-5 md:w-5"
+                        />
+                    </div>
                 </div>
                 <div className="flex-1">
                     <div className="flex justify-between items-start mb-2">

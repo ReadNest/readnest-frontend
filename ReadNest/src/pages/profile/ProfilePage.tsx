@@ -133,21 +133,21 @@ export default function ProfilePage() {
               <AvatarFallback>Avatar</AvatarFallback>
             </Avatar> */}
             <div className="flex flex-col items-center">
-              {/* <FirstParticipantAvatar
+              <FirstParticipantAvatar
                 avatarUrl={profile.avatarUrl ?? ""}
                 className="mb-3"
-              /> */}
+              />
               {/* <TopContributorBadge
                 avatarUrl={profile.avatarUrl ?? ""}
                 rank={1}
                 contributionCount={42}
               /> */}
-              <TopUserBadge
+              {/* <TopUserBadge
                 avatarUrl={profile.avatarUrl ?? ""}
                 type="mostActive"
                 value={1250}
                 className="mx-2"
-              />
+              /> */}
             </div>
             {user.userId == profile.userId && (
               <Button
@@ -377,15 +377,15 @@ export default function ProfilePage() {
                     <AvatarFallback>N/A</AvatarFallback>
                   </Avatar> */}
                   <div className="flex flex-col items-center mb-5">
-                    {/* <FirstParticipantAvatar
+                    <FirstParticipantAvatar
                       avatarUrl={avatarPreview ?? profile.avatarUrl ?? ""}
                       className="mb-3"
-                    /> */}
-                    <TopContributorBadge
+                    />
+                    {/* <TopContributorBadge
                       avatarUrl={profile.avatarUrl ?? ""}
                       rank={1}
                       contributionCount={42}
-                    />
+                    /> */}
                   </div>
                 </div>
               )}
