@@ -192,7 +192,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
               </>
             ) : (
               <>
-                <Link to="/posts" onClick={() => setMobileMenuOpen(false)}>
+                <Link to="/create-post" onClick={() => setMobileMenuOpen(false)}>
                   <Button
                     variant="default"
                     className="w-full rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold"

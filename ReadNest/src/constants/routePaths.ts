@@ -19,4 +19,6 @@ export const ROUTE_PATHS = {
   CREATE_POST: "/create-post",
   COMMENT_REPORT: "/comment-reports",
   DETAIL_POST: "/post",
+  POSTS: "/posts",
+  MY_POSTS: "my-posts",
 };

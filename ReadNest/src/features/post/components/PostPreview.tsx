@@ -72,7 +72,7 @@ export default function PostPreview({
           </div>
 
           {bookName && (
-            <h2 className="text-xl font-bold">Đánh giá cuốn sách: {bookName}</h2>
+            <h2 className="text-xl font-bold">Đánh giá sách {bookName} - {title}</h2>
           )}
 
           {title && (

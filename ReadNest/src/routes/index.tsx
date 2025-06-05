@@ -12,6 +12,8 @@ import { ROUTE_PATHS } from "@/constants/routePaths";
 import { clearErrors } from "@/store/error/errorSlice";
 import { useDispatch } from "react-redux";
 import DetailPostPage from "@/pages/post/DetailPostPage";
+import PostsPage from "@/pages/post/PostsPage";
+import UserPostsPage from "@/pages/post/UserPostsPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -249,6 +251,20 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: false,
       // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <DetailPostPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.POSTS,
+      isPrivate: false,
+      // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <PostsPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.MY_POSTS,
+      isPrivate: false,
+      // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <UserPostsPage />,
       layout: defaultLayout,
     }
   ];

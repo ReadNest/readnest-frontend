@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { TinyMCETextEditor } from '@/components/rich-text-editor/TinyMCETextEditor';
+import { Label } from '@radix-ui/react-dropdown-menu';
 
 interface PostEditorProps {
   onContentChange: (content: string) => void;
@@ -17,7 +18,9 @@ export default function PostEditor({ onContentChange }: PostEditorProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="font-semibold">Nội dung bài viết</h2>
+      <Label className="text-sm font-medium text-gray-700">
+        Nội dung bài viết
+      </Label>
 
       {/* TinyMCE Editor */}
       <div className="border rounded-lg">
