@@ -31,7 +31,11 @@ const bookSlice = createSlice({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createBookStart: (_state, _action: PayloadAction<CreateBookRequest>) => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    deleteBookRequest: (_state, _action: PayloadAction<string>) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchBooksStart: (_state, _action: PayloadAction<PagingRequest>) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    fetchBooksStartV1: (_state, _action: PayloadAction<PagingRequest>) => {},
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -41,8 +45,11 @@ const bookSlice = createSlice({
     addBook: (state, action: PayloadAction<GetBookResponse>) => {
       state.books.push(action.payload);
     },
+    deleteBook: (state, action: PayloadAction<string>) => {
+      state.books = state.books.filter((x) => x.id !== action.payload);
+    },
     setBooksV1: (state, action: PayloadAction<GetBookResponse[]>) => {
-      state.books = [...state.books, ...action.payload];
+      state.books = action.payload;
     },
     setBooks: (state, action: PayloadAction<GetBookResponse[]>) => {
       state.books = [...state.books, ...action.payload];
@@ -71,7 +78,9 @@ const bookSlice = createSlice({
 
 export const {
   createBookStart,
+  deleteBookRequest,
   fetchBooksStart,
+  fetchBooksStartV1,
   getBookByIdStart,
   setLoading,
   setSuccess,
@@ -80,6 +89,7 @@ export const {
   setBooks,
   setSelectedBook,
   setPagingInfo,
+  deleteBook,
   resetState,
 } = bookSlice.actions;
 
