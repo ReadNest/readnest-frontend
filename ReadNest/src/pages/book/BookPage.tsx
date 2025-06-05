@@ -1,6 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { DataTableWithPagination } from "@/components/ui/DataTableWithPagination";
-import { fetchBooksStart, setPagingInfo } from "@/features/book/bookSlice";
+import {
+  deleteBookRequest,
+  fetchBooksStartV1,
+  setPagingInfo,
+} from "@/features/book/bookSlice";
 import type { RootState } from "@/store";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +20,7 @@ function BookPage() {
   const handlePageChange = useCallback(
     (pageIndex: number) => {
       dispatch(
-        fetchBooksStart({
+        fetchBooksStartV1({
           pageIndex,
           pageSize: pageSize ?? 10,
         })
@@ -27,7 +31,7 @@ function BookPage() {
 
   useEffect(() => {
     dispatch(
-      fetchBooksStart({ pageIndex: pageIndex ?? 1, pageSize: pageSize ?? 10 })
+      fetchBooksStartV1({ pageIndex: pageIndex ?? 1, pageSize: pageSize ?? 10 })
     );
   }, [dispatch, pageIndex, pageSize]);
 
@@ -45,22 +49,23 @@ function BookPage() {
             { key: "language", label: "Language" },
           ]}
           onEdit={(item) => console.log("Edit", item)}
-          onDelete={(item) => console.log("Delete", item)}
+          onDelete={(item) => dispatch(deleteBookRequest(item.id ?? ""))}
           onAdd={() => navigate("/books/new")}
           enableEdit={true}
-          enableDelete={false}
+          enableDelete={true}
           enableAdd={true}
           pagingInfo={bookPaging.pagingInfo}
           onPageSizeChange={(newPageSize) => {
             dispatch(
               setPagingInfo({
                 ...bookPaging.pagingInfo,
+                pageIndex: 1,
                 pageSize: newPageSize ?? 10,
               })
             );
             dispatch(
-              fetchBooksStart({
-                pageIndex: pageIndex ?? 1,
+              fetchBooksStartV1({
+                pageIndex: 1,
                 pageSize: newPageSize ?? 10,
               })
             );

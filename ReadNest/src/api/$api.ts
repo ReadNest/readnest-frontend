@@ -16,6 +16,7 @@ import type { Methods as Methods_1p8w04r } from './api/v1/auth/register';
 import type { Methods as Methods_1jq8r4r } from './api/v1/books';
 import type { Methods as Methods_e95g2u } from './api/v1/books/_bookId@string';
 import type { Methods as Methods_1m0b8n6 } from './api/v1/books/_bookId@string/affiliate-links';
+import type { Methods as Methods_1xmkclx } from './api/v1/books/_id@string';
 import type { Methods as Methods_etv2da } from './api/v1/books/filter';
 import type { Methods as Methods_cyey74 } from './api/v1/books/search';
 import type { Methods as Methods_3uzp0j } from './api/v1/categories';
@@ -309,6 +310,23 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
                */
               $get: (option?: { config?: T | undefined } | undefined) =>
                 fetch<Methods_e95g2u['get']['resBody'], BasicHeaders, Methods_e95g2u['get']['status']>(prefix, prefix3, GET, option).json().then(r => r.body),
+              $path: () => `${prefix}${prefix3}`,
+            };
+          },
+          _id: (val3: string) => {
+            const prefix3 = `${PATH11}/${val3}`;
+
+            return {
+              /**
+               * @returns OK
+               */
+              delete: (option?: { config?: T | undefined } | undefined) =>
+                fetch<Methods_1xmkclx['delete']['resBody'], BasicHeaders, Methods_1xmkclx['delete']['status']>(prefix, prefix3, DELETE, option).json(),
+              /**
+               * @returns OK
+               */
+              $delete: (option?: { config?: T | undefined } | undefined) =>
+                fetch<Methods_1xmkclx['delete']['resBody'], BasicHeaders, Methods_1xmkclx['delete']['status']>(prefix, prefix3, DELETE, option).json().then(r => r.body),
               $path: () => `${prefix}${prefix3}`,
             };
           },
