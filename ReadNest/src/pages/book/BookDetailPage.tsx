@@ -29,13 +29,16 @@ import {
   toggleFavoriteStart,
 } from "@/features/favouriteBooks/favoriteSlice";
 import AffiliateButton from "@/features/affiliate/components/AffiliateButton";
+import parse from "html-react-parser";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
   const { bookId } = useParams(); // URL dạng /books/:bookId
   const book = useSelector((state: RootState) => state.book.selectedBook);
   const loading = useSelector((state: RootState) => state.book.loading);
-  const commentLoading = useSelector((state: RootState) => state.comment.isLoading);
+  const commentLoading = useSelector(
+    (state: RootState) => state.comment.isLoading
+  );
   const auth = useSelector((state: RootState) => state.auth);
   const comments = useSelector((state: RootState) => state.comment.comments);
   const favorites = useSelector(
@@ -99,7 +102,7 @@ export default function BookDetailPage() {
     );
   };
 
-  if ((loading || !book)) {
+  if (loading || !book) {
     return <div className="text-center py-10">Đang tải dữ liệu sách...</div>;
   }
   return (
@@ -110,11 +113,11 @@ export default function BookDetailPage() {
             bookImages={
               book.bookImages?.map(
                 (x) =>
-                ({
-                  id: x.id ?? "",
-                  imageUrl: x.imageUrl ?? "",
-                  order: x.order,
-                } as BookImage)
+                  ({
+                    id: x.id ?? "",
+                    imageUrl: x.imageUrl ?? "",
+                    order: x.order,
+                  } as BookImage)
               ) ?? []
             }
           />
@@ -160,16 +163,18 @@ export default function BookDetailPage() {
             <Button
               onClick={handleToggleFavorite}
               className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300
-                ${isFavorite
-                  ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
-                  : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
+                ${
+                  isFavorite
+                    ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
                 }`}
             >
               <HeartIcon
-                className={`h-5 w-5 ${isFavorite
-                  ? "fill-red-500 text-red-500 animate-pulse"
-                  : "text-gray-400 group-hover:text-gray-500"
-                  } transition-colors`}
+                className={`h-5 w-5 ${
+                  isFavorite
+                    ? "fill-red-500 text-red-500 animate-pulse"
+                    : "text-gray-400 group-hover:text-gray-500"
+                } transition-colors`}
               />
               <span className="group-hover:underline">
                 {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
@@ -186,10 +191,7 @@ export default function BookDetailPage() {
         <div className="mb-12">
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2">Nội dung chính</h3>
-            <div
-              className="text-gray-700"
-              dangerouslySetInnerHTML={{ __html: book.description ?? "" }}
-            />
+            <div className="text-gray-700">{parse(book.description ?? "")}</div>
           </div>
 
           {/* Tuỳ biến hoặc render thêm phần ưu điểm/nhược điểm nếu có trong dữ liệu */}
@@ -200,7 +202,9 @@ export default function BookDetailPage() {
 
       <Card className="p-4">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-8 text-left">Đánh giá & Nhận xét cuốn sách {book.title}</h2>
+          <h2 className="text-3xl font-bold mb-8 text-left">
+            Đánh giá & Nhận xét cuốn sách {book.title}
+          </h2>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-8">
             {/* Circle rating */}
@@ -220,7 +224,9 @@ export default function BookDetailPage() {
                     className="text-yellow-500"
                     strokeWidth="8"
                     strokeDasharray="251.2"
-                    strokeDashoffset={251.2 - (251.2 * (book.averageRating || 0) / 5)}
+                    strokeDashoffset={
+                      251.2 - (251.2 * (book.averageRating || 0)) / 5
+                    }
                     strokeLinecap="round"
                     stroke="currentColor"
                     fill="transparent"
@@ -262,21 +268,22 @@ export default function BookDetailPage() {
 
       {/* User Comments Section */}
       <div className="space-y-4">
-        {!commentLoading && (showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
-          <UserCommentCard
-            key={comment.commentId}
-            avatarSrc={comment.creator?.avatarUrl || ""}
-            fullName={comment.creator?.fullName || "Người dùng ẩn danh"}
-            createdAt={comment.createdAt || new Date().toISOString()}
-            comment={comment.content ?? ""}
-            likeCount={comment.numberOfLikes || 0}
-            userLikes={comment.userLikes || []}
-            userId={comment.creator?.userId || ""}
-            onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
-            commentId={comment.commentId || ""}
-            userName={comment.creator?.userName || ""}
-          />
-        ))}
+        {!commentLoading &&
+          (showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
+            <UserCommentCard
+              key={comment.commentId}
+              avatarSrc={comment.creator?.avatarUrl || ""}
+              fullName={comment.creator?.fullName || "Người dùng ẩn danh"}
+              createdAt={comment.createdAt || new Date().toISOString()}
+              comment={comment.content ?? ""}
+              likeCount={comment.numberOfLikes || 0}
+              userLikes={comment.userLikes || []}
+              userId={comment.creator?.userId || ""}
+              onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
+              commentId={comment.commentId || ""}
+              userName={comment.creator?.userName || ""}
+            />
+          ))}
         {comments.length > 4 && !showAllComments && (
           <div className="flex justify-end">
             <button
