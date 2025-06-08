@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import DetailPostPage from "@/pages/post/DetailPostPage";
 import PostsPage from "@/pages/post/PostsPage";
 import UserPostsPage from "@/pages/post/UserPostsPage";
+import EditBookPage from "@/pages/book/UpdateBookPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -186,8 +187,8 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.BOOK,
-      isPrivate: false,
-      allowedRoles: [RoleEnum.ADMIN],
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN, RoleEnum.USER],
       element: <BookPage />,
       layout: adminLayout,
     },
@@ -234,7 +235,7 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.CREATE_POST,
-      isPrivate: false,
+      isPrivate: true,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <CreatePostPage />,
       layout: defaultLayout,
@@ -266,7 +267,14 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <UserPostsPage />,
       layout: defaultLayout,
-    }
+    },
+    {
+      path: ROUTE_PATHS.UPDATE_BOOK,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN],
+      element: <EditBookPage />,
+      layout: adminLayout,
+    },
   ];
 
   return routeConfigs.map(

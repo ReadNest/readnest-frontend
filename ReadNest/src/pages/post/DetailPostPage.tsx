@@ -75,8 +75,8 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
     };
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* <div className="container mx-auto px-4 py-8 max-w-7xl"> */}
+        // <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 max-w-7xl"> 
             <Card className="shadow-lg">
                 {/* Card Header - Author Info */}
                 <CardHeader className="border-b pb-4">

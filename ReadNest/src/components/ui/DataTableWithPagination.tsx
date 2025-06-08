@@ -25,6 +25,14 @@ import {
 } from "@/components/ui/select";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { useColumnResize } from "@/hooks/useColumnResize";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./dialog";
+import { useState } from "react";
 
 interface PagingInfo {
   totalItems?: number;
@@ -79,6 +87,9 @@ export function DataTableWithPagination<T>({
   const totalCount = pagingInfo.totalItems ?? 0;
 
   const totalPages = pageSize === -1 ? 1 : Math.ceil(totalCount / pageSize);
+
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<T | null>(null);
 
   const renderPageNumbers = () => {
     const pages: number[] = [];
@@ -240,7 +251,10 @@ export function DataTableWithPagination<T>({
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => onDelete?.(item)}
+                            onClick={() => {
+                              setItemToDelete(item);
+                              setShowConfirmDialog(true);
+                            }}
                             className="h-8 w-8 p-0"
                             disabled={!enableDelete}
                           >
@@ -301,6 +315,36 @@ export function DataTableWithPagination<T>({
           </PaginationContent>
         </Pagination>
       )}
+
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Are you sure you want to delete this item?
+            </DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-muted-foreground">
+            This action cannot be undone.
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowConfirmDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (itemToDelete) onDelete?.(itemToDelete);
+                setShowConfirmDialog(false);
+              }}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

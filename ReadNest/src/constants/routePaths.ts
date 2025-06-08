@@ -12,6 +12,7 @@ export const ROUTE_PATHS = {
   NOT_FOUND: "/*",
   BOOK: "/books",
   MANAGE_BOOK: "/books/new",
+  UPDATE_BOOK: "/books/edit/:id",
   AFFILIATE: "/affiliate-links",
   MANAGE_AFFILIATE: "/affiliate-links/new",
   CATEGORY: "/categories",
