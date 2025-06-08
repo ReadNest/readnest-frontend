@@ -15,6 +15,17 @@ export type AffiliateLinkRequest = {
   affiliateLink?: string | null | undefined;
 }
 
+export type Badge = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  code?: string | null | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+  userBadges?: UserBadge[] | null | undefined;
+}
+
 export type Book = {
   id?: string | undefined;
   createdAt?: string | undefined;
@@ -36,6 +47,7 @@ export type Book = {
   comments?: Comment[] | null | undefined;
   bookImages?: BookImage[] | null | undefined;
   posts?: Post[] | null | undefined;
+  tradingPosts?: TradingPost[] | null | undefined;
 }
 
 export type BookImage = {
@@ -57,6 +69,18 @@ export type Category = {
   name?: string | null | undefined;
   description?: string | null | undefined;
   books?: Book[] | null | undefined;
+}
+
+export type ChatMessage = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  senderId?: string | undefined;
+  sender?: User | undefined;
+  receiverId?: string | undefined;
+  receiver?: User | undefined;
+  message?: string | null | undefined;
 }
 
 export type Comment = {
@@ -97,6 +121,26 @@ export type CommentReportReponse = {
 
 export type CreateAffiliateLinkRequest = {
   affiliateLinkRequests?: AffiliateLinkRequest[] | null | undefined;
+}
+
+export type CreateBadgeRequest = {
+  code?: string | null | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+}
+
+export type CreateBadgeResponse = {
+  code?: string | null | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+}
+
+export type CreateBadgeResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: CreateBadgeResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type CreateBookImageRequest = {
@@ -167,6 +211,20 @@ export type GetAffiliateLinkResponse = {
   id?: string | undefined;
   partnerName?: string | null | undefined;
   affiliateLink?: string | null | undefined;
+}
+
+export type GetBadgeResponse = {
+  code?: string | null | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+}
+
+export type GetBadgeResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBadgeResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type GetBookImageResponse = {
@@ -507,6 +565,57 @@ export type TokenResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type TradingPost = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  ownerId?: string | undefined;
+  owner?: User | undefined;
+  offeredBookId?: string | undefined;
+  offeredBook?: Book | undefined;
+  status?: string | null | undefined;
+  condition?: string | null | undefined;
+  shortDesc?: string | null | undefined;
+  tradingRequests?: TradingRequest[] | null | undefined;
+}
+
+export type TradingRequest = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  tradingPostId?: string | undefined;
+  tradingPost?: TradingPost | undefined;
+  requesterId?: string | undefined;
+  requester?: User | undefined;
+  status?: string | null | undefined;
+}
+
+export type UpdateBadgeRequest = {
+  code?: string | null | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+}
+
+export type UpdateBookImageRequest = {
+  bookImageId?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
+export type UpdateBookRequest = {
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  description?: string | null | undefined;
+  rating?: number | undefined;
+  isbn?: string | null | undefined;
+  language?: string | null | undefined;
+  categoryIds?: string[] | null | undefined;
+  bookImages?: UpdateBookImageRequest[] | null | undefined;
+}
+
 export type UpdateCategoryRequest = {
   id?: string | undefined;
   name?: string | null | undefined;
@@ -548,4 +657,21 @@ export type User = {
   reports?: CommentReport[] | null | undefined;
   posts?: Post[] | null | undefined;
   likedPosts?: Post[] | null | undefined;
+  userBadges?: UserBadge[] | null | undefined;
+  sentMessages?: ChatMessage[] | null | undefined;
+  receivedMessages?: ChatMessage[] | null | undefined;
+  tradingPosts?: TradingPost[] | null | undefined;
+  tradingRequests?: TradingRequest[] | null | undefined;
+}
+
+export type UserBadge = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  userId?: string | undefined;
+  user?: User | undefined;
+  badgeId?: string | undefined;
+  badge?: Badge | undefined;
+  isSelected?: boolean | undefined;
 }

@@ -48,7 +48,7 @@ function BookPage() {
             { key: "isbn", label: "ISBN" },
             { key: "language", label: "Language" },
           ]}
-          onEdit={(item) => console.log("Edit", item)}
+          onEdit={(item) => navigate(`/books/edit/${item.id}`)}
           onDelete={(item) => dispatch(deleteBookRequest(item.id ?? ""))}
           onAdd={() => navigate("/books/new")}
           enableEdit={true}
