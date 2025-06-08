@@ -17,12 +17,10 @@ import type { RootState } from "@/store";
 import { clearErrors } from "@/store/error/errorSlice";
 import { TinyMCETextEditor } from "@/components/rich-text-editor/TinyMCETextEditor";
 import { toast } from "react-toastify";
-import {
-  fetchCategoriesStart,
-  fetchMoreCategoriesStart,
-} from "@/features/category/categorySlice";
+import { fetchMoreCategoriesStart } from "@/features/category/categorySlice";
 import { LazyMultiSelectCombobox } from "@/components/ui/LazyMultiSelectCombobox";
 import MultiImageUploader from "@/components/ui/MultiImageUploader";
+import { fetchCategoriesRequest } from "@/features/search/categoryFilterSlice";
 
 interface BookFormProps {
   defaultValues?: Partial<CreateBookRequest>;
@@ -73,9 +71,9 @@ export default function BookForm({
     (state: RootState) => state.error.detailErrors
   );
   const errorMessage = useSelector((state: RootState) => state.error);
-  const categoryState = useSelector((state: RootState) => state.categories);
-  const { pageIndex, pageSize, totalItems } = categoryState.pagingInfo;
-  const categories = categoryState.categories;
+  const categoryState = useSelector(
+    (state: RootState) => state.categoryFilter.results
+  );
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -117,12 +115,7 @@ export default function BookForm({
   }, [defaultValues, reset]);
 
   useEffect(() => {
-    dispatch(
-      fetchCategoriesStart({
-        pageIndex: 1,
-        pageSize: 10,
-      })
-    );
+    dispatch(fetchCategoriesRequest());
   }, [dispatch]);
 
   const handleFormSubmit = (data: CreateBookRequest) => {
@@ -187,7 +180,7 @@ export default function BookForm({
     dispatch(
       fetchMoreCategoriesStart({
         pageIndex: nextPage,
-        pageSize: pageSize || 10,
+        pageSize: 10,
       })
     );
   };
@@ -284,13 +277,13 @@ export default function BookForm({
               <LazyMultiSelectCombobox
                 values={field.value || []}
                 onChange={field.onChange}
-                data={categories}
+                data={categoryState}
                 displayField="name"
                 valueField="id"
                 fetchMoreData={handleFetchMoreCategories}
-                pageIndex={pageIndex ?? 1}
-                pageSize={pageSize ?? 10}
-                totalItems={totalItems ?? 10}
+                pageIndex={1}
+                pageSize={10}
+                totalItems={categoryState.length}
                 placeholder="Chọn thể loại"
               />
             )}

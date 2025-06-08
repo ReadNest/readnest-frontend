@@ -18,6 +18,8 @@ import {
   setBooksV1,
   deleteBookRequest,
   deleteBook,
+  updateBook,
+  updateBookStart,
 } from "./bookSlice";
 import { call, put, takeLatest } from "redux-saga/effects";
 import client from "@/lib/api/axiosClient";
@@ -170,6 +172,31 @@ function* fetchBooksV1(action: PayloadAction<PagingRequest>) {
   }
 }
 
+function* handleUpdateBookById(action: ReturnType<typeof updateBookStart>) {
+  try {
+    yield put(setLoading(true));
+
+    const res: StringApiResponse = yield call(() =>
+      client.api.v1.books
+        ._bookId(action.payload.id)
+        .$put({ body: action.payload.book })
+    );
+
+    if (res.success) {
+      yield put(setSuccess(true));
+      yield put(updateBook(action.payload));
+    } else {
+      yield put(setSuccess(false));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error(error);
+  } finally {
+    yield put(setLoading(false));
+  }
+}
+
 function* handleDeleteBookById(action: ReturnType<typeof deleteBookRequest>) {
   try {
     yield put(setLoading(true));
@@ -195,6 +222,7 @@ function* handleDeleteBookById(action: ReturnType<typeof deleteBookRequest>) {
 
 export default function* bookSaga() {
   yield takeLatest(createBookStart.type, handleCreateBook);
+  yield takeLatest(updateBookStart.type, handleUpdateBookById);
   yield takeLatest(fetchBooksStart.type, fetchBooks);
   yield takeLatest(fetchBooksStartV1.type, fetchBooksV1);
   yield takeLatest(getBookByIdStart.type, getBookById);

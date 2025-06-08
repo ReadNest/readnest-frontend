@@ -11,6 +11,7 @@ import { RoleEnum } from "@/constants/enum";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import { clearErrors } from "@/store/error/errorSlice";
 import { useDispatch } from "react-redux";
+import EditBookPage from "@/pages/book/UpdateBookPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -183,8 +184,8 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.BOOK,
-      isPrivate: false,
-      allowedRoles: [RoleEnum.ADMIN],
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN, RoleEnum.USER],
       element: <BookPage />,
       layout: adminLayout,
     },
@@ -231,7 +232,7 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.CREATE_POST,
-      isPrivate: false,
+      isPrivate: true,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <CreatePostPage />,
       layout: defaultLayout,
@@ -241,6 +242,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       allowedRoles: [RoleEnum.ADMIN],
       element: <CommentReportsPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.UPDATE_BOOK,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN],
+      element: <EditBookPage />,
       layout: adminLayout,
     },
   ];
