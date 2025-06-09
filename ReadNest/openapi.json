@@ -7,7 +7,9 @@
   "paths": {
     "/api/v1/books/{bookId}/affiliate-links": {
       "post": {
-        "tags": ["AffiliateLink"],
+        "tags": [
+          "AffiliateLink"
+        ],
         "parameters": [
           {
             "name": "bookId",
@@ -84,7 +86,9 @@
     },
     "/api/v1/auth/register": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -150,7 +154,9 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -216,7 +222,9 @@
     },
     "/api/v1/auth/refresh-token": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -280,9 +288,171 @@
         }
       }
     },
+    "/api/v1/Badge": {
+      "get": {
+        "tags": [
+          "Badge"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBadgeResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBadgeResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBadgeResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Badge"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBadgeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBadgeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBadgeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBadgeResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBadgeResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBadgeResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Badge"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBadgeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBadgeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBadgeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/Badge/{code}": {
+      "delete": {
+        "tags": [
+          "Badge"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/books": {
       "get": {
-        "tags": ["Book"],
+        "tags": [
+          "Book"
+        ],
         "parameters": [
           {
             "name": "PageIndex",
@@ -345,7 +515,9 @@
         }
       },
       "post": {
-        "tags": ["Book"],
+        "tags": [
+          "Book"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -411,7 +583,9 @@
     },
     "/api/v1/books/search": {
       "get": {
-        "tags": ["Book"],
+        "tags": [
+          "Book"
+        ],
         "parameters": [
           {
             "name": "PageIndex",
@@ -463,7 +637,9 @@
     },
     "/api/v1/books/filter": {
       "get": {
-        "tags": ["Book"],
+        "tags": [
+          "Book"
+        ],
         "parameters": [
           {
             "name": "CategoryIds",
@@ -536,7 +712,9 @@
     },
     "/api/v1/books/{bookId}": {
       "get": {
-        "tags": ["Book"],
+        "tags": [
+          "Book"
+        ],
         "parameters": [
           {
             "name": "bookId",
@@ -590,11 +768,90 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Book"
+        ],
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookResponseApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/books/{id}": {
       "delete": {
-        "tags": ["Book"],
+        "tags": [
+          "Book"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -652,7 +909,9 @@
     },
     "/api/v1/categories": {
       "get": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "parameters": [
           {
             "name": "PageIndex",
@@ -715,7 +974,9 @@
         }
       },
       "post": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -779,7 +1040,9 @@
         }
       },
       "put": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -865,7 +1128,9 @@
     },
     "/api/v1/categories/all": {
       "get": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -912,7 +1177,9 @@
     },
     "/api/v1/Comment": {
       "post": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -976,7 +1243,9 @@
         }
       },
       "put": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1042,7 +1311,9 @@
     },
     "/api/v1/Comment/{bookId}": {
       "get": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "parameters": [
           {
             "name": "bookId",
@@ -1100,7 +1371,9 @@
     },
     "/api/v1/Comment/like": {
       "post": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1166,7 +1439,9 @@
     },
     "/api/v1/Comment/{commentId}": {
       "delete": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "parameters": [
           {
             "name": "commentId",
@@ -1224,7 +1499,9 @@
     },
     "/api/v1/Comment/pending-reported-comments": {
       "get": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1271,7 +1548,9 @@
     },
     "/api/v1/Comment/top-3-recent-comments/{userName}": {
       "get": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "parameters": [
           {
             "name": "userName",
@@ -1328,7 +1607,9 @@
     },
     "/api/v1/Comment/top-3-most-liked-comments": {
       "get": {
-        "tags": ["Comment"],
+        "tags": [
+          "Comment"
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1375,7 +1656,9 @@
     },
     "/api/v1/CommentReport": {
       "post": {
-        "tags": ["CommentReport"],
+        "tags": [
+          "CommentReport"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1441,7 +1724,9 @@
     },
     "/api/v1/CommentReport/approve/{commentId}": {
       "post": {
-        "tags": ["CommentReport"],
+        "tags": [
+          "CommentReport"
+        ],
         "parameters": [
           {
             "name": "commentId",
@@ -1499,7 +1784,9 @@
     },
     "/api/v1/CommentReport/reject/{commentId}": {
       "post": {
-        "tags": ["CommentReport"],
+        "tags": [
+          "CommentReport"
+        ],
         "parameters": [
           {
             "name": "commentId",
@@ -1557,7 +1844,9 @@
     },
     "/api/v1/favoriteBooks/toggle": {
       "post": {
-        "tags": ["FavoriteBook"],
+        "tags": [
+          "FavoriteBook"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1623,7 +1912,9 @@
     },
     "/api/v1/favoriteBooks/favorites/{userId}": {
       "get": {
-        "tags": ["FavoriteBook"],
+        "tags": [
+          "FavoriteBook"
+        ],
         "parameters": [
           {
             "name": "userId",
@@ -1677,7 +1968,9 @@
     },
     "/api/v1/posts": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1722,7 +2015,9 @@
         }
       },
       "post": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1788,7 +2083,9 @@
     },
     "/api/v1/posts/{postId}": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "parameters": [
           {
             "name": "postId",
@@ -1846,7 +2143,9 @@
     },
     "/api/v1/posts/user/{userId}": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "parameters": [
           {
             "name": "userId",
@@ -1904,7 +2203,9 @@
     },
     "/api/v1/posts/book/{bookId}": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "parameters": [
           {
             "name": "bookId",
@@ -1962,7 +2263,9 @@
     },
     "/api/v1/posts/top-liked/{count}": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "parameters": [
           {
             "name": "count",
@@ -2020,7 +2323,9 @@
     },
     "/api/v1/posts/top-viewed/{count}": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "parameters": [
           {
             "name": "count",
@@ -2078,7 +2383,9 @@
     },
     "/api/v1/posts/search": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "parameters": [
           {
             "name": "keyword",
@@ -2134,7 +2441,9 @@
     },
     "/api/v1/posts/like": {
       "post": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2200,7 +2509,9 @@
     },
     "/api/v1/users": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "parameters": [
           {
             "name": "PageIndex",
@@ -2265,7 +2576,9 @@
     },
     "/api/v1/users/{userId}": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "parameters": [
           {
             "name": "userId",
@@ -2321,7 +2634,9 @@
         }
       },
       "delete": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "parameters": [
           {
             "name": "userId",
@@ -2379,7 +2694,9 @@
     },
     "/api/v1/users/username/{userName}": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "parameters": [
           {
             "name": "userName",
@@ -2436,7 +2753,9 @@
     },
     "/api/v1/users/profile": {
       "put": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2499,6 +2818,129 @@
           }
         }
       }
+    },
+    "/api/v1/UserBadges/assign-badge-to-all-users": {
+      "post": {
+        "tags": [
+          "UserBadges"
+        ],
+        "parameters": [
+          {
+            "name": "badgeCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/UserBadges/set-all-badges-active": {
+      "post": {
+        "tags": [
+          "UserBadges"
+        ],
+        "parameters": [
+          {
+            "name": "badgeCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/UserBadges/select-user-badge": {
+      "post": {
+        "tags": [
+          "UserBadges"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "badgeId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2548,6 +2990,46 @@
           },
           "affiliateLink": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Badge": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "userBadges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBadge"
+            },
             "nullable": true
           }
         },
@@ -2652,6 +3134,13 @@
               "$ref": "#/components/schemas/Post"
             },
             "nullable": true
+          },
+          "tradingPosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TradingPost"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2723,6 +3212,45 @@
             "items": {
               "$ref": "#/components/schemas/Book"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChatMessage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "senderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/User"
+          },
+          "receiverId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiver": {
+            "$ref": "#/components/schemas/User"
+          },
+          "message": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -2860,6 +3388,69 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AffiliateLinkRequest"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateBadgeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateBadgeResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateBadgeResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/CreateBadgeResponse"
+          },
+          "listDetailError": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailError"
             },
             "nullable": true
           }
@@ -3085,6 +3676,55 @@
           },
           "affiliateLink": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetBadgeResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetBadgeResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetBadgeResponse"
+          },
+          "listDetailError": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailError"
+            },
             "nullable": true
           }
         },
@@ -3804,6 +4444,13 @@
           "ratingScores": {
             "type": "integer",
             "format": "int32"
+          },
+          "ownedBadges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBadgeResponse"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3871,6 +4518,10 @@
             "format": "uuid"
           },
           "roleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "selectedBadgeCode": {
             "type": "string",
             "nullable": true
           }
@@ -4063,7 +4714,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": {}
+        "additionalProperties": { }
       },
       "RegisterRequest": {
         "type": "object",
@@ -4268,6 +4919,184 @@
         },
         "additionalProperties": false
       },
+      "TradingPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/User"
+          },
+          "offeredBookId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "offeredBook": {
+            "$ref": "#/components/schemas/Book"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortDesc": {
+            "type": "string",
+            "nullable": true
+          },
+          "tradingRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TradingRequest"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TradingRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "tradingPostId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tradingPost": {
+            "$ref": "#/components/schemas/TradingPost"
+          },
+          "requesterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requester": {
+            "$ref": "#/components/schemas/User"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateBadgeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateBookImageRequest": {
+        "type": "object",
+        "properties": {
+          "bookImageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateBookRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "author": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "double"
+          },
+          "isbn": {
+            "type": "string",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "bookImages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateBookImageRequest"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateCategoryRequest": {
         "type": "object",
         "properties": {
@@ -4429,6 +5258,112 @@
               "$ref": "#/components/schemas/Post"
             },
             "nullable": true
+          },
+          "userBadges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBadge"
+            },
+            "nullable": true
+          },
+          "sentMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            },
+            "nullable": true
+          },
+          "receivedMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            },
+            "nullable": true
+          },
+          "tradingPosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TradingPost"
+            },
+            "nullable": true
+          },
+          "tradingRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TradingRequest"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserBadge": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "badgeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "badge": {
+            "$ref": "#/components/schemas/Badge"
+          },
+          "isSelected": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserBadgeResponse": {
+        "type": "object",
+        "properties": {
+          "userBadgeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "badgeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "badgeCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "badgeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "badgeDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "isSelected": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -4445,7 +5380,7 @@
   },
   "security": [
     {
-      "Bearer": []
+      "Bearer": [ ]
     }
   ]
 }

@@ -1,5 +1,6 @@
 import type { CreateCommentLikeRequest } from "@/api/@types";
 import { Button } from "@/components/ui/button";
+import { FirstParticipantAvatar } from "@/features/badge/components/avatarBadge/FirstParticipantAvatar";
 import { likeCommentRequested } from "@/features/review/commentSlice";
 import { RatingStars } from "@/features/search/components/RatingStars";
 import type { RootState } from "@/store";
@@ -7,7 +8,6 @@ import { HeartIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FirstParticipantAvatar } from "./avatar/FirstParticipantAvatar";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ReviewCard({ creator, book, desc, time, likes, userLikes, commentId }: any) {

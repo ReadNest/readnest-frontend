@@ -3,16 +3,14 @@ import type { DefineMethods } from 'aspida';
 import type * as Types from '../../../../@types';
 
 export type Methods = DefineMethods<{
-  get: {
-    status: 200;
-    /** OK */
-    resBody: Types.GetBookResponseApiResponse;
-  };
+  post: {
+    query?: {
+      userId?: string | undefined;
+      badgeId?: string | undefined;
+    } | undefined;
 
-  put: {
     status: 200;
     /** OK */
-    resBody: Types.GetBookResponseApiResponse;
-    reqBody: Types.UpdateBookRequest;
+    resBody: Types.StringApiResponse;
   };
 }>;

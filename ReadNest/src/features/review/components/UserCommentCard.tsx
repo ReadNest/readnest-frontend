@@ -13,7 +13,7 @@ import { deleteCommentRequested, reportCommentRequested, updateCommentRequested 
 import { ReportDialog } from "./ReportDialog"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
-import { FirstParticipantAvatar } from "@/features/home/components/avatar/FirstParticipantAvatar"
+import { FirstParticipantAvatar } from "@/features/badge/components/avatarBadge/FirstParticipantAvatar"
 
 interface UserCommentCardProps {
     avatarSrc?: string
