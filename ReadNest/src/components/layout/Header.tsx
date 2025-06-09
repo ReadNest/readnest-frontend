@@ -242,7 +242,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
           </>
         ) : (
           <>
-            <Link to="/posts">
+            <Link to="/create-post">
               <Button
                 variant="default"
                 className="w-full font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white"

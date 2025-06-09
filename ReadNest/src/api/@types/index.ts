@@ -393,6 +393,21 @@ export type GetPostResponseListApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetPostResponsePagingResponse = {
+  items?: GetPostResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetPostResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPostResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetReportedCommentsResponse = {
   commentId?: string | undefined;
   content?: string | null | undefined;
@@ -598,24 +613,6 @@ export type UpdateBadgeRequest = {
   description?: string | null | undefined;
 }
 
-export type UpdateBookImageRequest = {
-  bookImageId?: string | null | undefined;
-  imageUrl?: string | null | undefined;
-  order?: number | undefined;
-}
-
-export type UpdateBookRequest = {
-  title?: string | null | undefined;
-  author?: string | null | undefined;
-  imageUrl?: string | null | undefined;
-  description?: string | null | undefined;
-  rating?: number | undefined;
-  isbn?: string | null | undefined;
-  language?: string | null | undefined;
-  categoryIds?: string[] | null | undefined;
-  bookImages?: UpdateBookImageRequest[] | null | undefined;
-}
-
 export type UpdateCategoryRequest = {
   id?: string | undefined;
   name?: string | null | undefined;
@@ -625,6 +622,14 @@ export type UpdateCategoryRequest = {
 export type UpdateCommentRequest = {
   commentId?: string | undefined;
   content?: string | null | undefined;
+}
+
+export type UpdatePostRequest = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  content?: string | null | undefined;
+  bookId?: string | undefined;
+  userId?: string | undefined;
 }
 
 export type UpdateUserRequest = {

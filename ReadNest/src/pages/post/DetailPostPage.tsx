@@ -3,12 +3,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { getPostByIdStart } from "@/features/post/postSlice";
 import { RatingStars } from "@/features/search/components/RatingStars";
 import type { RootState } from "@/store";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { HeartIcon, EyeIcon, Share2Icon, BookmarkIcon, MoreVertical } from "lucide-react";
-import { useSelector } from "react-redux";
-import { Fragment } from "react/jsx-runtime";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import parse from "html-react-parser";
 
 interface BookReviewPost {
     id: string;
@@ -36,8 +39,12 @@ interface BookReviewPost {
 }
 
 export default function DetailPostPage() {
+    const dispatch = useDispatch();
+    const { postId } = useParams();
+    const post = useSelector((state: RootState) => state.post.selectedPost);
+    const loading = useSelector((state: RootState) => state.post.loading);
     const auth = useSelector((state: RootState) => state.auth);
-    const post: BookReviewPost = {
+    const postTest: BookReviewPost = {
         id: "1",
         author: {
             id: "123",
@@ -69,10 +76,21 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
         views: 1024,
     };
 
+    useEffect(() => {
+        if (postId) {
+          dispatch(getPostByIdStart(postId));
+
+        }
+      }, [dispatch, postId]);
+
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return `Đăng ngày ${date.getDate()} tháng ${date.getMonth() + 1}, ${date.getFullYear()}`;
     };
+
+    if (loading || !post) {
+        return <div className="text-center py-10">Đang tải dữ liệu bài viết...</div>;
+    }
 
     return (
         // <div className="max-w-4xl mx-auto px-4 py-8">
@@ -83,17 +101,17 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                             <Avatar className="h-10 w-10">
-                                <AvatarImage src={post.author.avatar} alt={post.author.name} />
+                                <AvatarImage src={post.creator?.avatarUrl ?? ""} alt={post.creator?.fullName ?? ""} />
                                 <AvatarFallback>
-                                    {post.author.name
+                                    {post.creator?.fullName ?? ""
                                         .split(" ")
                                         .map((n) => n[0])
                                         .join("")}
                                 </AvatarFallback>
                             </Avatar>
                             <div>
-                                <p className="font-medium">{post.author.name}</p>
-                                <p className="text-sm text-gray-500">{formatDate(post.createdAt)}</p>
+                                <p className="font-medium">{post.creator?.fullName}</p>
+                                <p className="text-sm text-gray-500">{formatDate(post.createdAt ?? "")}</p>
                             </div>
                         </div>
                         
@@ -112,7 +130,7 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
                                     align="start"
                                     className="bg-white shadow-2xl rounded-lg p-2"
                                 >
-                                    {auth.user.userId == post.author.id && (
+                                    {auth.user.userId == post.creator?.userId && (
                                         <>
                                             <DropdownMenuItem className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0">
                                                 Chỉnh sửa
@@ -122,7 +140,7 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
                                             </DropdownMenuItem>
                                         </>
                                     )}
-                                    {auth.user.userId !== post.author.id && (
+                                    {auth.user.userId !== post.creator?.userId && (
                                         <DropdownMenuItem className="cursor-pointer bg-white hover:bg-gray-100 rounded first:mt-0 last:mb-0">
                                             Báo cáo bình luận
                                         </DropdownMenuItem>
@@ -137,16 +155,7 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
                 <CardContent className="pt-6">
                     {/* Post Title */}
                     <CardTitle className="text-3xl font-bold mb-6">
-                        {post.title.split(post.book.title).map((part, idx, arr) =>
-                            idx < arr.length - 1 ? (
-                                <Fragment key={idx}>
-                                    {part}
-                                    <span className="text-purple-500">{post.book.title}</span>
-                                </Fragment>
-                            ) : (
-                                part
-                            )
-                        )}
+                        Đánh giá sách <span className="text-purple-500">{post.book?.title}</span> - {post.title}
                     </CardTitle>
 
                     {/* Book Info Section */}
@@ -154,8 +163,8 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
                         {/* Book Cover */}
                         <div className="w-full md:w-1/3">
                             <img
-                                src={post.book.coverImage}
-                                alt={post.book.title}
+                                src={post.book?.imageUrl ?? ""}
+                                alt={post.book?.title ?? ""}
                                 width={300}
                                 height={450}
                                 className="rounded-lg shadow-md w-full h-auto"
@@ -164,46 +173,40 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
 
                         {/* Book Details */}
                         <div className="w-full md:w-2/3">
-                            <h2 className="text-2xl font-bold mb-4">{post.book.title}</h2>
+                            <h2 className="text-2xl font-bold mb-4">{post.book?.title}</h2>
 
-                            <RatingStars rating={post.book.rating} />
+                            <RatingStars rating={post.book?.avarageRating ?? 0} />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                                 <div>
-                                    <p className="text-gray-600">Tác giả:</p>
-                                    <p className="font-medium">{post.book.author}</p>
+                                    <p className="">Tác giả: <span className="font-medium">{post.book?.author}</span></p>
                                 </div>
                                 <div>
-                                    <p className="text-gray-600">Thể loại:</p>
-                                    <p className="font-medium">{post.book.genre}</p>
+                                    <p>
+                                        Thể loại:{" "}
+                                        {post.book?.categories && post.book?.categories.length > 0 ? (
+                                        post.book?.categories.map((cat, index) => (
+                                            <span key={cat.id ?? index} className="font-medium">
+                                            {cat.name ?? "Không tên"}
+                                            {index < (post.book?.categories!.length ?? 0) - 1 && ", "}
+                                            </span>
+                                        ))
+                                        ) : (
+                                        <span>Chưa có thể loại</span>
+                                        )}
+                                    </p>
                                 </div>
-                                <div>
-                                    <p className="text-gray-600">Năm xuất bản:</p>
-                                    <p className="font-medium">{post.book.publishYear}</p>
-                                </div>
-                                <div>
-                                    <p className="text-gray-600">Nhà xuất bản:</p>
-                                    <p className="font-medium">{post.book.publisher}</p>
-                                </div>
-                                <div>
-                                    <p className="text-gray-600">Số trang:</p>
-                                    <p className="font-medium">{post.book.pageCount} trang</p>
-                                </div>
-                                <div>
+                                {/* <div>
                                     <p className="text-gray-600">Ngôn ngữ:</p>
-                                    <p className="font-medium">{post.book.language}</p>
-                                </div>
+                                    <p className="font-medium">{post.book?.language}</p>
+                                </div> */}
                             </div>
                         </div>
                     </div>
 
                     {/* Post Content */}
                     <div className="prose max-w-none mb-8">
-                        {post.content.split('\n').map((paragraph, index) => (
-                            <p key={index} className="mb-4 text-gray-800">
-                                {paragraph}
-                            </p>
-                        ))}
+                    <div className="text-gray-700">{parse(post.content ?? "")}</div>
                     </div>
                 </CardContent>
 
@@ -213,7 +216,7 @@ Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm
                         <div className="flex items-center space-x-4 mb-4 sm:mb-0">
                             <div className="flex items-center text-gray-600">
                                 <HeartIcon className="h-5 w-5 mr-1 text-red-500" />
-                                <span>{post.likes} lượt thích</span>
+                                <span>{post.likesCount} lượt thích</span>
                             </div>
                             <div className="flex items-center text-gray-600">
                                 <EyeIcon className="h-5 w-5 mr-1 text-blue-500" />

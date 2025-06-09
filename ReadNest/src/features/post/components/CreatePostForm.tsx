@@ -7,8 +7,7 @@ import { Input } from "@/components/ui/input";
 import PostEditor from "./PostEditor";
 import PostPreview from "./PostPreview";
 import {
-  createPostRequested,
-  resetPostStatus,
+  createPostStart
 } from "@/features/post/postSlice";
 import type { RootState } from "@/store";
 import {
@@ -35,8 +34,7 @@ export default function CreatePostForm() {
 
   useEffect(() => {
     if (postState.isSuccess) {
-      navigate("/posts");
-      dispatch(resetPostStatus());
+      navigate("/my-posts");
     }
   }, [postState.isSuccess, navigate, dispatch]);
 
@@ -59,7 +57,7 @@ export default function CreatePostForm() {
     }
 
     dispatch(
-      createPostRequested({
+      createPostStart({
         title,
         content,
         bookId,
@@ -183,10 +181,10 @@ export default function CreatePostForm() {
             
             <Button 
               onClick={handleSubmit} 
-              disabled={postState.isLoading}
+              disabled={postState.loading}
               className="flex-1 sm:flex-none"
             >
-              {postState.isLoading ? (
+              {postState.loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Đang đăng...

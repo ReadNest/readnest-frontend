@@ -8,4 +8,10 @@ export type Methods = DefineMethods<{
     /** OK */
     resBody: Types.GetPostResponseApiResponse;
   };
+
+  delete: {
+    status: 200;
+    /** OK */
+    resBody: Types.StringApiResponse;
+  };
 }>;
