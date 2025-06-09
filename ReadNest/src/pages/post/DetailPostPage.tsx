@@ -13,68 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 
-interface BookReviewPost {
-    id: string;
-    author: {
-        id: string;
-        name: string;
-        avatar?: string;
-    };
-    createdAt: string;
-    title: string;
-    book: {
-        title: string;
-        author: string;
-        genre: string;
-        publishYear: number;
-        publisher: string;
-        pageCount: number;
-        language: string;
-        coverImage: string;
-        rating: number;
-    };
-    content: string;
-    likes: number;
-    views: number;
-}
-
 export default function DetailPostPage() {
     const dispatch = useDispatch();
     const { postId } = useParams();
     const post = useSelector((state: RootState) => state.post.selectedPost);
     const loading = useSelector((state: RootState) => state.post.loading);
     const auth = useSelector((state: RootState) => state.auth);
-    const postTest: BookReviewPost = {
-        id: "1",
-        author: {
-            id: "123",
-            name: "Huỳnh Trần Vũ Đạt",
-            avatar: "https://github.com/shadcn.png",
-        },
-        createdAt: "2023-02-21T00:00:00Z",
-        title: "Đánh giá: 'Nhà Giả Kim' - Hành trình khám phá bản thân",
-        book: {
-            title: "Nhà Giả Kim",
-            author: "Paulo Coelho",
-            genre: "Phát triển bản thân",
-            publishYear: 2020,
-            publisher: "NKB Hải Nha Văn",
-            pageCount: 244,
-            language: "Tiếng Việt",
-            coverImage: "/book-covers/nha-gia-kim.jpg",
-            rating: 4.0
-        },
-        content: `"Nhà Giả Kim" (tên gốc The Alchemist) là một trong những tác phẩm nổi tiếng và được yêu thích nhất của tác giả người Brazil Paulo Coelho. Cuốn sách này đã chinh phục hàng triệu trái tim độc giả trên khắp thế giới, trở thành một trong những cuốn sách bán chạy nhất mọi thời đại, được dịch ra hơn 80 ngôn ngữ và tái bản nhiều lần.Add commentMore actions
-
-Trong suốt nhiều năm, Nhà Giả Kim tiếp tục mang lại những cảm hứng mạnh mẽ và những thông điệp sâu sắc về cuộc sống, về hành trình theo đuổi ước mơ và khám phá bản thân.
-
-Cuốn sách không chỉ là câu chuyện về một chuyến phiêu lưu tìm kiếm kho báu vật chất mà còn là hành trình tìm kiếm ý nghĩa cuộc sống, tìm ra ước mơ thực sự của bản thân và dũng cảm theo đuổi chúng.
-"Khi yêu, ta luôn có gắng để trở nên tốt hơn. Khi ta có gắng để trở nên hoàn thiện, vạn vật xung quanh cũng sẽ trở nên tốt đẹp hơn.",
-            "Một người được yêu thương chỉ vì họ đang được yêu thương, không cần có bất kỳ lý do nào cho việc yêu thương cả.",
-            "Hãy nhớ rằng, trái tim của bạn đau, thì tại nơi đó bạn sẽ tìm thấy kho báu của đời mình."`,
-        likes: 245,
-        views: 1024,
-    };
 
     useEffect(() => {
         if (postId) {

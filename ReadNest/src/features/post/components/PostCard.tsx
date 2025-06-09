@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { RatingStars } from "@/features/search/components/RatingStars";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import type { ReactNode } from "react";
 
 interface PostCardProps {
   bookImageUrl: string;
@@ -8,10 +9,11 @@ interface PostCardProps {
   creatorAvatarUrl: string;
   date: string;
   title: string;
-  content: string;
+  content: ReactNode;
   rating: number;
   views: number;
   likes: number;
+  onClick?: () => void;
 }
 
 export function PostCard({
@@ -24,9 +26,10 @@ export function PostCard({
   rating,
   views,
   likes,
+  onClick,
 }: PostCardProps) {
   return (
-    <Card className="hover:shadow-lg transition-shadow h-full flex flex-col">
+    <Card className="cursor-pointer hover:shadow-lg transition-shadow h-full flex flex-col"  onClick={onClick}>
       <div className="w-full relative bg-gray-100 rounded border">
         <img
             src={bookImageUrl}
@@ -61,7 +64,7 @@ export function PostCard({
       
       <CardContent className="flex-grow">
         <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
-        <p className="text-muted-foreground line-clamp-2">{content}</p>
+        <div className="text-muted-foreground line-clamp-2">{content}</div>
       </CardContent>
       
       <CardFooter className="flex justify-between items-center pt-0">

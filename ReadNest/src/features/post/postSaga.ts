@@ -18,7 +18,6 @@ import {
   fetchPostsByUserIdStart,
   fetchPostsByBookIdStart,
   fetchTopLikedPostsStart,
-  fetchTopViewedPostsStart,
   searchPostsByTitleStart,
   getPostByIdStart,
   setLoading,
@@ -34,6 +33,9 @@ import {
   deletePost,
   updatePostStart,
   deletePostRequest,
+  setCreatePostSuccess,
+  setUpdatePostSuccess,
+  setDeletePostSuccess,
 } from "./postSlice";
 
 import { setMessage, setDetailErrors } from "@/store/error/errorSlice";
@@ -54,10 +56,10 @@ function* handleCreatePost(action: PayloadAction<CreatePostRequest>) {
 
     if (res.success && res.data) {
       yield put(addPost(res.data));
-      yield put(setSuccess(true));
+      yield put(setCreatePostSuccess(true));
       toast.success("Tạo bài viết thành công!");
     } else {
-      yield put(setSuccess(false));
+      yield put(setCreatePostSuccess(false));
       yield put(setDetailErrors(res.listDetailError ?? []));
       toast.error("Tạo bài viết thất bại!");
     }
@@ -134,7 +136,7 @@ function* fetchPosts(action: PayloadAction<PagingRequest>) {
 }
 
 // FETCH BY USER
-function* fetchPostsByUserId(action: PayloadAction<{ userId: string; paging: PagingRequest}>) {
+function* fetchPostsByUserId(action: PayloadAction<{ userId: any; paging: PagingRequest}>) {
   try {
     yield put(setLoading(true));
     const { userId, paging } = action.payload;
@@ -266,7 +268,7 @@ function* handleUpdatePost(action: PayloadAction<UpdatePostRequest>) {
   
       if (res.success && res.data) {
         yield put(updatePost(res.data));
-        yield put(setSuccess(true));
+        yield put(setUpdatePostSuccess(true));
         toast.success("Cập nhật bài viết thành công!");
       } else {
         yield put(setSuccess(false));
@@ -274,7 +276,7 @@ function* handleUpdatePost(action: PayloadAction<UpdatePostRequest>) {
       }
     } catch (error) {
       console.error(error);
-      yield put(setSuccess(false));
+      yield put(setUpdatePostSuccess(false));
       toast.error("Đã xảy ra lỗi khi cập nhật bài viết");
     } finally {
       yield put(setLoading(false));
@@ -292,10 +294,10 @@ function* handleUpdatePost(action: PayloadAction<UpdatePostRequest>) {
   
       if (res.success) {
         yield put(deletePost(postId));
-        yield put(setSuccess(true));
+        yield put(setDeletePostSuccess(true));
         toast.success("Xóa bài viết thành công!");
       } else {
-        yield put(setSuccess(false));
+        yield put(setDeletePostSuccess(false));
         toast.error("Xóa bài viết thất bại!");
       }
     } catch (error) {

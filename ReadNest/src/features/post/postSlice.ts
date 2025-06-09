@@ -17,6 +17,9 @@ export const initialState: {
     pageIndex?: number;
     pageSize?: number;
   };
+  createPostSuccess: boolean;
+  updatePostSuccess: boolean;
+  deletePostSuccess: boolean;
 } = {
   isSuccess: false,
   loading: false,
@@ -25,8 +28,11 @@ export const initialState: {
   pagingInfo: {
     totalItems: 0,
     pageIndex: 1,
-    pageSize: 10,
+    pageSize: 6,
   },
+  createPostSuccess: false,
+  updatePostSuccess: false,
+  deletePostSuccess: false,
 };
 
 const postSlice = createSlice({
@@ -37,7 +43,10 @@ const postSlice = createSlice({
     createPostStart: (_state, _action: PayloadAction<CreatePostRequest>) => {},
     likePostStart: (_state, _action: PayloadAction<LikePostRequest>) => {},
     fetchPostsStart: (_state, _action: PayloadAction<PagingRequest>) => {},
-    fetchPostsByUserIdStart: (_state, _action: PayloadAction<PagingRequest>) => {},
+    fetchPostsByUserIdStart: (
+      _state,
+      _action: PayloadAction<{ userId: string; paging: PagingRequest }>
+    ) => {},
     fetchPostsByBookIdStart: (_state, _action: PayloadAction<string>) => {},
     fetchTopLikedPostsStart: (_state, _action: PayloadAction<number>) => {},
     fetchTopViewedPostsStart: (_state, _action: PayloadAction<number>) => {},
@@ -124,6 +133,24 @@ const postSlice = createSlice({
     resetState: (state) => {
       Object.assign(state, initialState);
     },
+
+    // Set các flag riêng cho create/update/delete
+    setCreatePostSuccess: (state, action: PayloadAction<boolean>) => {
+      state.createPostSuccess = action.payload;
+    },
+    setUpdatePostSuccess: (state, action: PayloadAction<boolean>) => {
+      state.updatePostSuccess = action.payload;
+    },
+    setDeletePostSuccess: (state, action: PayloadAction<boolean>) => {
+      state.deletePostSuccess = action.payload;
+    },
+
+    // Có thể reset tất cả flag
+    resetSuccessFlags: (state) => {
+      state.createPostSuccess = false;
+      state.updatePostSuccess = false;
+      state.deletePostSuccess = false;
+    },
   },
 });
 
@@ -151,6 +178,10 @@ export const {
   setSelectedPost,
   setPagingInfo,
   resetState,
+  setCreatePostSuccess,
+  setUpdatePostSuccess,
+  setDeletePostSuccess,
+  resetSuccessFlags,
 } = postSlice.actions;
 
 export default postSlice.reducer;

@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import PostEditor from "./PostEditor";
 import PostPreview from "./PostPreview";
 import {
-  createPostStart
+  createPostStart,
 } from "@/features/post/postSlice";
 import type { RootState } from "@/store";
 import {
@@ -32,11 +32,15 @@ export default function CreatePostForm() {
   const [content, setContent] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
 
+  const hasNavigatedRef = useRef(false);
+
   useEffect(() => {
-    if (postState.isSuccess) {
+    if (postState.createPostSuccess && !hasNavigatedRef.current) {
+      hasNavigatedRef.current = true;
       navigate("/my-posts");
     }
-  }, [postState.isSuccess, navigate, dispatch]);
+  }, [postState.createPostSuccess]);
+  
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
