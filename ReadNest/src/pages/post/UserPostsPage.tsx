@@ -25,6 +25,12 @@ export default function UserPostsPage() {
 
   useEffect(() => {
     if (auth.user?.userId) {
+      dispatch(setPagingInfo({ pageIndex: 1, pageSize: 6 }));
+    }
+  }, [auth.user?.userId, dispatch]);
+
+  useEffect(() => {
+    if (auth.user?.userId) {
       dispatch(fetchPostsByUserIdStart({ 
         userId: auth.user.userId, 
         paging: { 
