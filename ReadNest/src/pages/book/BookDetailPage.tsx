@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BookRating } from "@/features/favouriteBooks/components/BookRating";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "@radix-ui/react-separator";
 import { HeartIcon, PenToolIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -30,6 +29,8 @@ import {
 } from "@/features/favouriteBooks/favoriteSlice";
 import AffiliateButton from "@/features/affiliate/components/AffiliateButton";
 import parse from "html-react-parser";
+import { fetchPostsByBookIdStart } from "@/features/post/postSlice";
+import RelatedPostCard from "@/features/post/components/RelatedPostCard";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
@@ -46,6 +47,8 @@ export default function BookDetailPage() {
   );
   const isFavorite = book ? favorites.some((fav) => fav.id === book.id) : false;
   const [showAllComments, setShowAllComments] = useState(false);
+  const posts = useSelector((state: RootState) => state.post.posts);
+  const [showAllPosts, setShowAllPosts] = useState(false);
 
   useEffect(() => {
     if (bookId) {
@@ -58,6 +61,7 @@ export default function BookDetailPage() {
           paging: { pageIndex: 1, pageSize: 100 },
         })
       );
+      dispatch(fetchPostsByBookIdStart(bookId))
     }
   }, [dispatch, bookId]);
 
@@ -311,71 +315,49 @@ export default function BookDetailPage() {
         <h2 className="text-2xl font-bold mb-6">Các bài viết liên quan</h2>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Article 1 */}
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="relative flex flex-col items-center text-center">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>LL</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-semibold text-lg">Long Lê</h3>
-                      <p className="text-gray-500 text-sm">2 ngày trước</p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      className="text-gray-500 hover:bg-transparent"
-                    >
-                      <HeartIcon className="h-4 w-4 mr-1" />
-                      <span>245</span>
-                    </Button>
-                  </div>
-                  <h4 className="font-bold mb-2">
-                    Sự thở của nghệ thuật tối giản
-                  </h4>
-                  <p className="text-gray-700">
-                    Có thể nói nghệ thuật là một phần của cuộc sống...
-                  </p>
-                </div>
+          {posts.length === 0 ? (
+            <p className="text-center text-gray-500">Hiện chưa có bài viết liên quan.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {(showAllPosts ? posts : posts.slice(0, 3)).map((post) => (
+                  <RelatedPostCard
+                    key={post.id}
+                    userName={post.creator?.userName ?? ""}
+                    postId={post.id ?? ""}
+                    authorName={post.creator?.fullName ?? ""}
+                    avatarUrl={post.creator?.avatarUrl ?? ""}
+                    avatarFallback={post.creator?.fullName ?? ""}
+                    createdAt={post.createdAt || new Date().toISOString()}
+                    title={post.title ?? ""}
+                    content={parse(post.content ?? "")}
+                    likes={post.likesCount ?? 0}
+                  />
+                ))}
               </div>
-            </Card>
 
-            {/* Article 2 */}
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="relative flex flex-col items-center text-center">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>NA</AvatarFallback>
-                  </Avatar>
+              {posts.length > 3 && !showAllPosts && (
+                <div className="flex justify-end">
+                  <button
+                    className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+                    onClick={() => setShowAllPosts(true)}
+                  >
+                    Xem thêm bài viết
+                  </button>
                 </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-semibold text-lg">Nhật Anh</h3>
-                      <p className="text-gray-500 text-sm">5 ngày trước</p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      className="text-gray-500 hover:bg-transparent"
-                    >
-                      <HeartIcon className="h-4 w-4 mr-1" />
-                      <span>145</span>
-                    </Button>
-                  </div>
-                  <h4 className="font-bold mb-2">Nghệ thuật tối giản là gì?</h4>
-                  <p className="text-gray-700">
-                    Một trong nghệ thuật trừu tượng nhất đó là...
-                  </p>
+              )}
+              {posts.length > 3 && showAllPosts && (
+                <div className="flex justify-end">
+                  <button
+                    className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+                    onClick={() => setShowAllPosts(false)}
+                  >
+                    Ẩn bớt bài viết
+                  </button>
                 </div>
-              </div>
-            </Card>
-          </div>
+              )}
+            </>
+          )}
         </div>
       </div>
       {/* Review Input Modal */}

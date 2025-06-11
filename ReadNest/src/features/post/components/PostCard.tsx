@@ -64,7 +64,7 @@ export function PostCard({
       
       <CardContent className="flex-grow">
         <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
-        <div className="text-muted-foreground line-clamp-2">{content}</div>
+        <div className="text-muted-foreground line-clamp-2 max-h-12">{content}</div>
       </CardContent>
       
       <CardFooter className="flex justify-between items-center pt-0">

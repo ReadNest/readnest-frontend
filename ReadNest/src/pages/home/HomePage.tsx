@@ -134,7 +134,7 @@ function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 className="bg-[#5a4bff] hover:bg-[#4739e6] text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                onClick={() => navigate("/search?keyword=")}
+                onClick={() => navigate("/posts")}
               >
                 <span className="flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

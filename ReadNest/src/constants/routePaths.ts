@@ -18,6 +18,7 @@ export const ROUTE_PATHS = {
   CATEGORY: "/categories",
   CREATE_CATEGORY: "/categories/create",
   CREATE_POST: "/create-post",
+  UPDATE_POST: "/edit-post/:postId",
   COMMENT_REPORT: "/comment-reports",
   DETAIL_POST: "/post/:postId",
   POSTS: "/posts",

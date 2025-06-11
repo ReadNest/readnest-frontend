@@ -65,7 +65,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
   const navItems = [
     { to: "/", label: "Trang chủ", icon: <Home className="w-5 h-5" /> },
     {
-      to: "/search?keyword=",
+      to: "/posts",
       label: "Khám phá",
       icon: <Compass className="w-5 h-5" />,
     },

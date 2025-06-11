@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { HeartIcon, EyeIcon, Share2Icon, BookmarkIcon, MoreVertical } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 
 export default function DetailPostPage() {
@@ -19,6 +19,7 @@ export default function DetailPostPage() {
     const post = useSelector((state: RootState) => state.post.selectedPost);
     const loading = useSelector((state: RootState) => state.post.loading);
     const auth = useSelector((state: RootState) => state.auth);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (postId) {
@@ -99,7 +100,14 @@ export default function DetailPostPage() {
                 <CardContent className="pt-6">
                     {/* Post Title */}
                     <CardTitle className="text-3xl font-bold mb-6">
-                        Đánh giá sách <span className="text-purple-500">{post.book?.title}</span> - {post.title}
+                        Đánh giá sách{" "}
+                        <span
+                            className="text-purple-500 hover:underline cursor-pointer"
+                            onClick={() => navigate(`/book-detail/${post.book?.id}`)}
+                        >
+                            {post.book?.title}
+                        </span>{" "}
+                        - {post.title}
                     </CardTitle>
 
                     {/* Book Info Section */}

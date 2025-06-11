@@ -175,12 +175,12 @@ function* fetchPostsByUserId(action: PayloadAction<{ userId: any; paging: Paging
 function* fetchPostsByBookId(action: PayloadAction<string>) {
   try {
     yield put(setLoading(true));
-    const res: GetPostResponsePagingResponseApiResponse = yield call(() =>
+    const res: GetPostResponseApiResponse = yield call(() =>
       client.api.v1.posts.book._bookId(action.payload).get().then((r) => r.body)
     );
 
     if (res.success && res.data) {
-      yield put(setPostsV1(res.data.items ?? []));
+      yield put(setPostsV1(Array.isArray(res.data) ? res.data : []));
       yield put(setSuccess(true));
     } else {
       yield put(setSuccess(false));

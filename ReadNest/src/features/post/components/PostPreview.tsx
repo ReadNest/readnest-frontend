@@ -72,12 +72,17 @@ export default function PostPreview({
           </div>
 
           {bookName && (
-            <h2 className="text-xl font-bold">Đánh giá sách {bookName} - {title}</h2>
+            <h2 className="text-xl font-semibold">
+              <span className="text-base font-normal">Đánh giá sách </span>
+              <span className="text-purple-500 font-semibold">{bookName}</span>
+              <span className="text-base font-normal"> - </span>
+              <span className="font-bold">{title}</span>
+            </h2>
           )}
 
-          {title && (
+          {/* {title && (
             <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-          )}
+          )} */}
 
         <div className="prose dark:prose-invert max-w-none max-h-[60vh] overflow-y-auto pr-2">
           <EditorContent editor={editor} />

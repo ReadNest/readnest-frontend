@@ -163,15 +163,15 @@ export default function CreatePostForm() {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col-reverse sm:flex-row justify-between gap-4 pt-4 border-t border-gray-100">
-            <div className="flex gap-2">
-              <Button 
+          <div className="flex justify-between pt-4 border-t border-gray-100">
+            <Button 
                 variant="outline" 
                 onClick={() => window.history.back()}
                 className="flex-1 sm:flex-none"
               >
                 Hủy bỏ
-              </Button>
+            </Button>
+            <div className="flex gap-2">
               <PostPreview
                 open={previewOpen}
                 onOpenChange={setPreviewOpen}
@@ -181,9 +181,7 @@ export default function CreatePostForm() {
                 authorName={user?.fullName ?? ""}
                 avatarUrl={user?.avatarUrl ?? ""}
               />
-            </div>
-            
-            <Button 
+              <Button 
               onClick={handleSubmit} 
               disabled={postState.loading}
               className="flex-1 sm:flex-none"
@@ -197,6 +195,7 @@ export default function CreatePostForm() {
                 "Đăng bài"
               )}
             </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

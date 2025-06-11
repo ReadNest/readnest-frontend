@@ -70,16 +70,19 @@ const postSlice = createSlice({
     addPost: (state, action: PayloadAction<GetPostResponse>) => {
       state.posts.unshift(action.payload);
     },
-    updatePost: (
-      state,
-      action: PayloadAction<GetPostResponse>
-    ) => {
+    updatePost: (state, action: PayloadAction<GetPostResponse>) => {
       const index = state.posts.findIndex((p) => p.id === action.payload.id);
       if (index !== -1) {
         state.posts[index] = {
           ...state.posts[index],
           ...action.payload,
         };
+        if (state.selectedPost?.id === action.payload.id) {
+          state.selectedPost = {
+            ...state.selectedPost,
+            ...action.payload,
+          };
+        }
       }
     },
     deletePost: (state, action: PayloadAction<string>) => {

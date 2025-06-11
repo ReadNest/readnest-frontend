@@ -19,6 +19,9 @@ import { toast } from "react-toastify";
 import { uploadFileToCloudinary } from "@/lib/utils";
 import { fetchTop3RecentCommentsRequested } from "@/features/review/commentSlice";
 import { setAvatarUrl } from "@/features/auth/authSlice";
+import { fetchPostsByUserIdStart } from "@/features/post/postSlice";
+import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
+import parse from "html-react-parser";
 
 export default function ProfilePage() {
   const [showModalAvatar, setShowModalAvatar] = useState(false);
@@ -33,6 +36,7 @@ export default function ProfilePage() {
   );
   const { user } = useSelector((state: RootState) => state.auth);
   const comment = useSelector((state: RootState) => state.comment);
+  const posts = useSelector((state: RootState) => state.post.posts);
 
   // ========== Avatar Upload ========== //
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -104,11 +108,17 @@ export default function ProfilePage() {
 
   //Call API to get user data
   useEffect(() => {
-    if (username) {
+    if (username && user.userId) {
       dispatch(fetchTop3RecentCommentsRequested(username));
       dispatch(fetchUserProfileRequested(username));
+      dispatch(fetchPostsByUserIdStart({ 
+        userId: user.userId, 
+        paging: { 
+          pageIndex: 1, 
+          pageSize: 3 } 
+      }));
     }
-  }, [username]);
+  }, [username, user.userId]);
   // Navigate to 404 if user not found
   useEffect(() => {
     if (isProfileNotFound && isLoading === false) {
@@ -251,29 +261,24 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* <RecentPostCard
-                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                                    bookAuthor="Mark Manson"
-                                    likes={124}
-                                />
-                                <RecentPostCard
-                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                                    bookAuthor="Mark Manson"
-                                    likes={124}
-                                />
-                                <RecentPostCard
-                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                                    bookAuthor="Mark Manson"
-                                    likes={124}
-                                /> */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {posts && posts.length > 0 ? (
+                posts.map((post) => (
+                  <RecentPostCard
+                    key={post.id}
+                    postId={post.id ?? ""}
+                    bookImage={post.book?.imageUrl ?? ""}
+                    postTitle={post.title ?? ""}
+                    content={parse(post.content ?? "")}
+                    likes={post.likesCount ?? 0}
+                  />
+                ))
+              ) : (
                 <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
                   Hiện tại chưa có bài post nào được đăng tải gần đây
                 </div>
-              </div>
+              )}
+            </div>
             </CardContent>
           </Card>
 

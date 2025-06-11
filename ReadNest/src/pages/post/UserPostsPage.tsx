@@ -1,13 +1,14 @@
 import { PostCard } from "@/features/post/components/PostCard";
 import { Button } from "@/components/ui/button";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import { deletePostRequest, fetchPostsByUserIdStart, setPagingInfo } from "@/features/post/postSlice";
+import { deletePostRequest, fetchPostsByUserIdStart, resetSuccessFlags, setPagingInfo } from "@/features/post/postSlice";
 import { useCallback, useEffect } from "react";
 import parse from "html-react-parser";
+import DeletePostDialog from "@/features/post/components/DeletePostDialog";
 
 export default function UserPostsPage() {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ export default function UserPostsPage() {
           pageIndex: pagingInfo.pageIndex ?? 1, 
           pageSize: pagingInfo.pageSize ?? 6 } 
       }));
+      dispatch(resetSuccessFlags());
     }
   }, [auth.user?.userId, dispatch]);
 
@@ -47,9 +49,7 @@ export default function UserPostsPage() {
   };
 
   const handleDelete = (postId: string) => {
-    if (window.confirm("Bạn có chắc muốn xóa bài viết này không?")) {
-      dispatch(deletePostRequest(postId));
-    }
+    dispatch(deletePostRequest(postId));
   };
   
   return (
@@ -101,14 +101,15 @@ export default function UserPostsPage() {
               >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button
+              {/* <Button
                 variant="outline"
                 size="icon"
                 className="h-8 w-8"
                 onClick={() => handleDelete(post.id ?? "")}
               >
                 <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              </Button> */}
+              <DeletePostDialog postId={post.id ?? ""} onDelete={handleDelete} />
             </div>
           </div>
         ))}

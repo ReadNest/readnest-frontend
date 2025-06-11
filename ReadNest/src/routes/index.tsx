@@ -15,6 +15,7 @@ import DetailPostPage from "@/pages/post/DetailPostPage";
 import PostsPage from "@/pages/post/PostsPage";
 import UserPostsPage from "@/pages/post/UserPostsPage";
 import EditBookPage from "@/pages/book/UpdateBookPage";
+import UpdatePostPage from "@/pages/post/UpdatePostPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -241,6 +242,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       layout: defaultLayout,
     },
     {
+      path: ROUTE_PATHS.UPDATE_POST,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <UpdatePostPage />,
+      layout: defaultLayout,
+    },
+    {
       path: ROUTE_PATHS.COMMENT_REPORT,
       isPrivate: true,
       allowedRoles: [RoleEnum.ADMIN],
@@ -250,21 +258,21 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     {
       path: ROUTE_PATHS.DETAIL_POST,
       isPrivate: false,
-      // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <DetailPostPage />,
       layout: defaultLayout,
     },
     {
       path: ROUTE_PATHS.POSTS,
       isPrivate: false,
-      // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <PostsPage />,
       layout: defaultLayout,
     },
     {
       path: ROUTE_PATHS.MY_POSTS,
       isPrivate: false,
-      // allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <UserPostsPage />,
       layout: defaultLayout,
     },
