@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard";
-import { CameraIcon, FrameIcon, PlusIcon } from "lucide-react";
+import { CameraIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,6 +22,9 @@ import { setAvatarUrl } from "@/features/auth/authSlice";
 import { fetchPostsByUserIdStart } from "@/features/post/postSlice";
 import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
 import parse from "html-react-parser";
+import { BadgeSelectionButton } from "@/features/badge/components/BadgeButton/BadgeSelectionButton";
+import type { UserBadgeResponse } from "@/api/@types";
+import { FirstParticipantAvatar } from "@/features/badge/components/avatarBadge/FirstParticipantAvatar";
 
 export default function ProfilePage() {
   const [showModalAvatar, setShowModalAvatar] = useState(false);
@@ -126,6 +129,12 @@ export default function ProfilePage() {
     }
   }, [isProfileNotFound, isLoading, navigate]);
 
+  // Get selected badge code
+  const selectedBadge =
+    Array.isArray(profile.ownedBadges) && profile.ownedBadges.length > 0
+      ? profile.ownedBadges.find((badge: UserBadgeResponse) => badge.isSelected)
+      : undefined;
+
   return (
     <div className="container mx-auto py-8 px-10">
       {/* Top Profile Page */}
@@ -133,12 +142,61 @@ export default function ProfilePage() {
         <div className="flex items-center space-x-4 mb-1">
           {/* Profile Header */}
           <div className="relative flex flex-col items-center text-center">
-            <Avatar className="h-40 w-40 mb-4">
-              <AvatarImage
-                src={profile.avatarUrl ?? "https://github.com/shadcn.png"}
-              />
-              <AvatarFallback>Avatar</AvatarFallback>
-            </Avatar>
+            <div className="flex flex-col items-center">
+              {selectedBadge?.badgeCode === "DEFAULT" && (
+                <Avatar className="h-40 w-40 mb-4">
+                  <AvatarImage
+                    src={profile.avatarUrl ?? "https://github.com/shadcn.png"}
+                  />
+                  <AvatarFallback className="text-5xl font-bold">{profile.fullName?.charAt(0)}</AvatarFallback>
+                </Avatar>
+              )}
+              {selectedBadge?.badgeCode === "PIONEER_001" && (
+                <FirstParticipantAvatar
+                  avatarUrl={profile.avatarUrl ?? ""}
+                  className="mb-3"
+                />
+              )}
+              {selectedBadge?.badgeCode === "TOP1" && (
+                <>
+                  {/* <TopContributorBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    rank={1}
+                    contributionCount={42}
+                  /> */}
+                </>
+              )}
+              {selectedBadge?.badgeCode === "TOP2" && (
+                <>
+                  {/* <TopContributorBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    rank={2}
+                    contributionCount={42}
+                  /> */}
+                </>
+              )}
+              {selectedBadge?.badgeCode === "TOP3" && (
+                <>
+                  {/* <TopContributorBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    rank={3}
+                    contributionCount={42}
+                  /> */}
+                </>
+              )}
+              {selectedBadge?.badgeCode === "MOST_ACTIVE" && (
+                <>
+                  {/* <TopUserBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    type="mostActive"
+                    value={1250}
+                    className="mx-2"
+                  /> */}
+                </>
+              )}
+            </div>
+
+
             {user.userId == profile.userId && (
               <Button
                 className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
@@ -241,10 +299,10 @@ export default function ProfilePage() {
                 </svg>
                 {profile.dateOfBirth
                   ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
                   : "Chưa cập nhật ngày sinh"}
               </li>
             </ul>
@@ -300,7 +358,7 @@ export default function ProfilePage() {
                   Hiện tại chưa có review nào được đăng tải gần đây
                 </div>
               ) : (
-                comment.top3RecentComments.map((review) => (
+                comment.top3RecentComments.map((review: any) => (
                   <RecentReviewCard
                     key={review.commentId}
                     // bookImage={review.book?.imageUrl ?? "https://via.placeholder.com/150"}
@@ -342,25 +400,63 @@ export default function ProfilePage() {
                     onChange={handleAvatarChange}
                   />
                 </label>
-                <Button
-                  className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
-                  onClick={() => {
-                    toast.info(
-                      "Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt."
-                    );
-                  }}
-                >
-                  <FrameIcon className="mr-2" /> Chọn khung
-                </Button>
+                <BadgeSelectionButton canSelectedBadgeList={profile.ownedBadges ?? []} />
               </div>
               {showModalAvatar && (
                 <div className="flex flex-col items-center space-y-4">
-                  <Avatar className="h-25 w-25">
-                    <AvatarImage
-                      src={avatarPreview ?? profile.avatarUrl ?? ""}
-                    />
-                    <AvatarFallback>N/A</AvatarFallback>
-                  </Avatar>
+                  <div className="flex flex-col items-center mb-5">
+                    {selectedBadge?.badgeCode === "DEFAULT" && (
+                      <Avatar className="h-40 w-40 mb-4">
+                        <AvatarImage
+                          src={avatarPreview ?? profile.avatarUrl ?? "https://github.com/shadcn.png"}
+                        />
+                        <AvatarFallback className="text-5xl font-bold">{profile.fullName?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    )}
+                    {selectedBadge?.badgeCode === "PIONEER_001" && (
+                      <FirstParticipantAvatar
+                        avatarUrl={avatarPreview ?? profile.avatarUrl ?? ""}
+                        className="mb-3"
+                      />
+                    )}
+                    {selectedBadge?.badgeCode === "TOP1" && (
+                      <>
+                        {/* <TopContributorBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          rank={1}
+                          contributionCount={42}
+                        /> */}
+                      </>
+                    )}
+                    {selectedBadge?.badgeCode === "TOP2" && (
+                      <>
+                        {/* <TopContributorBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          rank={2}
+                          contributionCount={42}
+                        /> */}
+                      </>
+                    )}
+                    {selectedBadge?.badgeCode === "TOP3" && (
+                      <>
+                        {/* <TopContributorBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          rank={3}
+                          contributionCount={42}
+                        /> */}
+                      </>
+                    )}
+                    {selectedBadge?.badgeCode === "MOST_ACTIVE" && (
+                      <>
+                        {/* <TopUserBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          type="mostActive"
+                          value={1250}
+                          className="mx-2"
+                        /> */}
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

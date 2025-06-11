@@ -15,6 +15,9 @@ import postReducer from "@/features/post/postSlice";
 import bookDropdownReducer from "@/features/search/bookDropdownSlice";
 import bookSearchPageReducer from "@/features/search/bookSearchPageSlice";
 import categoryFilterReducer from "@/features/search/categoryFilterSlice";
+import badgeReducer from "@/features/badge/badgeSlice";
+import userBadgeReducer from "@/features/userBadge/userBadgeSlice";
+
 
 const appReducer = combineReducers({
   error: errorReducer,
@@ -31,6 +34,8 @@ const appReducer = combineReducers({
   bookDropdown: bookDropdownReducer,
   bookSearchPage: bookSearchPageReducer,
   categoryFilter: categoryFilterReducer,
+  badge: badgeReducer,
+  userBadge: userBadgeReducer,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

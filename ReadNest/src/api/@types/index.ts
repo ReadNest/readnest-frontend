@@ -214,6 +214,7 @@ export type GetAffiliateLinkResponse = {
 }
 
 export type GetBadgeResponse = {
+  id?: string | undefined;
   code?: string | null | undefined;
   name?: string | null | undefined;
   description?: string | null | undefined;
@@ -439,6 +440,7 @@ export type GetUserProfileResponse = {
   numberOfPosts?: number | undefined;
   numberOfComments?: number | undefined;
   ratingScores?: number | undefined;
+  ownedBadges?: UserBadgeResponse[] | null | undefined;
 }
 
 export type GetUserProfileResponseApiResponse = {
@@ -459,6 +461,7 @@ export type GetUserResponse = {
   avatarUrl?: string | null | undefined;
   roleId?: string | undefined;
   roleName?: string | null | undefined;
+  selectedBadgeCode?: string | null | undefined;
 }
 
 export type GetUserResponseApiResponse = {
@@ -678,5 +681,15 @@ export type UserBadge = {
   user?: User | undefined;
   badgeId?: string | undefined;
   badge?: Badge | undefined;
+  isSelected?: boolean | undefined;
+}
+
+export type UserBadgeResponse = {
+  userBadgeId?: string | undefined;
+  userId?: string | undefined;
+  badgeId?: string | undefined;
+  badgeCode?: string | null | undefined;
+  badgeName?: string | null | undefined;
+  badgeDescription?: string | null | undefined;
   isSelected?: boolean | undefined;
 }

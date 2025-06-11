@@ -28,12 +28,12 @@ function* fetchComments(action: PayloadAction<string>) {
 }
 
 function* addComment(action: PayloadAction<CreateCommentRequest>) {
-    try {
+    try {   
         yield put(addCommentStart());
         const response: { data: GetCommentResponse; success: boolean } = yield call(() =>
             client.api.v1.Comment.$post({ body: action.payload })
         );
-        // console.log("Add comment request response:", response);
+        console.log("Add comment request response:", response);
         if (response.success) {
             yield put(addCommentSuccess(response.data));
             toast.success("Bạn đã bình luận thành công!");

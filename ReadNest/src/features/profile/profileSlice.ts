@@ -59,6 +59,17 @@ const profileSlice = createSlice({
     },
     setIsProfileNotFound: (state, action: PayloadAction<boolean>) => {
       state.isProfileNotFound = action.payload;
+    },
+
+    updateCurrentBadge: (state, action: PayloadAction<string>) => {
+      const badgeId = action.payload;
+      console.log("updateCurrentBadge", action.payload);
+      // Cập nhật tất cả selected của badge thành false
+      state.profile.ownedBadges = state.profile?.ownedBadges?.map((badge) => ({
+        ...badge,
+        isSelected: badge.badgeId === badgeId ? true : false,
+      }));
+      console.log("state.profile.ownedBadges", state.profile.ownedBadges);
     }
   },
 });
@@ -74,6 +85,8 @@ export const {
   updateProfileFailure,
   setIsLoading,
   setIsProfileNotFound,
+
+  updateCurrentBadge,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

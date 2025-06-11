@@ -1,3 +1,4 @@
+import type { GetCommentResponse } from "@/api/@types";
 import { Button } from "@/components/ui/button";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import TradingBookCard from "@/features/book/components/TradingBookCard";
@@ -178,7 +179,7 @@ function HomePage() {
                 Hiện tại chưa có bài post nào đã được đăng tải gần đây
               </div>
             ) : (
-              comment.top3MostLikedComments.map((review: any) => (
+              comment.top3MostLikedComments.map((review : GetCommentResponse) => (
                 <ReviewCard
                   key={review.commentId}
                   creator={review.creator ?? ""}
@@ -188,6 +189,7 @@ function HomePage() {
                   likes={review.numberOfLikes?.toString() ?? "0"}
                   userLikes={review.userLikes ?? []}
                   commentId={review.commentId ?? ""}
+                  badgeCode={review.creator?.selectedBadgeCode ?? "DEFAULT"}
                 />
               ))
             )}
