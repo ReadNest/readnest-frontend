@@ -1,4 +1,8 @@
-import type { CreateBookRequest, GetBookResponse } from "@/api/@types";
+import type {
+  CreateBookRequest,
+  GetBookResponse,
+  UpdateBookRequest,
+} from "@/api/@types";
 import type { PagingRequest } from "@/lib/api/base/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
@@ -30,6 +34,12 @@ const bookSlice = createSlice({
   reducers: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createBookStart: (_state, _action: PayloadAction<CreateBookRequest>) => {},
+    updateBookStart: (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _state,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _action: PayloadAction<{ id: string; book: UpdateBookRequest }>
+    ) => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deleteBookRequest: (_state, _action: PayloadAction<string>) => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,6 +54,18 @@ const bookSlice = createSlice({
     },
     addBook: (state, action: PayloadAction<GetBookResponse>) => {
       state.books.push(action.payload);
+    },
+    updateBook: (
+      state,
+      action: PayloadAction<{ id: string; book: UpdateBookRequest }>
+    ) => {
+      const index = state.books.findIndex((x) => x.id === action.payload.id);
+      if (index !== -1) {
+        state.books[index] = {
+          ...state.books[index],
+          ...action.payload.book,
+        };
+      }
     },
     deleteBook: (state, action: PayloadAction<string>) => {
       state.books = state.books.filter((x) => x.id !== action.payload);
@@ -78,6 +100,7 @@ const bookSlice = createSlice({
 
 export const {
   createBookStart,
+  updateBookStart,
   deleteBookRequest,
   fetchBooksStart,
   fetchBooksStartV1,
@@ -85,6 +108,7 @@ export const {
   setLoading,
   setSuccess,
   addBook,
+  updateBook,
   setBooksV1,
   setBooks,
   setSelectedBook,
