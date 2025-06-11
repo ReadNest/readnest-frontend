@@ -616,6 +616,24 @@ export type UpdateBadgeRequest = {
   description?: string | null | undefined;
 }
 
+export type UpdateBookImageRequest = {
+  bookImageId?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
+export type UpdateBookRequest = {
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  description?: string | null | undefined;
+  rating?: number | undefined;
+  isbn?: string | null | undefined;
+  language?: string | null | undefined;
+  categoryIds?: string[] | null | undefined;
+  bookImages?: UpdateBookImageRequest[] | null | undefined;
+}
+
 export type UpdateCategoryRequest = {
   id?: string | undefined;
   name?: string | null | undefined;
