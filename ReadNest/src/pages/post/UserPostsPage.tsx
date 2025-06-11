@@ -18,7 +18,7 @@ export default function UserPostsPage() {
   const navigate = useNavigate();
 
   const pageIndex = pagingInfo.pageIndex ?? 1;
-  const pageSize = pagingInfo.pageSize ?? 10;
+  const pageSize = pagingInfo.pageSize ?? 6;
   const totalItems = pagingInfo.totalItems ?? 0;
 
   const totalPages = Math.ceil(totalItems / (pageSize || 1))
@@ -29,11 +29,12 @@ export default function UserPostsPage() {
         userId: auth.user.userId, 
         paging: { 
           pageIndex: pagingInfo.pageIndex ?? 1, 
-          pageSize: pagingInfo.pageSize ?? 6 } 
+          pageSize: pagingInfo.pageSize ?? 6 
+        } 
       }));
       dispatch(resetSuccessFlags());
     }
-  }, [auth.user?.userId, dispatch]);
+  }, [auth.user?.userId, pagingInfo.pageIndex, pagingInfo.pageSize, dispatch]);
 
   const handlePageChange = useCallback(
     (newPageIndex: number) => {
@@ -101,14 +102,6 @@ export default function UserPostsPage() {
               >
                 <Pencil className="h-4 w-4" />
               </Button>
-              {/* <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleDelete(post.id ?? "")}
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button> */}
               <DeletePostDialog postId={post.id ?? ""} onDelete={handleDelete} />
             </div>
           </div>

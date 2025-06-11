@@ -45,7 +45,12 @@ export default function DetailPostPage() {
                 <CardHeader className="border-b pb-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                            <Avatar className="h-10 w-10">
+                            <Avatar 
+                                className="h-10 w-10 cursor-pointer"
+                                onClick={() => {
+                                    navigate(`/profile/${post.creator?.userName}`);
+                                }}
+                                >
                                 <AvatarImage src={post.creator?.avatarUrl ?? ""} alt={post.creator?.fullName ?? ""} />
                                 <AvatarFallback>
                                     {post.creator?.fullName ?? ""
@@ -55,7 +60,14 @@ export default function DetailPostPage() {
                                 </AvatarFallback>
                             </Avatar>
                             <div>
-                                <p className="font-medium">{post.creator?.fullName}</p>
+                                <p 
+                                    className="font-medium cursor-pointer"
+                                    onClick={() => {
+                                        navigate(`/profile/${post.creator?.userName}`);
+                                    }}
+                                >
+                                    {post.creator?.fullName}
+                                </p>
                                 <p className="text-sm text-gray-500">{formatDate(post.createdAt ?? "")}</p>
                             </div>
                         </div>

@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import { uploadFileToCloudinary } from "@/lib/utils";
 import { fetchTop3RecentCommentsRequested } from "@/features/review/commentSlice";
 import { setAvatarUrl } from "@/features/auth/authSlice";
-import { fetchPostsByUserIdStart } from "@/features/post/postSlice";
+import { fetchPostsByUserIdStart, resetState } from "@/features/post/postSlice";
 import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
 import parse from "html-react-parser";
 import { BadgeSelectionButton } from "@/features/badge/components/BadgeButton/BadgeSelectionButton";
@@ -98,8 +98,10 @@ export default function ProfilePage() {
   //Call API to get user data
   useEffect(() => {
     dispatch(setIsProfileNotFound(false));
+    dispatch(resetState());
     if (username) {
       dispatch(fetchUserProfileRequested(username));
+      dispatch(fetchTop3RecentCommentsRequested(username));
     }
   }, [username]);
   // Navigate to 404 if user not found
@@ -110,18 +112,23 @@ export default function ProfilePage() {
   }, [isProfileNotFound, navigate]);
 
   //Call API to get user data
+  // useEffect(() => {
+  //   if (username) {
+  //     dispatch(fetchTop3RecentCommentsRequested(username));
+  //     dispatch(fetchUserProfileRequested(username));
+  //   }
+  // }, [username]);
   useEffect(() => {
-    if (username && user.userId) {
-      dispatch(fetchTop3RecentCommentsRequested(username));
-      dispatch(fetchUserProfileRequested(username));
+    if (profile.userId) {
       dispatch(fetchPostsByUserIdStart({ 
-        userId: user.userId, 
+        userId: profile.userId, 
         paging: { 
           pageIndex: 1, 
-          pageSize: 3 } 
+          pageSize: 3 
+        } 
       }));
     }
-  }, [username, user.userId]);
+  });
   // Navigate to 404 if user not found
   useEffect(() => {
     if (isProfileNotFound && isLoading === false) {

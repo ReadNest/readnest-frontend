@@ -15,7 +15,7 @@ export default function PostsPage() {
     const navigate = useNavigate();
 
     const pageIndex = pagingInfo.pageIndex ?? 1;
-    const pageSize = pagingInfo.pageSize ?? 10;
+    const pageSize = pagingInfo.pageSize ?? 6;
     const totalItems = pagingInfo.totalItems ?? 0;
 
     const totalPages = Math.ceil(totalItems / (pageSize || 1))

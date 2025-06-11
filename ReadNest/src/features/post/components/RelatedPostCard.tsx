@@ -33,21 +33,28 @@ export default function RelatedPostCard({
   return (
     <Card className="p-4 shadow-sm hover:shadow-md transition-shadow">
         <div className="flex flex-col gap-3">
-            <div
-            className="flex items-center gap-3 cursor-pointer"
-            onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/profile/${userName}`);
-            }}
-            >
-                <Avatar className="h-10 w-10 border-2 border-white shadow flex-shrink-0">
+            <div className="flex items-center gap-3">
+                <Avatar 
+                className="h-10 w-10 border-2 border-white shadow flex-shrink-0 cursor-pointer"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/profile/${userName}`);
+                }}>
                     <AvatarImage src={avatarUrl} />
                     <AvatarFallback className="bg-gradient-to-r from-blue-400 to-purple-500 text-white">
                     {avatarFallback}
                     </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                    <h3 className="font-semibold text-gray-800 truncate">{authorName}</h3>
+                    <h3 
+                        className="font-semibold text-gray-800 truncate cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/profile/${userName}`);
+                        }}
+                    >
+                        {authorName}
+                    </h3>
                     <p className="text-gray-500 text-sm">{formatTimeAgo(createdAt)}</p>
                 </div>
             </div>
