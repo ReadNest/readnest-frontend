@@ -3,15 +3,17 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { PostCard } from "@/features/post/components/PostCard";
 import { fetchPostsStart, setPagingInfo, setPostsV1 } from "@/features/post/postSlice";
 import type { RootState } from "@/store";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import parse from "html-react-parser";
 import { useNavigate } from "react-router-dom";
+import SkeletonPostCardList from "@/features/post/components/SkeletonPostCardList";
 
 export default function PostsPage() {
     const dispatch = useDispatch();
     const posts = useSelector((state: RootState) => state.post.posts);
     const pagingInfo = useSelector((state: RootState) => state.post.pagingInfo);
+    const isLoading = useSelector((state: RootState) => state.post.loading);
     const navigate = useNavigate();
 
     const pageIndex = pagingInfo.pageIndex ?? 1;
@@ -20,6 +22,15 @@ export default function PostsPage() {
 
     const totalPages = Math.ceil(totalItems / (pageSize || 1))
 
+    const initialized = useRef(false);
+
+    useEffect(() => {
+      if (!initialized.current) {
+        dispatch(setPagingInfo({ pageIndex: 1, pageSize: 6 }));
+        initialized.current = true;
+      }
+    }, [dispatch]);
+    
     useEffect(() => {
       dispatch(setPostsV1([])); // reset posts khi chuyển trang
       dispatch(fetchPostsStart({ pageIndex, pageSize }));
@@ -27,10 +38,17 @@ export default function PostsPage() {
 
     const handlePageChange = useCallback(
       (newPageIndex: number) => {
-        if (newPageIndex < 1 || newPageIndex > totalPages) return;
+        if (
+          newPageIndex < 1 ||
+          newPageIndex > totalPages ||
+          newPageIndex === pageIndex
+        ) {
+          return;
+        }
         dispatch(setPagingInfo({ pageIndex: newPageIndex, pageSize }));
+        window.scrollTo({ top: 0, behavior: "smooth" }); // tùy chọn
       },
-      [dispatch, pageSize, totalPages]
+      [dispatch, pageIndex, pageSize, totalPages]
     );
   
 
@@ -60,21 +78,25 @@ export default function PostsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id }
-            bookImageUrl={post.book?.imageUrl ?? ""}
-            creator={post.creator?.fullName ?? ""}
-            creatorAvatarUrl={post.creator?.avatarUrl ?? ""}
-            date={formatDate(post.createdAt ?? "")}
-            title={post.title ?? ""}
-            content={parse(post.content ?? "")}
-            rating={post.book?.avarageRating ?? 0}
-            views={post.views ?? 0}
-            likes={post.likesCount ?? 0}
-            onClick={() => navigate(`/post/${post.id}`)}
-          />
-        ))}
+        {isLoading ? (
+          <SkeletonPostCardList count={6} />
+        ) : (
+          posts.map((post) => (
+            <PostCard
+              key={post.id}
+              bookImageUrl={post.book?.imageUrl ?? ""}
+              creator={post.creator?.fullName ?? ""}
+              creatorAvatarUrl={post.creator?.avatarUrl ?? ""}
+              date={formatDate(post.createdAt ?? "")}
+              title={post.title ?? ""}
+              content={parse(post.content ?? "")}
+              rating={post.book?.avarageRating ?? 0}
+              views={post.views ?? 0}
+              likes={post.likesCount ?? 0}
+              onClick={() => navigate(`/post/${post.id}`)}
+            />
+          ))
+        )}
       </div>
 
       {/* Pagination  */}

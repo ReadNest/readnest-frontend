@@ -4,6 +4,7 @@ import type {
   CreatePostRequest,
   LikePostRequest,
   UpdatePostRequest,
+  FilterPostRequest,
 } from "@/api/@types";
 import type { PagingRequest } from "@/lib/api/base/types";
 
@@ -58,6 +59,7 @@ const postSlice = createSlice({
     ) => {},
     deletePostRequest: (_state, _action: PayloadAction<string>) => {},
     increasePostViewsStart: (_state, _action: PayloadAction<string>) => {},
+    filterPostsStart: (_state, _action: PayloadAction<FilterPostRequest>) => {},
 
     // Trạng thái
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -198,6 +200,7 @@ export const {
   updatePostStart,
   deletePostRequest,
   increasePostViewsStart,
+  filterPostsStart,
   setLoading,
   setSuccess,
   addPost,

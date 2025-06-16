@@ -7,6 +7,7 @@ import type {
   StringApiResponse,
   LikePostRequest,
   UpdatePostRequest,
+  FilterPostRequest,
 } from "@/api/@types";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { PagingRequest } from "@/lib/api/base/types";
@@ -38,6 +39,7 @@ import {
   setDeletePostSuccess,
   increasePostViews,
   increasePostViewsStart,
+  filterPostsStart,
 } from "./postSlice";
 
 import { setMessage, setDetailErrors } from "@/store/error/errorSlice";
@@ -327,6 +329,36 @@ function* handleUpdatePost(action: PayloadAction<UpdatePostRequest>) {
     }
   }
 
+  // FILTER POST
+  function* handleFilterPosts(action: PayloadAction<FilterPostRequest>) {
+    try {
+      yield put(setLoading(true));
+  
+      const res: GetPostResponsePagingResponseApiResponse = yield call(() =>
+        client.api.v1.posts.filter.post({
+          body: action.payload,
+        }).then((r) => r.body)
+      );
+  
+      if (res.success && res.data) {
+        yield put(setPostsV1(res.data.items ?? []));
+        yield put(setPagingInfo({
+          totalItems: res.data.totalItems,
+          pageIndex: res.data.pageIndex,
+          pageSize: res.data.pageSize,
+        }));
+        yield put(setSuccess(true));
+      } else {
+        yield put(setSuccess(false));
+      }
+    } catch (error) {
+      console.error("Error filtering posts:", error);
+      yield put(setSuccess(false));
+    } finally {
+      yield put(setLoading(false));
+    }
+  }
+
 // ROOT SAGA
 export default function* postSaga() {
   yield takeLatest(createPostStart.type, handleCreatePost);
@@ -340,4 +372,5 @@ export default function* postSaga() {
   yield takeLatest(updatePostStart.type, handleUpdatePost);
   yield takeLatest(deletePostRequest.type, handleDeletePost);
   yield takeLatest(increasePostViewsStart.type, handleIncreasePostViews);
+  yield takeLatest(filterPostsStart.type, handleFilterPosts);
 }

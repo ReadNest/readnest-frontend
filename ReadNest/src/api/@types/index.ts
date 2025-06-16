@@ -207,6 +207,14 @@ export type FavoriteBook = {
   book?: Book | undefined;
 }
 
+export type FilterPostRequest = {
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+  keyword?: string | null | undefined;
+  bookId?: string | null | undefined;
+  sortBy?: string | null | undefined;
+}
+
 export type GetAffiliateLinkResponse = {
   id?: string | undefined;
   partnerName?: string | null | undefined;
@@ -503,6 +511,7 @@ export type Post = {
   updatedAt?: string | undefined;
   isDeleted?: boolean | undefined;
   title?: string | null | undefined;
+  titleNormalized?: string | null | undefined;
   content?: string | null | undefined;
   bookId?: string | undefined;
   userId?: string | undefined;
