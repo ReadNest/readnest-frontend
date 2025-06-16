@@ -63,6 +63,7 @@ function* handleCreatePost(action: PayloadAction<CreatePostRequest>) {
       yield put(setDetailErrors(res.listDetailError ?? []));
       toast.error("Tạo bài viết thất bại!");
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     const errBody = error?.response?.data || {};
     yield put(setSuccess(false));
@@ -81,23 +82,24 @@ function* handleCreatePost(action: PayloadAction<CreatePostRequest>) {
 
 // LIKE POST
 function* handleLikePost(action: PayloadAction<LikePostRequest>) {
-    try {
-      const res: StringApiResponse = yield call(() =>
-        client.api.v1.posts.like.post({ body: action.payload }).then(r => r.body)
-      );
-  
-      if (res.success) {
-        if (res.data === "Like successfully") {
-          yield put(likePost(action.payload));
-        } else if (res.data === "Unlike successfully") {
-          yield put(unlikePost(action.payload));
-        }
+  try {
+    const res: StringApiResponse = yield call(() =>
+      client.api.v1.posts.like
+        .post({ body: action.payload })
+        .then((r) => r.body)
+    );
+
+    if (res.success) {
+      if (res.data === "Like successfully") {
+        yield put(likePost(action.payload));
+      } else if (res.data === "Unlike successfully") {
+        yield put(unlikePost(action.payload));
       }
-    } catch (error) {
-      console.error(error);
     }
+  } catch (error) {
+    console.error(error);
   }
-  
+}
 
 // FETCH POSTS
 function* fetchPosts(action: PayloadAction<PagingRequest>) {
@@ -136,20 +138,25 @@ function* fetchPosts(action: PayloadAction<PagingRequest>) {
 }
 
 // FETCH BY USER
-function* fetchPostsByUserId(action: PayloadAction<{ userId: any; paging: PagingRequest}>) {
+function* fetchPostsByUserId(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: PayloadAction<{ userId: any; paging: PagingRequest }>
+) {
   try {
     yield put(setLoading(true));
     const { userId, paging } = action.payload;
 
     const res: GetPostResponsePagingResponseApiResponse = yield call(() =>
-        client.api.v1.posts.user._userId(userId)
-            .get({
-            query: {
-                PageIndex: paging.pageIndex,
-                PageSize: paging.pageSize,
-            },
-        }).then(r => r.body)
-      );
+      client.api.v1.posts.user
+        ._userId(userId)
+        .get({
+          query: {
+            PageIndex: paging.pageIndex,
+            PageSize: paging.pageSize,
+          },
+        })
+        .then((r) => r.body)
+    );
 
     if (res.success && res.data) {
       yield put(setPostsV1(res.data.items ?? []));
@@ -176,7 +183,10 @@ function* fetchPostsByBookId(action: PayloadAction<string>) {
   try {
     yield put(setLoading(true));
     const res: GetPostResponseApiResponse = yield call(() =>
-      client.api.v1.posts.book._bookId(action.payload).get().then((r) => r.body)
+      client.api.v1.posts.book
+        ._bookId(action.payload)
+        .get()
+        .then((r) => r.body)
     );
 
     if (res.success && res.data) {
@@ -197,7 +207,9 @@ function* searchPostsByTitle(action: PayloadAction<string>) {
   try {
     yield put(setLoading(true));
     const res: GetPostResponsePagingResponseApiResponse = yield call(() =>
-      client.api.v1.posts.search.get({ query: { keyword: action.payload } }).then((r) => r.body)
+      client.api.v1.posts.search
+        .get({ query: { keyword: action.payload } })
+        .then((r) => r.body)
     );
 
     if (res.success && res.data) {
@@ -220,7 +232,10 @@ function* fetchTopLikedPosts(action: PayloadAction<number>) {
     const count = action.payload;
 
     const res: GetPostResponsePagingResponseApiResponse = yield call(() =>
-    client.api.v1.posts.top_liked._count(count).get().then(r => r.body)
+      client.api.v1.posts.top_liked
+        ._count(count)
+        .get()
+        .then((r) => r.body)
     );
 
     if (res.success && res.data) {
@@ -241,7 +256,10 @@ function* getPostById(action: PayloadAction<string>) {
   try {
     yield put(setLoading(true));
     const res: GetPostResponseApiResponse = yield call(() =>
-      client.api.v1.posts._postId(action.payload).get().then((r) => r.body)
+      client.api.v1.posts
+        ._postId(action.payload)
+        .get()
+        .then((r) => r.body)
     );
 
     if (res.success && res.data) {
@@ -260,54 +278,57 @@ function* getPostById(action: PayloadAction<string>) {
 }
 
 function* handleUpdatePost(action: PayloadAction<UpdatePostRequest>) {
-    try {
-      yield put(setLoading(true));
-      const res: GetPostResponseApiResponse = yield call(() =>
-        client.api.v1.posts.put({ body: action.payload }).then(r => r.body)
-      );
-  
-      if (res.success && res.data) {
-        yield put(updatePost(res.data));
-        yield put(setUpdatePostSuccess(true));
-        toast.success("Cập nhật bài viết thành công!");
-      } else {
-        yield put(setSuccess(false));
-        toast.error("Cập nhật bài viết thất bại!");
-      }
-    } catch (error) {
-      console.error(error);
-      yield put(setUpdatePostSuccess(false));
-      toast.error("Đã xảy ra lỗi khi cập nhật bài viết");
-    } finally {
-      yield put(setLoading(false));
-    }
-  }
-  
-  // DELETE POST
-  function* handleDeletePost(action: PayloadAction<string>) {
-    try {
-      yield put(setLoading(true));
-      const postId = action.payload;
-      const res: StringApiResponse = yield call(() =>
-        client.api.v1.posts._postId(postId).delete().then(r => r.body)
-      );
-  
-      if (res.success) {
-        yield put(deletePost(postId));
-        yield put(setDeletePostSuccess(true));
-        toast.success("Xóa bài viết thành công!");
-      } else {
-        yield put(setDeletePostSuccess(false));
-        toast.error("Xóa bài viết thất bại!");
-      }
-    } catch (error) {
-      console.error(error);
+  try {
+    yield put(setLoading(true));
+    const res: GetPostResponseApiResponse = yield call(() =>
+      client.api.v1.posts.put({ body: action.payload }).then((r) => r.body)
+    );
+
+    if (res.success && res.data) {
+      yield put(updatePost(res.data));
+      yield put(setUpdatePostSuccess(true));
+      toast.success("Cập nhật bài viết thành công!");
+    } else {
       yield put(setSuccess(false));
-      toast.error("Đã xảy ra lỗi khi xóa bài viết");
-    } finally {
-      yield put(setLoading(false));
+      toast.error("Cập nhật bài viết thất bại!");
     }
+  } catch (error) {
+    console.error(error);
+    yield put(setUpdatePostSuccess(false));
+    toast.error("Đã xảy ra lỗi khi cập nhật bài viết");
+  } finally {
+    yield put(setLoading(false));
   }
+}
+
+// DELETE POST
+function* handleDeletePost(action: PayloadAction<string>) {
+  try {
+    yield put(setLoading(true));
+    const postId = action.payload;
+    const res: StringApiResponse = yield call(() =>
+      client.api.v1.posts
+        ._postId(postId)
+        .delete()
+        .then((r) => r.body)
+    );
+
+    if (res.success) {
+      yield put(deletePost(postId));
+      yield put(setDeletePostSuccess(true));
+      toast.success("Xóa bài viết thành công!");
+    } else {
+      yield put(setDeletePostSuccess(false));
+      toast.error("Xóa bài viết thất bại!");
+    }
+  } catch (error) {
+    console.error(error);
+    yield put(setSuccess(false));
+    toast.error("Đã xảy ra lỗi khi xóa bài viết");
+  } finally {
+    yield put(setLoading(false));
+  }
+}
 
 // ROOT SAGA
 export default function* postSaga() {

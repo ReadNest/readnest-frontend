@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
   GetPostResponse,
@@ -52,10 +53,7 @@ const postSlice = createSlice({
     fetchTopViewedPostsStart: (_state, _action: PayloadAction<number>) => {},
     searchPostsByTitleStart: (_state, _action: PayloadAction<string>) => {},
     getPostByIdStart: (_state, _action: PayloadAction<string>) => {},
-    updatePostStart: (
-      _state,
-      _action: PayloadAction<UpdatePostRequest>
-    ) => {},
+    updatePostStart: (_state, _action: PayloadAction<UpdatePostRequest>) => {},
     deletePostRequest: (_state, _action: PayloadAction<string>) => {},
 
     // Trạng thái
@@ -93,21 +91,21 @@ const postSlice = createSlice({
     likePost: (state, action: PayloadAction<LikePostRequest>) => {
       const { postId, userId } = action.payload;
       if (!userId) return; // đảm bảo không thêm undefined
-  
-      const post = state.posts.find(p => p.id === postId);
+
+      const post = state.posts.find((p) => p.id === postId);
       if (post && !post.userLikes?.includes(userId)) {
-          post.likesCount = (post.likesCount ?? 0) + 1;
-          post.userLikes = [...(post.userLikes ?? []), userId];
+        post.likesCount = (post.likesCount ?? 0) + 1;
+        post.userLikes = [...(post.userLikes ?? []), userId];
       }
     },
     unlikePost: (state, action: PayloadAction<LikePostRequest>) => {
       const { postId, userId } = action.payload;
       if (!userId) return;
 
-      const post = state.posts.find(p => p.id === postId);
+      const post = state.posts.find((p) => p.id === postId);
       if (post && post.likesCount && post.likesCount > 0) {
         post.likesCount -= 1;
-        post.userLikes = post.userLikes?.filter(id => id !== userId);
+        post.userLikes = post.userLikes?.filter((id) => id !== userId);
       }
     },
 
@@ -129,7 +127,10 @@ const postSlice = createSlice({
         pageSize?: number;
       }>
     ) => {
-      state.pagingInfo = action.payload;
+      state.pagingInfo = {
+        ...state.pagingInfo,
+        ...action.payload,
+      };
     },
 
     // Reset

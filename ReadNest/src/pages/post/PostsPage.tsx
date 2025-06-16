@@ -1,7 +1,18 @@
 import { Badge } from "@/components/ui/badge";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { PostCard } from "@/features/post/components/PostCard";
-import { fetchPostsStart, setPagingInfo, setPostsV1 } from "@/features/post/postSlice";
+import {
+  fetchPostsStart,
+  setPagingInfo,
+  setPostsV1,
+} from "@/features/post/postSlice";
 import type { RootState } from "@/store";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,36 +20,37 @@ import parse from "html-react-parser";
 import { useNavigate } from "react-router-dom";
 
 export default function PostsPage() {
-    const dispatch = useDispatch();
-    const posts = useSelector((state: RootState) => state.post.posts);
-    const pagingInfo = useSelector((state: RootState) => state.post.pagingInfo);
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const posts = useSelector((state: RootState) => state.post.posts);
+  const pagingInfo = useSelector((state: RootState) => state.post.pagingInfo);
+  const navigate = useNavigate();
 
-    const pageIndex = pagingInfo.pageIndex ?? 1;
-    const pageSize = pagingInfo.pageSize ?? 6;
-    const totalItems = pagingInfo.totalItems ?? 0;
+  const pageIndex = pagingInfo.pageIndex ?? 1;
+  const pageSize = pagingInfo.pageSize ?? 6;
+  const totalItems = pagingInfo.totalItems ?? 0;
 
-    const totalPages = Math.ceil(totalItems / (pageSize || 1))
+  const totalPages = Math.ceil(totalItems / (pageSize || 1));
 
-    useEffect(() => {
-      dispatch(setPostsV1([])); // reset posts khi chuyển trang
-      dispatch(fetchPostsStart({ pageIndex, pageSize }));
-    }, [dispatch, pageIndex, pageSize]);
+  useEffect(() => {
+    dispatch(setPostsV1([])); // reset posts khi chuyển trang
+    dispatch(fetchPostsStart({ pageIndex, pageSize }));
+  }, [dispatch, pageIndex, pageSize]);
 
-    const handlePageChange = useCallback(
-      (newPageIndex: number) => {
-        if (newPageIndex < 1 || newPageIndex > totalPages) return;
-        dispatch(setPagingInfo({ pageIndex: newPageIndex, pageSize }));
-      },
-      [dispatch, pageSize, totalPages]
-    );
-  
+  const handlePageChange = useCallback(
+    (newPageIndex: number) => {
+      if (newPageIndex < 1 || newPageIndex > totalPages) return;
+      dispatch(setPagingInfo({ pageIndex: newPageIndex, pageSize }));
+    },
+    [dispatch, pageSize, totalPages]
+  );
 
-    const formatDate = (dateString: string) => {
-      const date = new Date(dateString);
-      return `${date.getDate()} tháng ${date.getMonth() + 1}, ${date.getFullYear()}`;
-    };
-    
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getDate()} tháng ${
+      date.getMonth() + 1
+    }, ${date.getFullYear()}`;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -48,7 +60,7 @@ export default function PostsPage() {
             Khám phá những đánh giá chi tiết về các cuốn sách hay
           </p>
         </div>
-        
+
         <div className="flex gap-4 mt-4 md:mt-0">
           <Badge variant="secondary" className="cursor-pointer">
             Mới nhất
@@ -62,7 +74,7 @@ export default function PostsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
           <PostCard
-            key={post.id }
+            key={post.id}
             bookImageUrl={post.book?.imageUrl ?? ""}
             creator={post.creator?.fullName ?? ""}
             creatorAvatarUrl={post.creator?.avatarUrl ?? ""}
@@ -88,7 +100,9 @@ export default function PostsPage() {
                   e.preventDefault();
                   handlePageChange(pageIndex - 1);
                 }}
-                className={pageIndex <= 1 ? "pointer-events-none opacity-50" : ""}
+                className={
+                  pageIndex <= 1 ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
 
@@ -141,7 +155,11 @@ export default function PostsPage() {
                   e.preventDefault();
                   handlePageChange(pageIndex + 1);
                 }}
-                className={pageIndex >= totalPages ? "pointer-events-none opacity-50" : ""}
+                className={
+                  pageIndex >= totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>
