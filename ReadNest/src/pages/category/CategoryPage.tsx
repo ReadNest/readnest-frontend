@@ -33,7 +33,9 @@ export default function CategoryPage() {
   const { pageIndex, pageSize } = categoryState.pagingInfo;
 
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
 
@@ -51,10 +53,14 @@ export default function CategoryPage() {
 
   useEffect(() => {
     dispatch(
-      fetchCategoriesStart({ pageIndex: pageIndex ?? 1, pageSize: pageSize ?? 10 })
+      fetchCategoriesStart({
+        pageIndex: pageIndex ?? 1,
+        pageSize: pageSize ?? 10,
+      })
     );
   }, [dispatch, pageIndex, pageSize]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const openEditModal = (category: any) => {
     setSelectedCategory(category);
     setEditName(category.name);
