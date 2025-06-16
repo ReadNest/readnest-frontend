@@ -104,20 +104,7 @@ export default function ProfilePage() {
       dispatch(fetchTop3RecentCommentsRequested(username));
     }
   }, [username]);
-  // Navigate to 404 if user not found
-  useEffect(() => {
-    if (isProfileNotFound) {
-      navigate("/404");
-    }
-  }, [isProfileNotFound, navigate]);
 
-  //Call API to get user data
-  // useEffect(() => {
-  //   if (username) {
-  //     dispatch(fetchTop3RecentCommentsRequested(username));
-  //     dispatch(fetchUserProfileRequested(username));
-  //   }
-  // }, [username]);
   useEffect(() => {
     if (profile.userId) {
       dispatch(fetchPostsByUserIdStart({ 
@@ -128,7 +115,8 @@ export default function ProfilePage() {
         } 
       }));
     }
-  });
+  }, [profile.userId]);
+
   // Navigate to 404 if user not found
   useEffect(() => {
     if (isProfileNotFound && isLoading === false) {

@@ -34,9 +34,9 @@ export function RecentPostCard({
       <div className="p-4 space-y-2">
         <div>
           <h3 className="text-lg font-semibold line-clamp-2">{postTitle}</h3>
-          <p className="text-sm text-gray-600 line-clamp-2 min-h-[40px] max-h-5">
+          <div className="text-sm text-gray-600 line-clamp-2 min-h-[40px] max-h-5">
             {content}
-          </p>
+          </div>
         </div>
 
         {/* Lượt thích */}
