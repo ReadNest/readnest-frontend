@@ -36,6 +36,8 @@ import {
   setCreatePostSuccess,
   setUpdatePostSuccess,
   setDeletePostSuccess,
+  increasePostViews,
+  increasePostViewsStart,
 } from "./postSlice";
 
 import { setMessage, setDetailErrors } from "@/store/error/errorSlice";
@@ -309,6 +311,22 @@ function* handleUpdatePost(action: PayloadAction<UpdatePostRequest>) {
     }
   }
 
+  // INCREASE VIEWS
+  function* handleIncreasePostViews(action: PayloadAction<string>) {
+    try {
+      const postId = action.payload;
+      const res: StringApiResponse = yield call(() =>
+        client.api.v1.posts.increase_views._postId(postId).post().then(r => r.body)
+      );
+  
+      if (res.success && res.data !== "View already counted recently") {
+        yield put(increasePostViews({ postId }));
+      }
+    } catch (error) {
+      console.error("Error increasing post views:", error);
+    }
+  }
+
 // ROOT SAGA
 export default function* postSaga() {
   yield takeLatest(createPostStart.type, handleCreatePost);
@@ -321,4 +339,5 @@ export default function* postSaga() {
   yield takeLatest(getPostByIdStart.type, getPostById);
   yield takeLatest(updatePostStart.type, handleUpdatePost);
   yield takeLatest(deletePostRequest.type, handleDeletePost);
+  yield takeLatest(increasePostViewsStart.type, handleIncreasePostViews);
 }

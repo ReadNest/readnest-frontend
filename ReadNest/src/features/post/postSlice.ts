@@ -57,6 +57,7 @@ const postSlice = createSlice({
       _action: PayloadAction<UpdatePostRequest>
     ) => {},
     deletePostRequest: (_state, _action: PayloadAction<string>) => {},
+    increasePostViewsStart: (_state, _action: PayloadAction<string>) => {},
 
     // Trạng thái
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -99,6 +100,12 @@ const postSlice = createSlice({
           post.likesCount = (post.likesCount ?? 0) + 1;
           post.userLikes = [...(post.userLikes ?? []), userId];
       }
+
+      const selected = state.selectedPost;
+      if (selected && selected.id === postId && !selected.userLikes?.includes(userId)) {
+        selected.likesCount = (selected.likesCount ?? 0) + 1;
+        selected.userLikes = [...(selected.userLikes ?? []), userId];
+      }
     },
     unlikePost: (state, action: PayloadAction<LikePostRequest>) => {
       const { postId, userId } = action.payload;
@@ -108,6 +115,27 @@ const postSlice = createSlice({
       if (post && post.likesCount && post.likesCount > 0) {
         post.likesCount -= 1;
         post.userLikes = post.userLikes?.filter(id => id !== userId);
+      }
+
+      const selected = state.selectedPost;
+      if (
+        selected &&
+        selected.id === postId &&
+        selected.likesCount &&
+        selected.userLikes?.includes(userId)
+      ) {
+        selected.likesCount -= 1;
+        selected.userLikes = selected.userLikes.filter(id => id !== userId);
+      }
+    },
+    increasePostViews: (state, action: PayloadAction<{ postId: string }>) => {
+      const post = state.posts.find(p => p.id === action.payload.postId);
+      if (post) {
+        post.views = (post.views ?? 0) + 1;
+      }
+    
+      if (state.selectedPost?.id === action.payload.postId) {
+        state.selectedPost.views = (state.selectedPost.views ?? 0) + 1;
       }
     },
 
@@ -169,6 +197,7 @@ export const {
   getPostByIdStart,
   updatePostStart,
   deletePostRequest,
+  increasePostViewsStart,
   setLoading,
   setSuccess,
   addPost,
@@ -176,6 +205,7 @@ export const {
   deletePost,
   likePost,
   unlikePost,
+  increasePostViews,
   setPosts,
   setPostsV1,
   setSelectedPost,

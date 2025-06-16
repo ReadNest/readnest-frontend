@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { EyeIcon, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { ReactNode } from "react";
 
@@ -8,6 +8,7 @@ interface PostCardProps {
   postTitle: string;
   content: ReactNode;
   likes: number;
+  views: number;
 }
 
 export function RecentPostCard({
@@ -16,6 +17,7 @@ export function RecentPostCard({
   postTitle,
   content,
   likes,
+  views,
 }: PostCardProps) {
   const navigate = useNavigate();
 
@@ -40,9 +42,13 @@ export function RecentPostCard({
         </div>
 
         {/* Lượt thích */}
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-1 text-gray-600">
+            <EyeIcon className="h-4 w-4 text-blue-500" />
+            <span className="text-sm">{views.toLocaleString()}</span>
+          </div>
           <div className="flex items-center gap-1">
-            <Heart className="h-4 w-4 text-red-500" />
+            <Heart className="h-4 w-4 text-red-500 fill-red-500" />
             <span className="text-sm">{likes.toLocaleString()}</span>
           </div>
         </div>

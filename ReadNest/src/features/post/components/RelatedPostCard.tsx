@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { HeartIcon, BookmarkIcon, Share2Icon } from "lucide-react";
+import { HeartIcon, BookmarkIcon, Share2Icon, EyeIcon } from "lucide-react";
 import { formatTimeAgo } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,10 @@ interface RelatedPostCard {
   title: string;
   content: ReactNode;
   likes: number;
+  userLikes: string[];
+  userId: string;
+  onLikeClick: () => void;
+  views: number;
 }
 
 export default function RelatedPostCard({
@@ -28,8 +32,13 @@ export default function RelatedPostCard({
   title,
   content,
   likes,
+  userLikes,
+  userId,
+  onLikeClick,
+  views,
 }: RelatedPostCard) {
     const navigate = useNavigate();
+    const isLiked = userLikes.includes(userId);
   return (
     <Card className="p-4 shadow-sm hover:shadow-md transition-shadow">
         <div className="flex flex-col gap-3">
@@ -78,10 +87,25 @@ export default function RelatedPostCard({
                         variant="ghost" 
                         size="sm" 
                         className="text-gray-500 hover:bg-gray-50 gap-1 whitespace-nowrap"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onLikeClick();
+                        }}
                     >
-                        <HeartIcon className="h-4 w-4" />
+                        <HeartIcon
+                        className={`h-4 w-4 ${
+                        isLiked ? "text-red-500 fill-red-500" : "text-gray-500 fill-transparent"
+                        }`}
+                        />
                         <span>{likes}</span>
                     </Button>
+                    <div 
+                        className="flex items-center text-gray-600"
+                        
+                    >
+                        <EyeIcon className="h-4 w-4 mr-1 text-blue-500" />
+                        <span>{views}</span>
+                    </div>
                 </div>
             
                 <div className="flex gap-2">
