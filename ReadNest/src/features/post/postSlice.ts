@@ -5,6 +5,7 @@ import type {
   CreatePostRequest,
   LikePostRequest,
   UpdatePostRequest,
+  FilterPostRequest,
 } from "@/api/@types";
 import type { PagingRequest } from "@/lib/api/base/types";
 
@@ -51,10 +52,11 @@ const postSlice = createSlice({
     fetchPostsByBookIdStart: (_state, _action: PayloadAction<string>) => {},
     fetchTopLikedPostsStart: (_state, _action: PayloadAction<number>) => {},
     fetchTopViewedPostsStart: (_state, _action: PayloadAction<number>) => {},
-    searchPostsByTitleStart: (_state, _action: PayloadAction<string>) => {},
     getPostByIdStart: (_state, _action: PayloadAction<string>) => {},
     updatePostStart: (_state, _action: PayloadAction<UpdatePostRequest>) => {},
     deletePostRequest: (_state, _action: PayloadAction<string>) => {},
+    increasePostViewsStart: (_state, _action: PayloadAction<string>) => {},
+    filterPostsStart: (_state, _action: PayloadAction<FilterPostRequest>) => {},
 
     // Trạng thái
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -97,6 +99,12 @@ const postSlice = createSlice({
         post.likesCount = (post.likesCount ?? 0) + 1;
         post.userLikes = [...(post.userLikes ?? []), userId];
       }
+
+      const selected = state.selectedPost;
+      if (selected && selected.id === postId && !selected.userLikes?.includes(userId)) {
+        selected.likesCount = (selected.likesCount ?? 0) + 1;
+        selected.userLikes = [...(selected.userLikes ?? []), userId];
+      }
     },
     unlikePost: (state, action: PayloadAction<LikePostRequest>) => {
       const { postId, userId } = action.payload;
@@ -106,6 +114,27 @@ const postSlice = createSlice({
       if (post && post.likesCount && post.likesCount > 0) {
         post.likesCount -= 1;
         post.userLikes = post.userLikes?.filter((id) => id !== userId);
+      }
+
+      const selected = state.selectedPost;
+      if (
+        selected &&
+        selected.id === postId &&
+        selected.likesCount &&
+        selected.userLikes?.includes(userId)
+      ) {
+        selected.likesCount -= 1;
+        selected.userLikes = selected.userLikes.filter(id => id !== userId);
+      }
+    },
+    increasePostViews: (state, action: PayloadAction<{ postId: string }>) => {
+      const post = state.posts.find(p => p.id === action.payload.postId);
+      if (post) {
+        post.views = (post.views ?? 0) + 1;
+      }
+    
+      if (state.selectedPost?.id === action.payload.postId) {
+        state.selectedPost.views = (state.selectedPost.views ?? 0) + 1;
       }
     },
 
@@ -166,10 +195,11 @@ export const {
   fetchPostsByBookIdStart,
   fetchTopLikedPostsStart,
   fetchTopViewedPostsStart,
-  searchPostsByTitleStart,
   getPostByIdStart,
   updatePostStart,
   deletePostRequest,
+  increasePostViewsStart,
+  filterPostsStart,
   setLoading,
   setSuccess,
   addPost,
@@ -177,6 +207,7 @@ export const {
   deletePost,
   likePost,
   unlikePost,
+  increasePostViews,
   setPosts,
   setPostsV1,
   setSelectedPost,

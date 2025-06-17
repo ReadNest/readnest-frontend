@@ -17,7 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Book, Check, Loader2 } from "lucide-react";
 
 export default function CreatePostForm() {
   const dispatch = useDispatch();
@@ -94,9 +94,7 @@ export default function CreatePostForm() {
                 className="pl-10 pr-4 py-3"
               />
               <div className="absolute left-3 top-3 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
+                <Book className="w-4 h-4" />
               </div>
               
               {isSearching && (
@@ -135,9 +133,7 @@ export default function CreatePostForm() {
             
             {bookId && (
               <div className="mt-2 flex items-center gap-2 p-2 bg-green-50 rounded-md border border-green-100">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-500">
-                  <path d="M20 6L9 17l-5-5"></path>
-                </svg>
+                <Check className="w-4 h-4 text-green-500" />
                 <span className="text-sm text-green-700">Đã chọn: {bookName}</span>
               </div>
             )}

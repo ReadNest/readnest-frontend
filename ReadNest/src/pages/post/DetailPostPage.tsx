@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { getPostByIdStart } from "@/features/post/postSlice";
+import { getPostByIdStart, increasePostViewsStart, likePostStart } from "@/features/post/postSlice";
 import { RatingStars } from "@/features/search/components/RatingStars";
 import type { RootState } from "@/store";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
+import type { LikePostRequest } from "@/api/@types";
 
 export default function DetailPostPage() {
     const dispatch = useDispatch();
@@ -24,7 +25,7 @@ export default function DetailPostPage() {
     useEffect(() => {
         if (postId) {
           dispatch(getPostByIdStart(postId));
-
+          dispatch(increasePostViewsStart(postId));
         }
       }, [dispatch, postId]);
 
@@ -32,6 +33,20 @@ export default function DetailPostPage() {
         const date = new Date(dateString);
         return `Đăng ngày ${date.getDate()} tháng ${date.getMonth() + 1}, ${date.getFullYear()}`;
     };
+
+    const handleLikeToggle = () => {
+        if (!postId || !auth.user?.userId){
+            return;
+        }
+
+        const payload: LikePostRequest = {
+          postId: postId,
+          userId: auth.user.userId,
+        };
+        dispatch(likePostStart(payload));
+      };
+    
+    const isLiked = !!(auth.user?.userId && post?.userLikes?.includes(auth.user.userId));
 
     if (loading || !post) {
         return <div className="text-center py-10">Đang tải dữ liệu bài viết...</div>;
@@ -53,10 +68,10 @@ export default function DetailPostPage() {
                                 >
                                 <AvatarImage src={post.creator?.avatarUrl ?? ""} alt={post.creator?.fullName ?? ""} />
                                 <AvatarFallback>
-                                    {post.creator?.fullName ?? ""
-                                        .split(" ")
-                                        .map((n) => n[0])
-                                        .join("")}
+                                {(post.creator?.fullName || "")
+                                    .split(" ")
+                                    .map(n => n[0])
+                                    .join("")}
                                 </AvatarFallback>
                             </Avatar>
                             <div>
@@ -89,12 +104,15 @@ export default function DetailPostPage() {
                                 >
                                     {auth.user.userId == post.creator?.userId && (
                                         <>
-                                            <DropdownMenuItem className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0">
+                                            <DropdownMenuItem 
+                                                className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0"
+                                                onClick={() => navigate(`/edit-post/${post.id}`)}
+                                            >
                                                 Chỉnh sửa
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0">
+                                            {/* <DropdownMenuItem className="cursor-pointer bg-white hover:bg-gray-100 rounded mb-1 first:mt-0 last:mb-0">
                                                 Xóa
-                                            </DropdownMenuItem>
+                                            </DropdownMenuItem> */}
                                         </>
                                     )}
                                     {auth.user.userId !== post.creator?.userId && (
@@ -178,8 +196,17 @@ export default function DetailPostPage() {
                 <CardFooter className="border-t pt-6">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full">
                         <div className="flex items-center space-x-4 mb-4 sm:mb-0">
-                            <div className="flex items-center text-gray-600">
-                                <HeartIcon className="h-5 w-5 mr-1 text-red-500" />
+                            <div
+                                className="flex items-center text-gray-600 cursor-pointer hover:opacity-80"
+                                onClick={handleLikeToggle}
+                            >
+                                <HeartIcon
+                                className={`h-5 w-5 mr-1 ${
+                                    isLiked
+                                    ? "text-red-500 fill-red-500"
+                                    : "text-gray-500 fill-transparent"
+                                }`}
+                                />
                                 <span>{post.likesCount} lượt thích</span>
                             </div>
                             <div className="flex items-center text-gray-600">

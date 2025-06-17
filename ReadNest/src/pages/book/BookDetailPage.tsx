@@ -21,6 +21,7 @@ import {
 import type {
   CreateCommentLikeRequest,
   CreateCommentRequest,
+  LikePostRequest,
 } from "@/api/@types";
 import { toast } from "react-toastify";
 import {
@@ -29,7 +30,7 @@ import {
 } from "@/features/favouriteBooks/favoriteSlice";
 import AffiliateButton from "@/features/affiliate/components/AffiliateButton";
 import parse from "html-react-parser";
-import { fetchPostsByBookIdStart } from "@/features/post/postSlice";
+import { fetchPostsByBookIdStart, likePostStart } from "@/features/post/postSlice";
 import RelatedPostCard from "@/features/post/components/RelatedPostCard";
 
 export default function BookDetailPage() {
@@ -104,6 +105,15 @@ export default function BookDetailPage() {
         userId: auth.user.userId,
       })
     );
+  };
+
+  const handleLikeToggle = (postId: string) => {
+    if (!postId || !auth.user?.userId) return;
+    const payload: LikePostRequest = {
+      postId: postId,
+      userId: auth.user.userId,
+    };
+    dispatch(likePostStart(payload));
   };
 
   if (loading || !book) {
@@ -333,6 +343,10 @@ export default function BookDetailPage() {
                     title={post.title ?? ""}
                     content={parse(post.content ?? "")}
                     likes={post.likesCount ?? 0}
+                    userLikes={post.userLikes || []}
+                    userId={auth.user?.userId || ""}
+                    onLikeClick={() => handleLikeToggle(post.id || "")}
+                    views={post.views ?? 0}
                   />
                 ))}
               </div>

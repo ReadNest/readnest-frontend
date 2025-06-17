@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard";
-import { CameraIcon, PlusIcon } from "lucide-react";
+import { Calendar, CameraIcon, MapPin, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -249,55 +249,24 @@ export default function ProfilePage() {
             <h2 className="text-lg font-semibold mb-2">Giới thiệu</h2>
             <p className="text-sm text-gray-700 mb-4">
               &emsp;&emsp;
-              {profile.bio == ""
+              {profile.bio === ""
                 ? "Người dùng này quá lười để viết phần giới thiệu"
                 : profile.bio}
             </p>
-            <ul className="space-y-2 text-sm">
+
+            <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-2 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                <MapPin className="h-4 w-4 mr-2 text-gray-500" />
                 {profile.address ?? "Chưa cập nhật địa chỉ"}
               </li>
               <li className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-2 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+                <Calendar className="h-4 w-4 mr-2 text-gray-500" />
                 {profile.dateOfBirth
                   ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })
                   : "Chưa cập nhật ngày sinh"}
               </li>
             </ul>
@@ -324,6 +293,7 @@ export default function ProfilePage() {
                     postTitle={post.title ?? ""}
                     content={parse(post.content ?? "")}
                     likes={post.likesCount ?? 0}
+                    views={post.views ?? 0}
                   />
                 ))
               ) : (

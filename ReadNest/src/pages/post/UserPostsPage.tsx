@@ -6,15 +6,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { deletePostRequest, fetchPostsByUserIdStart, resetSuccessFlags, setPagingInfo } from "@/features/post/postSlice";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import parse from "html-react-parser";
 import DeletePostDialog from "@/features/post/components/DeletePostDialog";
+import SkeletonPostCardList from "@/features/post/components/SkeletonPostCardList";
 
 export default function UserPostsPage() {
   const dispatch = useDispatch();
   const posts = useSelector((state: RootState) => state.post.posts);
   const pagingInfo = useSelector((state: RootState) => state.post.pagingInfo);
   const auth = useSelector((state: RootState) => state.auth);
+  const isLoading = useSelector((state: RootState) => state.post.loading);
   const navigate = useNavigate();
 
   const pageIndex = pagingInfo.pageIndex ?? 1;
@@ -23,9 +25,12 @@ export default function UserPostsPage() {
 
   const totalPages = Math.ceil(totalItems / (pageSize || 1))
 
+  const initialized = useRef(false);
+
   useEffect(() => {
-    if (auth.user?.userId) {
+    if (auth.user?.userId && !initialized.current) {
       dispatch(setPagingInfo({ pageIndex: 1, pageSize: 6 }));
+      initialized.current = true;
     }
   }, [auth.user?.userId, dispatch]);
 
@@ -44,10 +49,17 @@ export default function UserPostsPage() {
 
   const handlePageChange = useCallback(
     (newPageIndex: number) => {
-      if (newPageIndex < 1 || newPageIndex > totalPages) return;
+      if (
+        newPageIndex < 1 ||
+        newPageIndex > totalPages ||
+        newPageIndex === pageIndex
+      ) {
+        return;
+      }
       dispatch(setPagingInfo({ pageIndex: newPageIndex, pageSize }));
+      window.scrollTo({ top: 0, behavior: "smooth" }); // tùy chọn
     },
-    [dispatch, pageSize, totalPages]
+    [dispatch, pageIndex, pageSize, totalPages]
   );
 
   const formatDate = (dateString: string) => {
@@ -82,7 +94,10 @@ export default function UserPostsPage() {
 
       {/* Danh sách bài đăng */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.map((post) => (
+        {isLoading ? (
+          <SkeletonPostCardList count={6} />
+        ) : (
+        posts.map((post) => (
           <div key={post.id} className="relative group">
             <PostCard  
               key={post.id }
@@ -111,7 +126,8 @@ export default function UserPostsPage() {
               <DeletePostDialog postId={post.id ?? ""} onDelete={handleDelete} />
             </div>
           </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Pagination  */}
