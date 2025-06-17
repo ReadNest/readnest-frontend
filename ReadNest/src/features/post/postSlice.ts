@@ -51,7 +51,6 @@ const postSlice = createSlice({
     fetchPostsByBookIdStart: (_state, _action: PayloadAction<string>) => {},
     fetchTopLikedPostsStart: (_state, _action: PayloadAction<number>) => {},
     fetchTopViewedPostsStart: (_state, _action: PayloadAction<number>) => {},
-    searchPostsByTitleStart: (_state, _action: PayloadAction<string>) => {},
     getPostByIdStart: (_state, _action: PayloadAction<string>) => {},
     updatePostStart: (
       _state,
@@ -195,7 +194,6 @@ export const {
   fetchPostsByBookIdStart,
   fetchTopLikedPostsStart,
   fetchTopViewedPostsStart,
-  searchPostsByTitleStart,
   getPostByIdStart,
   updatePostStart,
   deletePostRequest,

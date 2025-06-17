@@ -19,7 +19,6 @@ import {
   fetchPostsByUserIdStart,
   fetchPostsByBookIdStart,
   fetchTopLikedPostsStart,
-  searchPostsByTitleStart,
   getPostByIdStart,
   setLoading,
   setSuccess,
@@ -196,27 +195,6 @@ function* fetchPostsByBookId(action: PayloadAction<string>) {
   }
 }
 
-// SEARCH BY TITLE
-function* searchPostsByTitle(action: PayloadAction<string>) {
-  try {
-    yield put(setLoading(true));
-    const res: GetPostResponsePagingResponseApiResponse = yield call(() =>
-      client.api.v1.posts.search.get({ query: { keyword: action.payload } }).then((r) => r.body)
-    );
-
-    if (res.success && res.data) {
-      yield put(setPostsV1(res.data.items ?? []));
-      yield put(setSuccess(true));
-    } else {
-      yield put(setSuccess(false));
-    }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    yield put(setLoading(false));
-  }
-}
-
 // FETCH TOP LIKED POSTS
 function* fetchTopLikedPosts(action: PayloadAction<number>) {
   try {
@@ -366,7 +344,6 @@ export default function* postSaga() {
   yield takeLatest(fetchPostsStart.type, fetchPosts);
   yield takeLatest(fetchPostsByUserIdStart.type, fetchPostsByUserId);
   yield takeLatest(fetchPostsByBookIdStart.type, fetchPostsByBookId);
-  yield takeLatest(searchPostsByTitleStart.type, searchPostsByTitle);
   yield takeLatest(fetchTopLikedPostsStart.type, fetchTopLikedPosts);
   yield takeLatest(getPostByIdStart.type, getPostById);
   yield takeLatest(updatePostStart.type, handleUpdatePost);
