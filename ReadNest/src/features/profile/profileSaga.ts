@@ -48,7 +48,6 @@ function* updateProfile(action: PayloadAction<UpdateUserRequest>) {
       client.api.v1.users.profile.$put({ body: action.payload })
     );
     if (response.success) {
-      console.log("response", action.payload);
       yield put(updateProfileSuccess(action.payload));
       if (action.payload?.avatarUrl) {
         toast.success("Cập nhật ảnh đại diện thành công!");
@@ -75,4 +74,3 @@ export default function* profileSaga() {
   yield takeLatest(fetchUserProfileRequested.type, fetchUserProfile);
   yield takeLatest(updateProfileRequested.type, updateProfile);
 }
-
