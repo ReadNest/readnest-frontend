@@ -17,6 +17,7 @@ import bookSearchPageReducer from "@/features/search/bookSearchPageSlice";
 import categoryFilterReducer from "@/features/search/categoryFilterSlice";
 import badgeReducer from "@/features/badge/badgeSlice";
 import userBadgeReducer from "@/features/userBadge/userBadgeSlice";
+import chatMessageReducer from "@/features/chat/chatMessageSlice";
 
 
 const appReducer = combineReducers({
@@ -36,6 +37,7 @@ const appReducer = combineReducers({
   categoryFilter: categoryFilterReducer,
   badge: badgeReducer,
   userBadge: userBadgeReducer,
+  chatMessage: chatMessageReducer,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

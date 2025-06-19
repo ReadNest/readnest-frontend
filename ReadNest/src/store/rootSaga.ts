@@ -14,6 +14,7 @@ import { bookSearchPageSaga } from "@/features/search/bookSearchPageSaga";
 import { categoryFilterSaga } from "@/features/search/categoryFilterSaga";
 import badgeSaga from "@/features/badge/badgeSaga";
 import userBadgeSaga from "@/features/userBadge/userBadgeSaga";
+import chatMessageSaga from "@/features/chat/chatMessageSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -32,5 +33,6 @@ export default function* rootSaga() {
     call(categoryFilterSaga),
     call(badgeSaga),
     call(userBadgeSaga),
+    call(chatMessageSaga),
   ]);
 }
