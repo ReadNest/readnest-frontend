@@ -7,9 +7,7 @@
   "paths": {
     "/api/v1/books/{bookId}/affiliate-links": {
       "post": {
-        "tags": [
-          "AffiliateLink"
-        ],
+        "tags": ["AffiliateLink"],
         "parameters": [
           {
             "name": "bookId",
@@ -86,9 +84,7 @@
     },
     "/api/v1/auth/register": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -154,9 +150,7 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -222,9 +216,7 @@
     },
     "/api/v1/auth/refresh-token": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -290,9 +282,7 @@
     },
     "/api/v1/Badge": {
       "get": {
-        "tags": [
-          "Badge"
-        ],
+        "tags": ["Badge"],
         "responses": {
           "200": {
             "description": "OK",
@@ -317,9 +307,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Badge"
-        ],
+        "tags": ["Badge"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -363,9 +351,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Badge"
-        ],
+        "tags": ["Badge"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -411,9 +397,7 @@
     },
     "/api/v1/Badge/{code}": {
       "delete": {
-        "tags": [
-          "Badge"
-        ],
+        "tags": ["Badge"],
         "parameters": [
           {
             "name": "code",
@@ -450,9 +434,7 @@
     },
     "/api/v1/books": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -515,9 +497,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -583,9 +563,7 @@
     },
     "/api/v1/books/search": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -637,9 +615,7 @@
     },
     "/api/v1/books/filter": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "CategoryIds",
@@ -712,9 +688,7 @@
     },
     "/api/v1/books/{bookId}": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "bookId",
@@ -770,9 +744,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "bookId",
@@ -847,11 +819,56 @@
         }
       }
     },
+    "/api/v1/books/all": {
+      "get": {
+        "tags": ["Book"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookTradingPostResponseListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookTradingPostResponseListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookTradingPostResponseListApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/books/{id}": {
       "delete": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "parameters": [
           {
             "name": "id",
@@ -909,9 +926,7 @@
     },
     "/api/v1/categories": {
       "get": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -974,9 +989,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1040,9 +1053,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1128,9 +1139,7 @@
     },
     "/api/v1/categories/all": {
       "get": {
-        "tags": [
-          "Category"
-        ],
+        "tags": ["Category"],
         "responses": {
           "200": {
             "description": "OK",
@@ -1175,11 +1184,67 @@
         }
       }
     },
+    "/api/v1/ChatMessages/get-all-chatters-by-user-id/{id}": {
+      "get": {
+        "tags": ["ChatMessages"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecentChatterResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecentChatterResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecentChatterResponseApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Comment": {
       "post": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1243,9 +1308,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1311,9 +1374,7 @@
     },
     "/api/v1/Comment/{bookId}": {
       "get": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "parameters": [
           {
             "name": "bookId",
@@ -1371,9 +1432,7 @@
     },
     "/api/v1/Comment/like": {
       "post": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1439,9 +1498,7 @@
     },
     "/api/v1/Comment/{commentId}": {
       "delete": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "parameters": [
           {
             "name": "commentId",
@@ -1499,9 +1556,7 @@
     },
     "/api/v1/Comment/pending-reported-comments": {
       "get": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "responses": {
           "200": {
             "description": "OK",
@@ -1548,9 +1603,7 @@
     },
     "/api/v1/Comment/top-3-recent-comments/{userName}": {
       "get": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "parameters": [
           {
             "name": "userName",
@@ -1607,9 +1660,7 @@
     },
     "/api/v1/Comment/top-3-most-liked-comments": {
       "get": {
-        "tags": [
-          "Comment"
-        ],
+        "tags": ["Comment"],
         "responses": {
           "200": {
             "description": "OK",
@@ -1656,9 +1707,7 @@
     },
     "/api/v1/CommentReport": {
       "post": {
-        "tags": [
-          "CommentReport"
-        ],
+        "tags": ["CommentReport"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1724,9 +1773,7 @@
     },
     "/api/v1/CommentReport/approve/{commentId}": {
       "post": {
-        "tags": [
-          "CommentReport"
-        ],
+        "tags": ["CommentReport"],
         "parameters": [
           {
             "name": "commentId",
@@ -1784,9 +1831,7 @@
     },
     "/api/v1/CommentReport/reject/{commentId}": {
       "post": {
-        "tags": [
-          "CommentReport"
-        ],
+        "tags": ["CommentReport"],
         "parameters": [
           {
             "name": "commentId",
@@ -1844,9 +1889,7 @@
     },
     "/api/v1/favoriteBooks/toggle": {
       "post": {
-        "tags": [
-          "FavoriteBook"
-        ],
+        "tags": ["FavoriteBook"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1912,9 +1955,7 @@
     },
     "/api/v1/favoriteBooks/favorites/{userId}": {
       "get": {
-        "tags": [
-          "FavoriteBook"
-        ],
+        "tags": ["FavoriteBook"],
         "parameters": [
           {
             "name": "userId",
@@ -1968,9 +2009,7 @@
     },
     "/api/v1/posts": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -2033,9 +2072,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2099,9 +2136,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2167,9 +2202,7 @@
     },
     "/api/v1/posts/{postId}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "postId",
@@ -2225,9 +2258,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "postId",
@@ -2285,9 +2316,7 @@
     },
     "/api/v1/posts/user/{userId}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "userId",
@@ -2361,9 +2390,7 @@
     },
     "/api/v1/posts/book/{bookId}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "bookId",
@@ -2421,9 +2448,7 @@
     },
     "/api/v1/posts/top-liked/{count}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "count",
@@ -2481,9 +2506,7 @@
     },
     "/api/v1/posts/top-viewed/{count}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "count",
@@ -2541,9 +2564,7 @@
     },
     "/api/v1/posts/like": {
       "post": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2609,9 +2630,7 @@
     },
     "/api/v1/posts/increase-views/{postId}": {
       "post": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "parameters": [
           {
             "name": "postId",
@@ -2669,9 +2688,7 @@
     },
     "/api/v1/posts/filter": {
       "post": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2735,11 +2752,75 @@
         }
       }
     },
+    "/api/v1/trading-posts": {
+      "post": {
+        "tags": ["TradingPost"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTradingPostRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTradingPostRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTradingPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "PageIndex",
@@ -2804,9 +2885,7 @@
     },
     "/api/v1/users/{userId}": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "userId",
@@ -2862,9 +2941,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "userId",
@@ -2922,9 +2999,7 @@
     },
     "/api/v1/users/username/{userName}": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "parameters": [
           {
             "name": "userName",
@@ -2981,9 +3056,7 @@
     },
     "/api/v1/users/profile": {
       "put": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -3049,9 +3122,7 @@
     },
     "/api/v1/UserBadges/assign-badge-to-all-users": {
       "post": {
-        "tags": [
-          "UserBadges"
-        ],
+        "tags": ["UserBadges"],
         "parameters": [
           {
             "name": "badgeCode",
@@ -3087,9 +3158,7 @@
     },
     "/api/v1/UserBadges/set-all-badges-active": {
       "post": {
-        "tags": [
-          "UserBadges"
-        ],
+        "tags": ["UserBadges"],
         "parameters": [
           {
             "name": "badgeCode",
@@ -3125,9 +3194,7 @@
     },
     "/api/v1/UserBadges/select-user-badge": {
       "post": {
-        "tags": [
-          "UserBadges"
-        ],
+        "tags": ["UserBadges"],
         "parameters": [
           {
             "name": "userId",
@@ -3480,6 +3547,13 @@
           "message": {
             "type": "string",
             "nullable": true
+          },
+          "sentAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isRead": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -3830,6 +3904,65 @@
           "userId": {
             "type": "string",
             "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateTradingPostImageRequest": {
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateTradingPostRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalBookUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "messageToRequester": {
+            "type": "string",
+            "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateTradingPostImageRequest"
+            },
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4219,6 +4352,59 @@
           },
           "data": {
             "$ref": "#/components/schemas/GetBookSearchResponsePagingResponse"
+          },
+          "listDetailError": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailError"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetBookTradingPostResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "author": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetBookTradingPostResponseListApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetBookTradingPostResponse"
+            },
+            "nullable": true
           },
           "listDetailError": {
             "type": "array",
@@ -5025,7 +5211,68 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
+      },
+      "RecentChatterResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastMessageTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "unreadMessagesCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecentChatterResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/RecentChatterResponse"
+          },
+          "listDetailError": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailError"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "RegisterRequest": {
         "type": "object",
@@ -5274,12 +5521,71 @@
             "type": "string",
             "nullable": true
           },
+          "externalBookUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "messageToRequester": {
+            "type": "string",
+            "nullable": true
+          },
           "tradingRequests": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TradingRequest"
             },
             "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TradingPostImage"
+            },
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TradingPostImage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "tradingPostId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tradingPost": {
+            "$ref": "#/components/schemas/TradingPost"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -5717,7 +6023,7 @@
   },
   "security": [
     {
-      "Bearer": [ ]
+      "Bearer": []
     }
   ]
 }

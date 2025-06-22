@@ -81,6 +81,8 @@ export type ChatMessage = {
   receiverId?: string | undefined;
   receiver?: User | undefined;
   message?: string | null | undefined;
+  sentAt?: string | undefined;
+  isRead?: boolean | undefined;
 }
 
 export type Comment = {
@@ -187,6 +189,23 @@ export type CreatePostRequest = {
   content?: string | null | undefined;
   bookId?: string | undefined;
   userId?: string | undefined;
+}
+
+export type CreateTradingPostImageRequest = {
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
+export type CreateTradingPostRequest = {
+  userId?: string | undefined;
+  bookId?: string | undefined;
+  condition?: string | null | undefined;
+  shortDescription?: string | null | undefined;
+  externalBookUrl?: string | null | undefined;
+  message?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
+  images?: CreateTradingPostImageRequest[] | null | undefined;
+  title?: string | null | undefined;
 }
 
 export type DetailError = {
@@ -302,6 +321,21 @@ export type GetBookSearchResponsePagingResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetBookSearchResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetBookTradingPostResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+}
+
+export type GetBookTradingPostResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookTradingPostResponse[] | null | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -529,6 +563,24 @@ export type ProblemDetails = {
   instance?: string | null | undefined;
 }
 
+export type RecentChatterResponse = {
+  userId?: string | undefined;
+  userName?: string | null | undefined;
+  fullName?: string | null | undefined;
+  avatarUrl?: string | null | undefined;
+  lastMessageTime?: string | undefined;
+  unreadMessagesCount?: number | undefined;
+  lastMessage?: string | null | undefined;
+}
+
+export type RecentChatterResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: RecentChatterResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type RegisterRequest = {
   userName?: string | null | undefined;
   email?: string | null | undefined;
@@ -604,7 +656,23 @@ export type TradingPost = {
   status?: string | null | undefined;
   condition?: string | null | undefined;
   shortDesc?: string | null | undefined;
+  externalBookUrl?: string | null | undefined;
+  message?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
   tradingRequests?: TradingRequest[] | null | undefined;
+  images?: TradingPostImage[] | null | undefined;
+  title?: string | null | undefined;
+}
+
+export type TradingPostImage = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  tradingPostId?: string | undefined;
+  tradingPost?: TradingPost | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
 }
 
 export type TradingRequest = {

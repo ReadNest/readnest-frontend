@@ -1,4 +1,10 @@
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -18,13 +24,13 @@ export default function TradingBookCard({ book }: { book: Book }) {
       {/* Book Cover Image */}
       <div className="w-full relative bg-gray-100 rounded border">
         <img
-            src={book.imageUrl}
-            alt={book.title}
-            className="w-full h-48 object-contain rounded"
-            loading="lazy"
-            onError={(e) => {
-                (e.target as HTMLImageElement).src = "/default-book-cover.jpg";
-            }}
+          src={book.imageUrl}
+          alt={book.title}
+          className="w-full h-48 object-contain rounded"
+          loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/default-book-cover.jpg";
+          }}
         />
       </div>
 

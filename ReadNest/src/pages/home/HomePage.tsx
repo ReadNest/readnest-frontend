@@ -1,7 +1,7 @@
 import type { GetCommentResponse } from "@/api/@types";
 import { Button } from "@/components/ui/button";
 import { ROUTE_PATHS } from "@/constants/routePaths";
-import TradingBookCard from "@/features/book/components/TradingBookCard";
+import TradingBookCard from "@/features/bookExchange/components/TradingBookCard";
 
 import ReviewCard from "@/features/home/components/ReviewCard";
 import { WelcomePopup } from "@/features/home/components/WelcomePopup";
@@ -23,48 +23,53 @@ function HomePage() {
   const tradingBooks = [
     {
       id: 1,
-      imageUrl: "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
+      imageUrl:
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
       title: "Đắc Nhân Tâm",
       author: "Dale Carnegie",
       condition: "Như mới",
       owner: "Nguyễn Văn A",
-      requestCount: 5
+      requestCount: 5,
     },
     {
       id: 2,
-      imageUrl: "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
+      imageUrl:
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
       title: "Nhà Giả Kim",
       author: "Paulo Coelho",
       condition: "Đồ qua sử dụng",
       owner: "Trần Thị B",
-      requestCount: 3
+      requestCount: 3,
     },
     {
       id: 3,
-      imageUrl: "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
+      imageUrl:
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
       title: "Tuổi Trẻ Đáng Giá Bao Nhiêu",
       author: "Rosie Nguyễn",
       condition: "Như mới",
       owner: "Lê Văn C",
-      requestCount: 2
+      requestCount: 2,
     },
     {
       id: 4,
-      imageUrl: "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
+      imageUrl:
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
       title: "Tư Duy Phản Biện",
       author: "Richard Paul",
       condition: "Đồ qua sử dụng",
       owner: "Phạm Thị D",
-      requestCount: 0
+      requestCount: 0,
     },
     {
       id: 5,
-      imageUrl: "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
+      imageUrl:
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
       title: "Dune",
       author: "Frank Herbert",
       condition: "Đồ qua sử dụng",
       owner: "Nguyễn A",
-      requestCount: 1
+      requestCount: 1,
     },
   ];
 
@@ -77,7 +82,8 @@ function HomePage() {
     {
       icon: <Users size={20} />,
       title: "Sự kiện của nền tảng",
-      description: "Được tham gia các sự kiện do nền tảng tổ chức không mất phí",
+      description:
+        "Được tham gia các sự kiện do nền tảng tổ chức không mất phí",
     },
     {
       icon: <ChartLine size={20} />,
@@ -121,17 +127,21 @@ function HomePage() {
         <div className="container mx-auto max-w-7xl px-6 relative z-10">
           <div className="max-w-2xl mx-auto text-center transform transition-all duration-500 hover:scale-105">
             <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
-              Your Next Great<br />
+              Your Next Great
+              <br />
               <span className="text-[#5a4bff] bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
                 Read Awaits
               </span>
             </h1>
-            
+
             <p className="text-gray-200 text-lg md:text-xl mb-10 leading-relaxed max-w-lg mx-auto">
-              Tham gia cộng đồng những người yêu sách của chúng tôi để khám phá, 
-              <span className="block md:inline"> đánh giá và trao đổi sách với những người đọc khác.</span>
+              Tham gia cộng đồng những người yêu sách của chúng tôi để khám phá,
+              <span className="block md:inline">
+                {" "}
+                đánh giá và trao đổi sách với những người đọc khác.
+              </span>
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 className="bg-[#5a4bff] hover:bg-[#4739e6] text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
@@ -142,7 +152,7 @@ function HomePage() {
                   Khám phá ngay
                 </span>
               </Button>
-              
+
               <Button
                 onClick={() => navigate(ROUTE_PATHS.SEARCH)}
                 variant="outline"
@@ -157,7 +167,7 @@ function HomePage() {
           </div>
         </div>
       </section>
-  
+
       {/* Popular Reviews */}
       <section className="bg-white py-16 px-4">
         <div className="container mx-auto max-w-7xl">
@@ -175,24 +185,26 @@ function HomePage() {
                 Hiện tại chưa có bài post nào đã được đăng tải gần đây
               </div>
             ) : (
-              comment.top3MostLikedComments.map((review : GetCommentResponse) => (
-                <ReviewCard
-                  key={review.commentId}
-                  creator={review.creator ?? ""}
-                  book={review.book ?? "Chưa cập nhật tên sách"}
-                  desc={review.content ?? "Chưa cập nhật nội dung đánh giá"}
-                  time={formatTimeAgo(review.createdAt ?? new Date())}
-                  likes={review.numberOfLikes?.toString() ?? "0"}
-                  userLikes={review.userLikes ?? []}
-                  commentId={review.commentId ?? ""}
-                  badgeCode={review.creator?.selectedBadgeCode ?? "DEFAULT"}
-                />
-              ))
+              comment.top3MostLikedComments.map(
+                (review: GetCommentResponse) => (
+                  <ReviewCard
+                    key={review.commentId}
+                    creator={review.creator ?? ""}
+                    book={review.book ?? "Chưa cập nhật tên sách"}
+                    desc={review.content ?? "Chưa cập nhật nội dung đánh giá"}
+                    time={formatTimeAgo(review.createdAt ?? new Date())}
+                    likes={review.numberOfLikes?.toString() ?? "0"}
+                    userLikes={review.userLikes ?? []}
+                    commentId={review.commentId ?? ""}
+                    badgeCode={review.creator?.selectedBadgeCode ?? "DEFAULT"}
+                  />
+                )
+              )
             )}
           </div>
         </div>
       </section>
-  
+
       {/* Trading Enable */}
       <section className="bg-gray-50 py-16 px-4">
         <div className="container mx-auto max-w-7xl">
@@ -202,13 +214,13 @@ function HomePage() {
               Có thể trao đổi
             </h2>
             <a
-              href="/trades"
+              href={ROUTE_PATHS.BOOK_EXCHANGE}
               className="text-indigo-600 text-sm md:text-base hover:underline flex items-center gap-1"
             >
               Xem tất cả <span>→</span>
             </a>
           </div>
-  
+
           {/* Grid hiển thị 5 sách một hàng */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {tradingBooks.map((book) => (
@@ -243,7 +255,7 @@ function HomePage() {
           Mở khóa premium
         </Button>
       </section>
-  
+
       {/* Welcome Modal */}
       {showWelcome && (
         <div className="mx-auto my-10 max-w-3xl bg-white rounded-xl shadow-lg p-6">
@@ -255,6 +267,5 @@ function HomePage() {
       )}
     </div>
   );
-  
 }
 export default HomePage;
