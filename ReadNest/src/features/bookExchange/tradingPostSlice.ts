@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { CreateTradingPostRequest } from "@/api/@types";
+import type {
+  CreateTradingPostRequest,
+  GetBookTradingPostResponse,
+} from "@/api/@types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export const initialState: {
@@ -15,6 +18,12 @@ export const initialState: {
     messageToRequester?: string;
     images: { imageUrl: string; order: number }[];
   };
+  tradingPostByUserId: GetBookTradingPostResponse[];
+  pagingInfo: {
+    total: number;
+    page: number;
+    pageSize: number;
+  };
 } = {
   isSuccess: false,
   loading: false,
@@ -28,6 +37,12 @@ export const initialState: {
     messageToRequester: "",
     images: [],
   },
+  tradingPostByUserId: [],
+  pagingInfo: {
+    total: 0,
+    page: 1,
+    pageSize: 6,
+  },
 };
 
 const tradingPostSlice = createSlice({
@@ -37,6 +52,10 @@ const tradingPostSlice = createSlice({
     createTradingPostStart: (
       _state,
       _action: PayloadAction<CreateTradingPostRequest>
+    ) => {},
+    getTradingPostByUserIdStart: (
+      _state,
+      _action: PayloadAction<{ pageIndex: number; pageSize: number }>
     ) => {},
     setTradingPost: (
       state,
@@ -63,6 +82,28 @@ const tradingPostSlice = createSlice({
     setSuccess: (state, action: PayloadAction<boolean>) => {
       state.isSuccess = action.payload;
     },
+    setTradingPostByUserId: (
+      state,
+      action: PayloadAction<GetBookTradingPostResponse[]>
+    ) => {
+      state.tradingPostByUserId = action.payload.map((post) => ({
+        ...post,
+      }));
+    },
+    setPagingInfo: (
+      state,
+      action: PayloadAction<{
+        total: number;
+        page: number;
+        pageSize: number;
+      }>
+    ) => {
+      state.pagingInfo = {
+        total: action.payload.total,
+        page: action.payload.page,
+        pageSize: action.payload.pageSize,
+      };
+    },
   },
 });
 
@@ -71,6 +112,9 @@ export const {
   setTradingPost,
   setLoading,
   setSuccess,
+  getTradingPostByUserIdStart,
+  setTradingPostByUserId,
+  setPagingInfo,
 } = tradingPostSlice.actions;
 
 export default tradingPostSlice.reducer;

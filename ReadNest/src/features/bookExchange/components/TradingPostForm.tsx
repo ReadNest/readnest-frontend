@@ -19,7 +19,6 @@ import {
   setTradingPost,
 } from "@/features/bookExchange/tradingPostSlice";
 import type { RootState } from "@/store";
-import { set } from "date-fns";
 
 interface TradingPostFormProps {
   onSubmit: (data: CreateTradingPostRequest) => void;

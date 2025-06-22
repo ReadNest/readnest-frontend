@@ -5,7 +5,7 @@ import BookRequestsModal from "@/features/bookExchange/components/BookRequestsMo
 
 interface MyBookCardProps {
   book: {
-    id: number;
+    id: string;
     imageUrl: string;
     title: string;
     author: string;

@@ -2753,6 +2753,77 @@
       }
     },
     "/api/v1/trading-posts": {
+      "get": {
+        "tags": ["TradingPost"],
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookTradingPostResponsePagingResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookTradingPostResponsePagingResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookTradingPostResponsePagingResponseApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["TradingPost"],
         "requestBody": {
@@ -4381,6 +4452,18 @@
           "imageUrl": {
             "type": "string",
             "nullable": true
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true
+          },
+          "tradingRequestIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4405,6 +4488,58 @@
               "$ref": "#/components/schemas/GetBookTradingPostResponse"
             },
             "nullable": true
+          },
+          "listDetailError": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailError"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetBookTradingPostResponsePagingResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetBookTradingPostResponse"
+            },
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetBookTradingPostResponsePagingResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetBookTradingPostResponsePagingResponse"
           },
           "listDetailError": {
             "type": "array",
@@ -5509,6 +5644,10 @@
           "offeredBook": {
             "$ref": "#/components/schemas/Book"
           },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "type": "string",
             "nullable": true
@@ -5546,10 +5685,6 @@
               "$ref": "#/components/schemas/TradingPostImage"
             },
             "nullable": true
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5576,9 +5711,6 @@
             "type": "string",
             "format": "uuid"
           },
-          "tradingPost": {
-            "$ref": "#/components/schemas/TradingPost"
-          },
           "imageUrl": {
             "type": "string",
             "nullable": true
@@ -5586,6 +5718,9 @@
           "order": {
             "type": "integer",
             "format": "int32"
+          },
+          "tradingPost": {
+            "$ref": "#/components/schemas/TradingPost"
           }
         },
         "additionalProperties": false
