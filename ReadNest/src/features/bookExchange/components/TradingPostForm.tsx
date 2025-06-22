@@ -59,7 +59,6 @@ export default function TradingPostForm({
   };
 
   const handleFormSubmit = (data: CreateTradingPostRequest) => {
-    dispatch(createTradingPostStart(data));
     if (onSubmit) onSubmit(data);
   };
 

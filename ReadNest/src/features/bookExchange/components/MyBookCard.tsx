@@ -18,11 +18,10 @@ interface MyBookCardProps {
       avatarUrl?: string;
       status: "pending" | "completed";
     }>;
-    // ...other fields if needed
   };
-  onShowRequests?: (bookId: number) => void;
-  onEdit?: (bookId: number) => void;
-  onDelete?: (bookId: number) => void;
+  onShowRequests?: (bookId: string) => void;
+  onEdit?: (bookId: string) => void;
+  onDelete?: (bookId: string) => void;
 }
 
 export default function MyBookCard({
@@ -33,7 +32,6 @@ export default function MyBookCard({
 }: MyBookCardProps) {
   const [showModal, setShowModal] = useState(false);
 
-  // Dummy data nếu chưa có requests thực tế
   const requests = book.requests || [
     {
       id: 1,
