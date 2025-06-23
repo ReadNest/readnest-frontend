@@ -85,6 +85,24 @@ export type ChatMessage = {
   isRead?: boolean | undefined;
 }
 
+export type ChatMessageCacheModel = {
+  id?: string | undefined;
+  senderId?: string | undefined;
+  receiverId?: string | undefined;
+  message: string | null;
+  sentAt?: string | undefined;
+  isRead?: boolean | undefined;
+  isSaved?: boolean | undefined;
+}
+
+export type ChatMessageCacheModelListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: ChatMessageCacheModel[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type Comment = {
   id?: string | undefined;
   createdAt?: string | undefined;
