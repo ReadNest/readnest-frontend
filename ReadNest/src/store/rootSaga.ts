@@ -14,6 +14,8 @@ import { bookSearchPageSaga } from "@/features/search/bookSearchPageSaga";
 import { categoryFilterSaga } from "@/features/search/categoryFilterSaga";
 import badgeSaga from "@/features/badge/badgeSaga";
 import userBadgeSaga from "@/features/userBadge/userBadgeSaga";
+import eventSaga from "@/features/event/eventSaga";
+import leaderboardSaga from "@/features/leaderboard/leaderboardSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -32,5 +34,7 @@ export default function* rootSaga() {
     call(categoryFilterSaga),
     call(badgeSaga),
     call(userBadgeSaga),
+    call(eventSaga),
+    call(leaderboardSaga),
   ]);
 }
