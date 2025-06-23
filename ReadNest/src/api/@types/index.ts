@@ -247,6 +247,21 @@ export type EventResponseIEnumerableApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type EventResponsePagingResponse = {
+  items?: EventResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type EventResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: EventResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type EventReward = {
   id?: string | undefined;
   createdAt?: string | undefined;

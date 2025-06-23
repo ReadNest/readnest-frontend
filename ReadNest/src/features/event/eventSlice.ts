@@ -3,6 +3,7 @@ import type {
     UpdateEventRequest,
     EventResponse,
   } from "@/api/@types";
+import type { PagingRequest } from "@/lib/api/base/types";
   import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
   
   export const initialState: {
@@ -10,11 +11,21 @@ import type {
     loading: boolean;
     events: EventResponse[];
     currentEvent: EventResponse | null;
+    pagingInfo: {
+        totalItems?: number;
+        pageIndex?: number;
+        pageSize?: number;
+      };
   } = {
     isSuccess: false,
     loading: false,
     events: [],
     currentEvent: null,
+    pagingInfo: {
+        totalItems: 0,
+        pageIndex: 1,
+        pageSize: 10,
+      },
   };
   
   const eventSlice = createSlice({
@@ -26,6 +37,8 @@ import type {
       deleteEventStart: (_state, _action: PayloadAction<string>) => {},
       fetchEventsStart: (_state) => {},
       fetchCurrentEventStart: () => {},
+      fetchPagedEventsStart: (_state, _action: PayloadAction<PagingRequest>) => {},
+
       setLoading: (state, action: PayloadAction<boolean>) => {
         state.loading = action.payload;
       },
@@ -44,6 +57,17 @@ import type {
           state.currentEvent = event;
         }
       },
+      setPagingInfo: (
+        state,
+        action: PayloadAction<{
+          totalItems?: number;
+          pageIndex?: number;
+          pageSize?: number;
+        }>
+      ) => {
+        state.pagingInfo = action.payload;
+      },
+
       addEvent: (state, action: PayloadAction<EventResponse>) => {
         state.events.unshift(action.payload);
       },
@@ -68,11 +92,13 @@ import type {
     deleteEventStart,
     fetchEventsStart,
     fetchCurrentEventStart,
+    fetchPagedEventsStart,
     setLoading,
     setSuccess,
     setEvents,
     setCurrentEvent,
     setSelectedEventId,
+    setPagingInfo,
     addEvent,
     updateEventInList,
     removeEventFromList,

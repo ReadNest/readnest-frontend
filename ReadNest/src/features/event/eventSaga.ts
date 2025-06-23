@@ -3,6 +3,7 @@ import type {
     UpdateEventRequest,
     EventResponseApiResponse,
     EventResponseIEnumerableApiResponse,
+    EventResponsePagingResponseApiResponse,
   } from "@/api/@types";
   import type { PayloadAction } from "@reduxjs/toolkit";
   import {
@@ -18,11 +19,14 @@ import type {
     removeEventFromList,
     setCurrentEvent,
     fetchCurrentEventStart,
+    setPagingInfo,
+    fetchPagedEventsStart,
   } from "./eventSlice";
   import { call, put, takeLatest } from "redux-saga/effects";
   import client from "@/lib/api/axiosClient";
   import { toast } from "react-toastify";
   import { setMessage, setDetailErrors } from "@/store/error/errorSlice";
+import type { PagingRequest } from "@/lib/api/base/types";
   
   function* handleCreateEvent(action: PayloadAction<CreateEventRequest>) {
     try {
@@ -143,6 +147,42 @@ import type {
       yield put(setLoading(false));
     }
   }
+
+  function* fetchEventsPaged(action: PayloadAction<PagingRequest>) {
+    try {
+      yield put(setLoading(true));
+  
+      const res: EventResponsePagingResponseApiResponse = yield call(() =>
+        client.api.v1.Event.all_paging
+          .get({
+            query: {
+              PageIndex: action.payload.pageIndex,
+              PageSize: action.payload.pageSize,
+            },
+          })
+          .then((r) => r.body)
+      );
+  
+      if (res.success && res.data) {
+        yield put(setSuccess(true));
+        yield put(setEvents(res.data.items ?? []));
+        yield put(
+          setPagingInfo({
+            totalItems: res.data.totalItems,
+            pageIndex: res.data.pageIndex,
+            pageSize: res.data.pageSize,
+          })
+        );
+      } else {
+        yield put(setSuccess(false));
+      }
+  
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      yield put(setLoading(false));
+    }
+  }
   
   export default function* eventSaga() {
     yield takeLatest(createEventStart.type, handleCreateEvent);
@@ -150,5 +190,6 @@ import type {
     yield takeLatest(deleteEventStart.type, handleDeleteEvent);
     yield takeLatest(fetchEventsStart.type, fetchEvents);
     yield takeLatest(fetchCurrentEventStart.type, handleFetchCurrentEvent);
+    yield takeLatest(fetchPagedEventsStart.type, fetchEventsPaged);
   }
   

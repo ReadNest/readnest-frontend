@@ -49,6 +49,7 @@ interface DataTableProps<T> {
     minWidth?: number;
     maxWidth?: number;
     initialWidth?: number;
+    format?: (value: any, row?: T) => React.ReactNode;
   }[];
   pagingInfo: PagingInfo;
   onPageChange?: (pageIndex: number) => void;
@@ -231,8 +232,8 @@ export function DataTableWithPagination<T>({
                             : ""
                         }`}
                       >
-                        {typeof col.key === "string"
-                          ? (item as any)[col.key]
+                        {col.format
+                          ? col.format((item as any)[col.key], item)
                           : (item as any)[col.key]}
                       </TableCell>
                     ))}

@@ -23,4 +23,5 @@ export const ROUTE_PATHS = {
   DETAIL_POST: "/post/:postId",
   POSTS: "/posts",
   MY_POSTS: "my-posts",
+  EVENT: "/events",
 };

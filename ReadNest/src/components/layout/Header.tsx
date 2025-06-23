@@ -1,5 +1,5 @@
 import readnestLogo from "@/assets/readnest_logo.svg";
-import { Bell, Home, Compass, Repeat, Users } from "lucide-react";
+import { Bell, Home, Compass, Repeat, Trophy } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import UserDropDown from "../ui/user-dropdown";
 import { clearErrors } from "@/store/error/errorSlice";
 import { toast } from "react-toastify";
 import SearchContainer from "@/features/search/components/SearchContainer";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -71,9 +72,9 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
     },
     { to: "/trade", label: "Trao đổi", icon: <Repeat className="w-5 h-5" /> },
     {
-      to: "/community",
-      label: "Cộng đồng",
-      icon: <Users className="w-5 h-5" />,
+      to: ROUTE_PATHS.RANK,
+      label: "Bảng xếp hạng",
+      icon: <Trophy className="w-5 h-5" />,
     },
   ];
 
