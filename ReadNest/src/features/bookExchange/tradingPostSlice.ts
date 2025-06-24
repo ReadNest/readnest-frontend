@@ -104,6 +104,9 @@ const tradingPostSlice = createSlice({
         pageSize: action.payload.pageSize,
       };
     },
+    resetState: (state) => {
+      Object.assign(state, initialState);
+    },
   },
 });
 
@@ -115,6 +118,7 @@ export const {
   getTradingPostByUserIdStart,
   setTradingPostByUserId,
   setPagingInfo,
+  resetState,
 } = tradingPostSlice.actions;
 
 export default tradingPostSlice.reducer;

@@ -80,8 +80,8 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
       icon: <Repeat className="w-5 h-5" />,
     },
     {
-      to: "/community",
-      label: "Cộng đồng",
+      to: ROUTE_PATHS.RANK,
+      label: "Bảng xếp hạng",
       icon: <Users className="w-5 h-5" />,
     },
   ];

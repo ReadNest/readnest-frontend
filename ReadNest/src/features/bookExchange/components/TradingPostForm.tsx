@@ -14,11 +14,16 @@ import BookSearchBox from "@/features/bookExchange/components/BookSearchBox";
 import type { CreateTradingPostRequest } from "@/api/@types";
 import { Label } from "@/components/ui/label";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createTradingPostStart,
-  setTradingPost,
-} from "@/features/bookExchange/tradingPostSlice";
+import { resetState } from "@/features/bookExchange/tradingPostSlice";
 import type { RootState } from "@/store";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 interface TradingPostFormProps {
   onSubmit: (data: CreateTradingPostRequest) => void;
@@ -32,6 +37,7 @@ export default function TradingPostForm({
   isSubmitting = false,
 }: TradingPostFormProps) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const tradingPost = useSelector(
     (state: RootState) => state.tradingPost.tradingPostValue
   );
@@ -39,13 +45,21 @@ export default function TradingPostForm({
     (state: RootState) => state.tradingPost.isSuccess
   );
 
-  const { register, handleSubmit, control, setValue, watch, reset } =
-    useForm<CreateTradingPostRequest>({
-      defaultValues: {
-        ...(tradingPost || {}),
-        ...(defaultValues || {}),
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    clearErrors,
+    formState: { errors },
+  } = useForm<CreateTradingPostRequest>({
+    defaultValues: {
+      ...(tradingPost || {}),
+      ...(defaultValues || {}),
+    },
+    mode: "onSubmit",
+  });
 
   const [showRequestBookModal, setShowRequestBookModal] = useState(false);
   const images = watch("images") || [];
@@ -53,27 +67,22 @@ export default function TradingPostForm({
   const handleDetailImagesChange = (imageUrls: string[]) => {
     const mapped = imageUrls.map((url, index) => ({
       imageUrl: url,
-      ordere: index,
+      order: index,
     }));
-    setValue("images", mapped);
+    setValue("images", mapped, { shouldValidate: true });
   };
 
   const handleFormSubmit = (data: CreateTradingPostRequest) => {
     if (onSubmit) onSubmit(data);
   };
 
-  useEffect(() => {
-    if (defaultValues) reset({ ...tradingPost, ...defaultValues });
-    else reset(tradingPost);
-  }, [defaultValues, tradingPost, reset]);
-
   // Reset form khi submit thành công
   useEffect(() => {
     if (isSuccess) {
-      reset();
-      dispatch(setTradingPost({}));
+      dispatch(resetState());
+      navigate(ROUTE_PATHS.MY_BOOKS);
     }
-  }, [isSuccess, reset, dispatch]);
+  }, [isSuccess, navigate, dispatch]);
 
   return (
     <form
@@ -85,8 +94,12 @@ export default function TradingPostForm({
         id="title"
         label="Tiêu đề"
         placeholder="Tiêu đề... ví dụ: Sách cũ cần trao đổi"
-        onChange={(e) => setValue("title", e.target.value)}
-        register={register}
+        {...register("title", { required: "Vui lòng nhập tiêu đề" })}
+        error={errors.title?.message}
+        onChange={(e) => {
+          setValue("title", e.target.value, { shouldValidate: false });
+          clearErrors("title");
+        }}
       />
 
       {/* Chọn sách */}
@@ -97,12 +110,36 @@ export default function TradingPostForm({
         <Controller
           control={control}
           name="bookId"
+          rules={{ required: "Vui lòng chọn sách" }}
           render={({ field }) => (
-            <BookSearchBox
-              value={field.value ?? ""}
-              onChange={field.onChange}
-              placeholder="Tìm kiếm sách trong hệ thống..."
-            />
+            <>
+              <BookSearchBox
+                value={field.value ?? ""}
+                onChange={(val) => {
+                  field.onChange(val);
+                  clearErrors("bookId");
+                }}
+                placeholder="Tìm kiếm sách trong hệ thống..."
+              />
+              <div className="relative">
+                <div className="absolute left-0 top-0">
+                  <TooltipProvider>
+                    <Tooltip open={!!errors.bookId}>
+                      <TooltipTrigger asChild>
+                        <div className="w-0 h-0" />
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="bottom"
+                        align="start"
+                        className="bg-red-500 text-white border-red-500"
+                      >
+                        {errors.bookId?.message}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+            </>
           )}
         />
         <Button
@@ -119,13 +156,45 @@ export default function TradingPostForm({
         <Controller
           control={control}
           name="images"
+          rules={{
+            validate: (imgs) =>
+              imgs && imgs.length > 0 ? true : "Vui lòng thêm ít nhất 1 ảnh",
+          }}
           render={() => (
-            <MultiImageUploader
-              images={images.map((img) => img.imageUrl ?? "")}
-              setImages={handleDetailImagesChange}
-            />
+            <>
+              <MultiImageUploader
+                images={images.map((img) => img.imageUrl ?? "")}
+                setImages={(urls) => {
+                  handleDetailImagesChange(urls);
+                  clearErrors("images");
+                }}
+              />
+              <div className="relative">
+                <div className="absolute left-0 top-0">
+                  <TooltipProvider>
+                    <Tooltip open={!!errors.images}>
+                      <TooltipTrigger asChild>
+                        <div className="w-0 h-0" />
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="bottom"
+                        align="start"
+                        className="bg-red-500 text-white border-red-500"
+                      >
+                        {(errors.images as { message?: string })?.message}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+            </>
           )}
         />
+        {errors.images && (
+          <div className="text-red-500 text-xs mt-1">
+            {(errors.images as { message?: string })?.message}
+          </div>
+        )}
       </div>
 
       {/* Tình trạng sách */}
@@ -133,8 +202,14 @@ export default function TradingPostForm({
         id="condition"
         label="Tình trạng sách"
         placeholder="Như mới, cũ, có ghi chú..."
-        onChange={(e) => setValue("condition", e.target.value)}
-        register={register}
+        {...register("condition", {
+          required: "Vui lòng nhập tình trạng sách",
+        })}
+        error={errors.condition?.message}
+        onChange={(e) => {
+          setValue("condition", e.target.value, { shouldValidate: false });
+          clearErrors("condition");
+        }}
       />
 
       {/* Mô tả chi tiết */}
@@ -143,13 +218,42 @@ export default function TradingPostForm({
         <Controller
           control={control}
           name="shortDescription"
+          rules={{ required: "Vui lòng nhập mô tả" }}
           render={({ field }) => (
-            <TinyMCETextEditor
-              value={field.value ?? ""}
-              onChange={field.onChange}
-            />
+            <>
+              <TinyMCETextEditor
+                value={field.value ?? ""}
+                onChange={(val) => {
+                  field.onChange(val);
+                  clearErrors("shortDescription");
+                }}
+              />
+              <div className="relative">
+                <div className="absolute left-0 top-0">
+                  <TooltipProvider>
+                    <Tooltip open={!!errors.shortDescription}>
+                      <TooltipTrigger asChild>
+                        <div className="w-0 h-0" />
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="bottom"
+                        align="start"
+                        className="bg-red-500 text-white border-red-500"
+                      >
+                        {errors.shortDescription?.message}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+            </>
           )}
         />
+        {errors.shortDescription && (
+          <div className="text-red-500 text-xs mt-1">
+            {errors.shortDescription.message}
+          </div>
+        )}
       </div>
 
       {/* Lời nhắn */}
@@ -157,8 +261,14 @@ export default function TradingPostForm({
         id="messageToRequester"
         label="Lời nhắn"
         placeholder="Lời nhắn cho người muốn trao đổi"
-        register={register}
-        onChange={(e) => setValue("messageToRequester", e.target.value)}
+        {...register("messageToRequester")}
+        error={errors.messageToRequester?.message}
+        onChange={(e) => {
+          setValue("messageToRequester", e.target.value, {
+            shouldValidate: false,
+          });
+          clearErrors("messageToRequester");
+        }}
       />
 
       {/* Modal yêu cầu admin tạo sách mới */}
@@ -175,18 +285,28 @@ export default function TradingPostForm({
               id="externalBookUrl"
               label="Link sách (Tiki, Fahasa, Goodreads...)"
               placeholder="Dán link sách từ Tiki, Fahasa, Goodreads..."
-              register={register}
-              onChange={(e) => setValue("externalBookUrl", e.target.value)}
+              {...register("externalBookUrl")}
+              error={errors.externalBookUrl?.message}
               required
+              onChange={(e) => {
+                setValue("externalBookUrl", e.target.value, {
+                  shouldValidate: false,
+                });
+                clearErrors("externalBookUrl");
+              }}
             />
             <FormField
               id="message"
               label="Lý do hoặc mô tả thêm cho admin"
               placeholder="Lý do hoặc mô tả thêm cho admin"
               className="min-h-[80px]"
-              register={register}
-              onChange={(e) => setValue("message", e.target.value)}
+              {...register("message")}
+              error={errors.message?.message}
               required
+              onChange={(e) => {
+                setValue("message", e.target.value, { shouldValidate: false });
+                clearErrors("message");
+              }}
             />
             <Button
               type="button"
