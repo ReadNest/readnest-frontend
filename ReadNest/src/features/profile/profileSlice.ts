@@ -16,8 +16,7 @@ const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    fetchUserProfileRequested: (_state, _action: PayloadAction<string>) => {
-    },
+    fetchUserProfileRequested: (_state, _action: PayloadAction<string>) => {},
     fetchUserProfileStart: (state) => {
       state.isLoading = true;
       state.isProfileNotFound = false; // Reset khi bắt đầu fetch
@@ -34,7 +33,7 @@ const profileSlice = createSlice({
     updateProfileRequested: (
       _state,
       _action: PayloadAction<Partial<UpdateUserRequest>>
-    ) => { },
+    ) => {},
     updateProfileStart: (state) => {
       state.isLoading = true;
     },
@@ -59,7 +58,16 @@ const profileSlice = createSlice({
     },
     setIsProfileNotFound: (state, action: PayloadAction<boolean>) => {
       state.isProfileNotFound = action.payload;
-    }
+    },
+
+    updateCurrentBadge: (state, action: PayloadAction<string>) => {
+      const badgeId = action.payload;
+      // Cập nhật tất cả selected của badge thành false
+      state.profile.ownedBadges = state.profile?.ownedBadges?.map((badge) => ({
+        ...badge,
+        isSelected: badge.badgeId === badgeId ? true : false,
+      }));
+    },
   },
 });
 export const {
@@ -74,6 +82,8 @@ export const {
   updateProfileFailure,
   setIsLoading,
   setIsProfileNotFound,
+
+  updateCurrentBadge,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

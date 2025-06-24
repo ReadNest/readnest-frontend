@@ -1,182 +1,222 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { GetPostResponse, CreatePostRequest, LikePostRequest } from "@/api/@types";
+import type {
+  GetPostResponse,
+  CreatePostRequest,
+  LikePostRequest,
+  UpdatePostRequest,
+  FilterPostRequest,
+} from "@/api/@types";
+import type { PagingRequest } from "@/lib/api/base/types";
 
 export const initialState: {
-    isLoading: boolean;
-    isSuccess: boolean;
-    posts: GetPostResponse[];
+  isSuccess: boolean;
+  loading: boolean;
+  posts: GetPostResponse[];
+  selectedPost: GetPostResponse | null;
+  pagingInfo: {
+    totalItems?: number;
+    pageIndex?: number;
+    pageSize?: number;
+  };
+  createPostSuccess: boolean;
+  updatePostSuccess: boolean;
+  deletePostSuccess: boolean;
 } = {
-    isLoading: false,
-    isSuccess: false,
-    posts: [],
+  isSuccess: false,
+  loading: false,
+  posts: [],
+  selectedPost: null,
+  pagingInfo: {
+    totalItems: 0,
+    pageIndex: 1,
+    pageSize: 6,
+  },
+  createPostSuccess: false,
+  updatePostSuccess: false,
+  deletePostSuccess: false,
 };
 
 const postSlice = createSlice({
-    name: "post",
-    initialState,
-    reducers: {
-        // Fetch all posts
-        fetchPostsRequested: (_state) => {},
-        fetchPostsStart: (state) => {
-            state.isLoading = true;
-        },
-        fetchPostsSuccess: (state, action: PayloadAction<GetPostResponse[]>) => {
-            state.isLoading = false;
-            state.posts = action.payload;
-        },
-        fetchPostsFailure: (state) => {
-            state.isLoading = false;
-        },
+  name: "post",
+  initialState,
+  reducers: {
+    // Action gọi API
+    createPostStart: (_state, _action: PayloadAction<CreatePostRequest>) => {},
+    likePostStart: (_state, _action: PayloadAction<LikePostRequest>) => {},
+    fetchPostsStart: (_state, _action: PayloadAction<PagingRequest>) => {},
+    fetchPostsByUserIdStart: (
+      _state,
+      _action: PayloadAction<{ userId: string; paging: PagingRequest }>
+    ) => {},
+    fetchPostsByBookIdStart: (_state, _action: PayloadAction<string>) => {},
+    fetchTopLikedPostsStart: (_state, _action: PayloadAction<number>) => {},
+    fetchTopViewedPostsStart: (_state, _action: PayloadAction<number>) => {},
+    getPostByIdStart: (_state, _action: PayloadAction<string>) => {},
+    updatePostStart: (_state, _action: PayloadAction<UpdatePostRequest>) => {},
+    deletePostRequest: (_state, _action: PayloadAction<string>) => {},
+    increasePostViewsStart: (_state, _action: PayloadAction<string>) => {},
+    filterPostsStart: (_state, _action: PayloadAction<FilterPostRequest>) => {},
 
-        // Fetch posts by userId
-        fetchPostsByUserIdRequested: (_state, _action: PayloadAction<string>) => {},
-        fetchPostsByUserIdStart: (state) => {
-            state.isLoading = true;
-        },
-        fetchPostsByUserIdSuccess: (state, action: PayloadAction<GetPostResponse[]>) => {
-            state.isLoading = false;
-            state.posts = action.payload;
-        },
-        fetchPostsByUserIdFailure: (state) => {
-            state.isLoading = false;
-        },
-
-        // Fetch posts by bookId
-        fetchPostsByBookIdRequested: (_state, _action: PayloadAction<string>) => {},
-        fetchPostsByBookIdStart: (state) => {
-            state.isLoading = true;
-        },
-        fetchPostsByBookIdSuccess: (state, action: PayloadAction<GetPostResponse[]>) => {
-            state.isLoading = false;
-            state.posts = action.payload;
-        },
-        fetchPostsByBookIdFailure: (state) => {
-            state.isLoading = false;
-        },
-
-        // Fetch top liked posts
-        fetchTopLikedPostsRequested: (_state, _action: PayloadAction<number>) => {},
-        fetchTopLikedPostsStart: (state) => {
-            state.isLoading = true;
-        },
-        fetchTopLikedPostsSuccess: (state, action: PayloadAction<GetPostResponse[]>) => {
-            state.isLoading = false;
-            state.posts = action.payload;
-        },
-        fetchTopLikedPostsFailure: (state) => {
-            state.isLoading = false;
-        },
-
-        // Fetch top viewed posts
-        fetchTopViewedPostsRequested: (_state, _action: PayloadAction<number>) => {},
-        fetchTopViewedPostsStart: (state) => {
-            state.isLoading = true;
-        },
-        fetchTopViewedPostsSuccess: (state, action: PayloadAction<GetPostResponse[]>) => {
-            state.isLoading = false;
-            state.posts = action.payload;
-        },
-        fetchTopViewedPostsFailure: (state) => {
-            state.isLoading = false;
-        },
-
-        // Search posts by title
-        searchPostsByTitleRequested: (_state, _action: PayloadAction<string>) => {},
-        searchPostsByTitleStart: (state) => {
-            state.isLoading = true;
-        },
-        searchPostsByTitleSuccess: (state, action: PayloadAction<GetPostResponse[]>) => {
-            state.isLoading = false;
-            state.posts = action.payload;
-        },
-        searchPostsByTitleFailure: (state) => {
-            state.isLoading = false;
-        },
-
-        // Create post
-        createPostRequested: (_state, _action: PayloadAction<CreatePostRequest>) => {},
-        createPostStart: (state) => {
-            state.isLoading = true;
-            state.isSuccess = false;
-        },
-        createPostSuccess: (state, action: PayloadAction<GetPostResponse>) => {
-            state.isLoading = false;
-            state.isSuccess = true;
-            state.posts.unshift(action.payload);
-        },
-        createPostFailure: (state) => {
-            state.isLoading = false;
-            state.isSuccess = false;
-        },
-
-        // Like post
-        likePostRequested: (_state, _action: PayloadAction<LikePostRequest>) => {},
-        likePostStart: (state) => {
-            state.isLoading = true;
-        },
-        likePostSuccess: (state, action: PayloadAction<{ postId: string; userId: string }>) => {
-            state.isLoading = false;
-            const post = state.posts.find(p => p.id === action.payload.postId);
-            if (post) {
-                post.likesCount = (post.likesCount ?? 0) + 1;
-                post.userLikes?.push(action.payload.userId);
-            }
-        },
-        unlikePostSuccess: (state, action: PayloadAction<{ postId: string; userId: string }>) => {
-            state.isLoading = false;
-            const post = state.posts.find(p => p.id === action.payload.postId);
-            if (post && post.likesCount && post.likesCount > 0) {
-                post.likesCount -= 1;
-                post.userLikes = post.userLikes?.filter(id => id !== action.payload.userId);
-            }
-        },
-        likePostFailure: (state) => {
-            state.isLoading = false;
-        },
-
-        //reset
-        resetPostStatus: (state) => {
-            state.isSuccess = false;
-            state.isLoading = false;
-        },
+    // Trạng thái
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
+    setSuccess: (state, action: PayloadAction<boolean>) => {
+      state.isSuccess = action.payload;
+    },
+
+    // CRUD đơn giản
+    addPost: (state, action: PayloadAction<GetPostResponse>) => {
+      state.posts.unshift(action.payload);
+    },
+    updatePost: (state, action: PayloadAction<GetPostResponse>) => {
+      const index = state.posts.findIndex((p) => p.id === action.payload.id);
+      if (index !== -1) {
+        state.posts[index] = {
+          ...state.posts[index],
+          ...action.payload,
+        };
+        if (state.selectedPost?.id === action.payload.id) {
+          state.selectedPost = {
+            ...state.selectedPost,
+            ...action.payload,
+          };
+        }
+      }
+    },
+    deletePost: (state, action: PayloadAction<string>) => {
+      state.posts = state.posts.filter((p) => p.id !== action.payload);
+    },
+
+    // Like / Unlike
+    likePost: (state, action: PayloadAction<LikePostRequest>) => {
+      const { postId, userId } = action.payload;
+      if (!userId) return; // đảm bảo không thêm undefined
+
+      const post = state.posts.find((p) => p.id === postId);
+      if (post && !post.userLikes?.includes(userId)) {
+        post.likesCount = (post.likesCount ?? 0) + 1;
+        post.userLikes = [...(post.userLikes ?? []), userId];
+      }
+
+      const selected = state.selectedPost;
+      if (selected && selected.id === postId && !selected.userLikes?.includes(userId)) {
+        selected.likesCount = (selected.likesCount ?? 0) + 1;
+        selected.userLikes = [...(selected.userLikes ?? []), userId];
+      }
+    },
+    unlikePost: (state, action: PayloadAction<LikePostRequest>) => {
+      const { postId, userId } = action.payload;
+      if (!userId) return;
+
+      const post = state.posts.find((p) => p.id === postId);
+      if (post && post.likesCount && post.likesCount > 0) {
+        post.likesCount -= 1;
+        post.userLikes = post.userLikes?.filter((id) => id !== userId);
+      }
+
+      const selected = state.selectedPost;
+      if (
+        selected &&
+        selected.id === postId &&
+        selected.likesCount &&
+        selected.userLikes?.includes(userId)
+      ) {
+        selected.likesCount -= 1;
+        selected.userLikes = selected.userLikes.filter(id => id !== userId);
+      }
+    },
+    increasePostViews: (state, action: PayloadAction<{ postId: string }>) => {
+      const post = state.posts.find(p => p.id === action.payload.postId);
+      if (post) {
+        post.views = (post.views ?? 0) + 1;
+      }
+    
+      if (state.selectedPost?.id === action.payload.postId) {
+        state.selectedPost.views = (state.selectedPost.views ?? 0) + 1;
+      }
+    },
+
+    // Setters
+    setPosts: (state, action: PayloadAction<GetPostResponse[]>) => {
+      state.posts = [...state.posts, ...action.payload];
+    },
+    setPostsV1: (state, action: PayloadAction<GetPostResponse[]>) => {
+      state.posts = action.payload;
+    },
+    setSelectedPost: (state, action: PayloadAction<GetPostResponse | null>) => {
+      state.selectedPost = action.payload;
+    },
+    setPagingInfo: (
+      state,
+      action: PayloadAction<{
+        totalItems?: number;
+        pageIndex?: number;
+        pageSize?: number;
+      }>
+    ) => {
+      state.pagingInfo = {
+        ...state.pagingInfo,
+        ...action.payload,
+      };
+    },
+
+    // Reset
+    resetState: (state) => {
+      Object.assign(state, initialState);
+    },
+
+    // Set các flag riêng cho create/update/delete
+    setCreatePostSuccess: (state, action: PayloadAction<boolean>) => {
+      state.createPostSuccess = action.payload;
+    },
+    setUpdatePostSuccess: (state, action: PayloadAction<boolean>) => {
+      state.updatePostSuccess = action.payload;
+    },
+    setDeletePostSuccess: (state, action: PayloadAction<boolean>) => {
+      state.deletePostSuccess = action.payload;
+    },
+
+    // Có thể reset tất cả flag
+    resetSuccessFlags: (state) => {
+      state.createPostSuccess = false;
+      state.updatePostSuccess = false;
+      state.deletePostSuccess = false;
+    },
+  },
 });
 
 export const {
-    fetchPostsRequested,
-    fetchPostsStart,
-    fetchPostsSuccess,
-    fetchPostsFailure,
-    fetchPostsByUserIdRequested,
-    fetchPostsByUserIdStart,
-    fetchPostsByUserIdSuccess,
-    fetchPostsByUserIdFailure,
-    fetchPostsByBookIdRequested,
-    fetchPostsByBookIdStart,
-    fetchPostsByBookIdSuccess,
-    fetchPostsByBookIdFailure,
-    fetchTopLikedPostsRequested,
-    fetchTopLikedPostsStart,
-    fetchTopLikedPostsSuccess,
-    fetchTopLikedPostsFailure,
-    fetchTopViewedPostsRequested,
-    fetchTopViewedPostsStart,
-    fetchTopViewedPostsSuccess,
-    fetchTopViewedPostsFailure,
-    searchPostsByTitleRequested,
-    searchPostsByTitleStart,
-    searchPostsByTitleSuccess,
-    searchPostsByTitleFailure,
-    createPostRequested,
-    createPostStart,
-    createPostSuccess,
-    createPostFailure,
-    likePostRequested,
-    likePostStart,
-    likePostSuccess,
-    unlikePostSuccess,
-    likePostFailure,
-    resetPostStatus,
+  createPostStart,
+  likePostStart,
+  fetchPostsStart,
+  fetchPostsByUserIdStart,
+  fetchPostsByBookIdStart,
+  fetchTopLikedPostsStart,
+  fetchTopViewedPostsStart,
+  getPostByIdStart,
+  updatePostStart,
+  deletePostRequest,
+  increasePostViewsStart,
+  filterPostsStart,
+  setLoading,
+  setSuccess,
+  addPost,
+  updatePost,
+  deletePost,
+  likePost,
+  unlikePost,
+  increasePostViews,
+  setPosts,
+  setPostsV1,
+  setSelectedPost,
+  setPagingInfo,
+  resetState,
+  setCreatePostSuccess,
+  setUpdatePostSuccess,
+  setDeletePostSuccess,
+  resetSuccessFlags,
 } = postSlice.actions;
 
 export default postSlice.reducer;

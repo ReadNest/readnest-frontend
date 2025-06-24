@@ -28,6 +28,12 @@ export default function FavouriteBooksPage() {
 
   useEffect(() => {
     if (user?.userId) {
+      dispatch(setPagingInfo({ pageIndex: 1, pageSize: 4 }));
+    }
+  }, [user?.userId, dispatch]);
+
+  useEffect(() => {
+    if (user?.userId) {
       dispatch(
         getFavoritesStart({
           userId: user.userId,

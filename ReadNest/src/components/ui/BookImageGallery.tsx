@@ -31,7 +31,6 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
       setMaxThumbnails(count);
     }
     updateMaxThumbnails();
-    console.log("Max thumbnails updated:", maxThumbnails);
     window.addEventListener("resize", updateMaxThumbnails);
     return () => window.removeEventListener("resize", updateMaxThumbnails);
   }, [sortedImages.length]);
@@ -60,7 +59,10 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-2 px-4" ref={containerRef}>
+    <div
+      className="flex flex-wrap justify-center gap-2 px-4"
+      ref={containerRef}
+    >
       <Dialog open={isZoomOpen} onOpenChange={setIsZoomOpen}>
         <DialogTrigger asChild>
           <Card className="relative w-full aspect-square max-w-[220px] sm:max-w-[300px] mx-auto rounded-xl shadow-md overflow-hidden group cursor-zoom-in">
@@ -112,10 +114,11 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
         {visibleThumbnails.map((img) => (
           <Card
             key={img.id}
-            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${mainImage.id === img.id
-              ? "ring-2 ring-blue-500 scale-105"
-              : "opacity-80 hover:opacity-100 hover:scale-105"
-              }`}
+            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+              mainImage.id === img.id
+                ? "ring-2 ring-blue-500 scale-105"
+                : "opacity-80 hover:opacity-100 hover:scale-105"
+            }`}
             onClick={() =>
               setCurrentImageIndex(
                 sortedImages.findIndex((i) => i.id === img.id)
@@ -145,10 +148,11 @@ const BookImageGallery: React.FC<Props> = ({ bookImages }) => {
                 {sortedImages.map((img) => (
                   <Card
                     key={img.id}
-                    className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${mainImage.id === img.id
-                      ? "ring-2 ring-blue-500"
-                      : "hover:ring-1 hover:ring-gray-300"
-                      }`}
+                    className={`aspect-square rounded-lg overflow-hidden cursor-pointer transition-all ${
+                      mainImage.id === img.id
+                        ? "ring-2 ring-blue-500"
+                        : "hover:ring-1 hover:ring-gray-300"
+                    }`}
                     onClick={() => {
                       setCurrentImageIndex(
                         sortedImages.findIndex((i) => i.id === img.id)

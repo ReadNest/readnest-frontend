@@ -15,6 +15,7 @@ import {
   Settings,
   Home,
   FlagIcon,
+  CalendarSearch,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -66,6 +67,14 @@ const adminSidebarItems = [
     key: "reports",
     items: [
       { label: "Comment Reports", path: ROUTE_PATHS.COMMENT_REPORT },
+    ],
+  },
+  {
+    label: "Events",
+    icon: <CalendarSearch size={18} />,
+    key: "events",
+    items: [
+      { label: "Events", path: ROUTE_PATHS.EVENT },
     ],
   },
 ];

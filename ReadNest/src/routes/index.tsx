@@ -11,6 +11,14 @@ import { RoleEnum } from "@/constants/enum";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import { clearErrors } from "@/store/error/errorSlice";
 import { useDispatch } from "react-redux";
+import DetailPostPage from "@/pages/post/DetailPostPage";
+import PostsPage from "@/pages/post/PostsPage";
+import UserPostsPage from "@/pages/post/UserPostsPage";
+import EditBookPage from "@/pages/book/UpdateBookPage";
+import UpdatePostPage from "@/pages/post/UpdatePostPage";
+import EventPage from "@/pages/event/EventPage";
+import MyBooksPage from "@/pages/bookExchange/MyBooksPage";
+import CreateTradingPostPage from "@/pages/bookExchange/CreateTradingPostPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -183,8 +191,8 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.BOOK,
-      isPrivate: false,
-      allowedRoles: [RoleEnum.ADMIN],
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN, RoleEnum.USER],
       element: <BookPage />,
       layout: adminLayout,
     },
@@ -231,9 +239,16 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.CREATE_POST,
-      isPrivate: false,
+      isPrivate: true,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <CreatePostPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.UPDATE_POST,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <UpdatePostPage />,
       layout: defaultLayout,
     },
     {
@@ -242,6 +257,55 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       allowedRoles: [RoleEnum.ADMIN],
       element: <CommentReportsPage />,
       layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.DETAIL_POST,
+      isPrivate: false,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <DetailPostPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.POSTS,
+      isPrivate: false,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <PostsPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.MY_POSTS,
+      isPrivate: false,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <UserPostsPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.UPDATE_BOOK,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN],
+      element: <EditBookPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.MY_BOOKS,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER],
+      element: <MyBooksPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.EVENT,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN],
+      element: <EventPage />,
+      layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.MANAGE_TRADING_POST,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER],
+      element: <CreateTradingPostPage />,
+      layout: defaultLayout,
     },
   ];
 

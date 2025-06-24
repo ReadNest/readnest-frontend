@@ -111,11 +111,9 @@ const commentSlice = createSlice({
     },
     updateCommentSuccess: (state, action) => {
       state.isLoading = false;
-      console.log("action.payload:", action.payload);
       const index = state.comments.findIndex(
         (c) => c.commentId === action.payload.commentId
       );
-      console.log("index:", index);
       if (index !== -1) {
         state.comments[index].content = action.payload.content; // Cập nhật nội dung bình luận
       }

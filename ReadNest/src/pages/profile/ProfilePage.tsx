@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { RecentReviewCard } from "@/features/profile/components/RecentReviewCard";
-import { CameraIcon, FrameIcon, PlusIcon } from "lucide-react";
+import { Calendar, CameraIcon, MapPin, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,6 +19,12 @@ import { toast } from "react-toastify";
 import { uploadFileToCloudinary } from "@/lib/utils";
 import { fetchTop3RecentCommentsRequested } from "@/features/review/commentSlice";
 import { setAvatarUrl } from "@/features/auth/authSlice";
+import { fetchPostsByUserIdStart, resetState } from "@/features/post/postSlice";
+import { RecentPostCard } from "@/features/profile/components/RecentPostCard";
+import parse from "html-react-parser";
+import { BadgeSelectionButton } from "@/features/badge/components/BadgeButton/BadgeSelectionButton";
+import type { UserBadgeResponse } from "@/api/@types";
+import { FirstParticipantAvatar } from "@/features/badge/components/avatarBadge/FirstParticipantAvatar";
 
 export default function ProfilePage() {
   const [showModalAvatar, setShowModalAvatar] = useState(false);
@@ -33,6 +39,7 @@ export default function ProfilePage() {
   );
   const { user } = useSelector((state: RootState) => state.auth);
   const comment = useSelector((state: RootState) => state.comment);
+  const posts = useSelector((state: RootState) => state.post.posts);
 
   // ========== Avatar Upload ========== //
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -91,30 +98,37 @@ export default function ProfilePage() {
   //Call API to get user data
   useEffect(() => {
     dispatch(setIsProfileNotFound(false));
+    dispatch(resetState());
     if (username) {
       dispatch(fetchUserProfileRequested(username));
-    }
-  }, [username]);
-  // Navigate to 404 if user not found
-  useEffect(() => {
-    if (isProfileNotFound) {
-      navigate("/404");
-    }
-  }, [isProfileNotFound, navigate]);
-
-  //Call API to get user data
-  useEffect(() => {
-    if (username) {
       dispatch(fetchTop3RecentCommentsRequested(username));
-      dispatch(fetchUserProfileRequested(username));
     }
   }, [username]);
+
+  useEffect(() => {
+    if (profile.userId) {
+      dispatch(fetchPostsByUserIdStart({ 
+        userId: profile.userId, 
+        paging: { 
+          pageIndex: 1, 
+          pageSize: 3 
+        } 
+      }));
+    }
+  }, [profile.userId]);
+
   // Navigate to 404 if user not found
   useEffect(() => {
     if (isProfileNotFound && isLoading === false) {
       navigate("/404");
     }
   }, [isProfileNotFound, isLoading, navigate]);
+
+  // Get selected badge code
+  const selectedBadge =
+    Array.isArray(profile.ownedBadges) && profile.ownedBadges.length > 0
+      ? profile.ownedBadges.find((badge: UserBadgeResponse) => badge.isSelected)
+      : undefined;
 
   return (
     <div className="container mx-auto py-8 px-10">
@@ -123,12 +137,61 @@ export default function ProfilePage() {
         <div className="flex items-center space-x-4 mb-1">
           {/* Profile Header */}
           <div className="relative flex flex-col items-center text-center">
-            <Avatar className="h-40 w-40 mb-4">
-              <AvatarImage
-                src={profile.avatarUrl ?? "https://github.com/shadcn.png"}
-              />
-              <AvatarFallback>Avatar</AvatarFallback>
-            </Avatar>
+            <div className="flex flex-col items-center">
+              {selectedBadge?.badgeCode === "DEFAULT" && (
+                <Avatar className="h-40 w-40 mb-4">
+                  <AvatarImage
+                    src={profile.avatarUrl ?? "https://github.com/shadcn.png"}
+                  />
+                  <AvatarFallback className="text-5xl font-bold">{profile.fullName?.charAt(0)}</AvatarFallback>
+                </Avatar>
+              )}
+              {selectedBadge?.badgeCode === "PIONEER_001" && (
+                <FirstParticipantAvatar
+                  avatarUrl={profile.avatarUrl ?? ""}
+                  className="mb-3"
+                />
+              )}
+              {selectedBadge?.badgeCode === "TOP1" && (
+                <>
+                  {/* <TopContributorBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    rank={1}
+                    contributionCount={42}
+                  /> */}
+                </>
+              )}
+              {selectedBadge?.badgeCode === "TOP2" && (
+                <>
+                  {/* <TopContributorBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    rank={2}
+                    contributionCount={42}
+                  /> */}
+                </>
+              )}
+              {selectedBadge?.badgeCode === "TOP3" && (
+                <>
+                  {/* <TopContributorBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    rank={3}
+                    contributionCount={42}
+                  /> */}
+                </>
+              )}
+              {selectedBadge?.badgeCode === "MOST_ACTIVE" && (
+                <>
+                  {/* <TopUserBadge
+                    avatarUrl={profile.avatarUrl ?? ""}
+                    type="mostActive"
+                    value={1250}
+                    className="mx-2"
+                  /> */}
+                </>
+              )}
+            </div>
+
+
             {user.userId == profile.userId && (
               <Button
                 className="absolute bottom-3 right-2 p-2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 text-white"
@@ -186,49 +249,18 @@ export default function ProfilePage() {
             <h2 className="text-lg font-semibold mb-2">Giới thiệu</h2>
             <p className="text-sm text-gray-700 mb-4">
               &emsp;&emsp;
-              {profile.bio == ""
+              {profile.bio === ""
                 ? "Người dùng này quá lười để viết phần giới thiệu"
                 : profile.bio}
             </p>
-            <ul className="space-y-2 text-sm">
+
+            <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-2 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                <MapPin className="h-4 w-4 mr-2 text-gray-500" />
                 {profile.address ?? "Chưa cập nhật địa chỉ"}
               </li>
               <li className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-2 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+                <Calendar className="h-4 w-4 mr-2 text-gray-500" />
                 {profile.dateOfBirth
                   ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN", {
                       day: "2-digit",
@@ -251,29 +283,25 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* <RecentPostCard
-                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                                    bookAuthor="Mark Manson"
-                                    likes={124}
-                                />
-                                <RecentPostCard
-                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                                    bookAuthor="Mark Manson"
-                                    likes={124}
-                                />
-                                <RecentPostCard
-                                    bookImage="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9"
-                                    bookName="Nghệ thuật tinh tế của việc đếch quan tâm"
-                                    bookAuthor="Mark Manson"
-                                    likes={124}
-                                /> */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {posts && posts.length > 0 ? (
+                posts.map((post) => (
+                  <RecentPostCard
+                    key={post.id}
+                    postId={post.id ?? ""}
+                    bookImage={post.book?.imageUrl ?? ""}
+                    postTitle={post.title ?? ""}
+                    content={parse(post.content ?? "")}
+                    likes={post.likesCount ?? 0}
+                    views={post.views ?? 0}
+                  />
+                ))
+              ) : (
                 <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
                   Hiện tại chưa có bài post nào được đăng tải gần đây
                 </div>
-              </div>
+              )}
+            </div>
             </CardContent>
           </Card>
 
@@ -295,7 +323,7 @@ export default function ProfilePage() {
                   Hiện tại chưa có review nào được đăng tải gần đây
                 </div>
               ) : (
-                comment.top3RecentComments.map((review) => (
+                comment.top3RecentComments.map((review: any) => (
                   <RecentReviewCard
                     key={review.commentId}
                     // bookImage={review.book?.imageUrl ?? "https://via.placeholder.com/150"}
@@ -337,25 +365,63 @@ export default function ProfilePage() {
                     onChange={handleAvatarChange}
                   />
                 </label>
-                <Button
-                  className="cursor-pointer inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded"
-                  onClick={() => {
-                    toast.info(
-                      "Tính năng này hiện chưa khả dụng. Khung có thể kiếm được dựa vào đua top sự kiện hoặc sự kiện đặc biệt."
-                    );
-                  }}
-                >
-                  <FrameIcon className="mr-2" /> Chọn khung
-                </Button>
+                <BadgeSelectionButton canSelectedBadgeList={profile.ownedBadges ?? []} />
               </div>
               {showModalAvatar && (
                 <div className="flex flex-col items-center space-y-4">
-                  <Avatar className="h-25 w-25">
-                    <AvatarImage
-                      src={avatarPreview ?? profile.avatarUrl ?? ""}
-                    />
-                    <AvatarFallback>N/A</AvatarFallback>
-                  </Avatar>
+                  <div className="flex flex-col items-center mb-5">
+                    {selectedBadge?.badgeCode === "DEFAULT" && (
+                      <Avatar className="h-40 w-40 mb-4">
+                        <AvatarImage
+                          src={avatarPreview ?? profile.avatarUrl ?? "https://github.com/shadcn.png"}
+                        />
+                        <AvatarFallback className="text-5xl font-bold">{profile.fullName?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    )}
+                    {selectedBadge?.badgeCode === "PIONEER_001" && (
+                      <FirstParticipantAvatar
+                        avatarUrl={avatarPreview ?? profile.avatarUrl ?? ""}
+                        className="mb-3"
+                      />
+                    )}
+                    {selectedBadge?.badgeCode === "TOP1" && (
+                      <>
+                        {/* <TopContributorBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          rank={1}
+                          contributionCount={42}
+                        /> */}
+                      </>
+                    )}
+                    {selectedBadge?.badgeCode === "TOP2" && (
+                      <>
+                        {/* <TopContributorBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          rank={2}
+                          contributionCount={42}
+                        /> */}
+                      </>
+                    )}
+                    {selectedBadge?.badgeCode === "TOP3" && (
+                      <>
+                        {/* <TopContributorBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          rank={3}
+                          contributionCount={42}
+                        /> */}
+                      </>
+                    )}
+                    {selectedBadge?.badgeCode === "MOST_ACTIVE" && (
+                      <>
+                        {/* <TopUserBadge
+                          avatarUrl={profile.avatarUrl ?? ""}
+                          type="mostActive"
+                          value={1250}
+                          className="mx-2"
+                        /> */}
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

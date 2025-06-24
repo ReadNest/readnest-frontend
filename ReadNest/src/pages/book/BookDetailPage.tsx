@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BookRating } from "@/features/favouriteBooks/components/BookRating";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "@radix-ui/react-separator";
 import { HeartIcon, PenToolIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -22,6 +21,7 @@ import {
 import type {
   CreateCommentLikeRequest,
   CreateCommentRequest,
+  LikePostRequest,
 } from "@/api/@types";
 import { toast } from "react-toastify";
 import {
@@ -29,13 +29,18 @@ import {
   toggleFavoriteStart,
 } from "@/features/favouriteBooks/favoriteSlice";
 import AffiliateButton from "@/features/affiliate/components/AffiliateButton";
+import parse from "html-react-parser";
+import { fetchPostsByBookIdStart, likePostStart } from "@/features/post/postSlice";
+import RelatedPostCard from "@/features/post/components/RelatedPostCard";
 
 export default function BookDetailPage() {
   const dispatch = useDispatch();
   const { bookId } = useParams(); // URL dạng /books/:bookId
   const book = useSelector((state: RootState) => state.book.selectedBook);
   const loading = useSelector((state: RootState) => state.book.loading);
-  const commentLoading = useSelector((state: RootState) => state.comment.isLoading);
+  const commentLoading = useSelector(
+    (state: RootState) => state.comment.isLoading
+  );
   const auth = useSelector((state: RootState) => state.auth);
   const comments = useSelector((state: RootState) => state.comment.comments);
   const favorites = useSelector(
@@ -43,6 +48,8 @@ export default function BookDetailPage() {
   );
   const isFavorite = book ? favorites.some((fav) => fav.id === book.id) : false;
   const [showAllComments, setShowAllComments] = useState(false);
+  const posts = useSelector((state: RootState) => state.post.posts);
+  const [showAllPosts, setShowAllPosts] = useState(false);
 
   useEffect(() => {
     if (bookId) {
@@ -55,6 +62,7 @@ export default function BookDetailPage() {
           paging: { pageIndex: 1, pageSize: 100 },
         })
       );
+      dispatch(fetchPostsByBookIdStart(bookId))
     }
   }, [dispatch, bookId]);
 
@@ -99,7 +107,16 @@ export default function BookDetailPage() {
     );
   };
 
-  if ((loading || !book)) {
+  const handleLikeToggle = (postId: string) => {
+    if (!postId || !auth.user?.userId) return;
+    const payload: LikePostRequest = {
+      postId: postId,
+      userId: auth.user.userId,
+    };
+    dispatch(likePostStart(payload));
+  };
+
+  if (loading || !book) {
     return <div className="text-center py-10">Đang tải dữ liệu sách...</div>;
   }
   return (
@@ -110,11 +127,11 @@ export default function BookDetailPage() {
             bookImages={
               book.bookImages?.map(
                 (x) =>
-                ({
-                  id: x.id ?? "",
-                  imageUrl: x.imageUrl ?? "",
-                  order: x.order,
-                } as BookImage)
+                  ({
+                    id: x.id ?? "",
+                    imageUrl: x.imageUrl ?? "",
+                    order: x.order,
+                  } as BookImage)
               ) ?? []
             }
           />
@@ -160,16 +177,18 @@ export default function BookDetailPage() {
             <Button
               onClick={handleToggleFavorite}
               className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-300
-                ${isFavorite
-                  ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
-                  : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
+                ${
+                  isFavorite
+                    ? "bg-red-50 text-red-600 hover:bg-red-100 shadow-sm border border-red-200"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-sm"
                 }`}
             >
               <HeartIcon
-                className={`h-5 w-5 ${isFavorite
-                  ? "fill-red-500 text-red-500 animate-pulse"
-                  : "text-gray-400 group-hover:text-gray-500"
-                  } transition-colors`}
+                className={`h-5 w-5 ${
+                  isFavorite
+                    ? "fill-red-500 text-red-500 animate-pulse"
+                    : "text-gray-400 group-hover:text-gray-500"
+                } transition-colors`}
               />
               <span className="group-hover:underline">
                 {isFavorite ? "Đã yêu thích" : "Lưu yêu thích"}
@@ -186,10 +205,7 @@ export default function BookDetailPage() {
         <div className="mb-12">
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2">Nội dung chính</h3>
-            <div
-              className="text-gray-700"
-              dangerouslySetInnerHTML={{ __html: book.description ?? "" }}
-            />
+            <div className="text-gray-700">{parse(book.description ?? "")}</div>
           </div>
 
           {/* Tuỳ biến hoặc render thêm phần ưu điểm/nhược điểm nếu có trong dữ liệu */}
@@ -200,7 +216,9 @@ export default function BookDetailPage() {
 
       <Card className="p-4">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-8 text-left">Đánh giá & Nhận xét cuốn sách {book.title}</h2>
+          <h2 className="text-3xl font-bold mb-8 text-left">
+            Đánh giá & Nhận xét cuốn sách {book.title}
+          </h2>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-8">
             {/* Circle rating */}
@@ -220,7 +238,9 @@ export default function BookDetailPage() {
                     className="text-yellow-500"
                     strokeWidth="8"
                     strokeDasharray="251.2"
-                    strokeDashoffset={251.2 - (251.2 * (book.averageRating || 0) / 5)}
+                    strokeDashoffset={
+                      251.2 - (251.2 * (book.averageRating || 0)) / 5
+                    }
                     strokeLinecap="round"
                     stroke="currentColor"
                     fill="transparent"
@@ -262,21 +282,23 @@ export default function BookDetailPage() {
 
       {/* User Comments Section */}
       <div className="space-y-4">
-        {!commentLoading && (showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
-          <UserCommentCard
-            key={comment.commentId}
-            avatarSrc={comment.creator?.avatarUrl || ""}
-            fullName={comment.creator?.fullName || "Người dùng ẩn danh"}
-            createdAt={comment.createdAt || new Date().toISOString()}
-            comment={comment.content ?? ""}
-            likeCount={comment.numberOfLikes || 0}
-            userLikes={comment.userLikes || []}
-            userId={comment.creator?.userId || ""}
-            onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
-            commentId={comment.commentId || ""}
-            userName={comment.creator?.userName || ""}
-          />
-        ))}
+        {!commentLoading &&
+          (showAllComments ? comments : comments.slice(0, 4)).map((comment) => (
+            <UserCommentCard
+              key={comment.commentId}
+              avatarSrc={comment.creator?.avatarUrl || ""}
+              fullName={comment.creator?.fullName || "Người dùng ẩn danh"}
+              createdAt={comment.createdAt || new Date().toISOString()}
+              comment={comment.content ?? ""}
+              likeCount={comment.numberOfLikes || 0}
+              userLikes={comment.userLikes || []}
+              userId={comment.creator?.userId || ""}
+              onLikeClick={() => handleOnLikeClick(comment.commentId || "")}
+              commentId={comment.commentId || ""}
+              userName={comment.creator?.userName || ""}
+              badgeCode={comment.creator?.selectedBadgeCode || ""}
+            />
+          ))}
         {comments.length > 4 && !showAllComments && (
           <div className="flex justify-end">
             <button
@@ -304,71 +326,53 @@ export default function BookDetailPage() {
         <h2 className="text-2xl font-bold mb-6">Các bài viết liên quan</h2>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Article 1 */}
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="relative flex flex-col items-center text-center">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>LL</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-semibold text-lg">Long Lê</h3>
-                      <p className="text-gray-500 text-sm">2 ngày trước</p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      className="text-gray-500 hover:bg-transparent"
-                    >
-                      <HeartIcon className="h-4 w-4 mr-1" />
-                      <span>245</span>
-                    </Button>
-                  </div>
-                  <h4 className="font-bold mb-2">
-                    Sự thở của nghệ thuật tối giản
-                  </h4>
-                  <p className="text-gray-700">
-                    Có thể nói nghệ thuật là một phần của cuộc sống...
-                  </p>
-                </div>
+          {posts.length === 0 ? (
+            <p className="text-center text-gray-500">Hiện chưa có bài viết liên quan.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {(showAllPosts ? posts : posts.slice(0, 3)).map((post) => (
+                  <RelatedPostCard
+                    key={post.id}
+                    userName={post.creator?.userName ?? ""}
+                    postId={post.id ?? ""}
+                    authorName={post.creator?.fullName ?? ""}
+                    avatarUrl={post.creator?.avatarUrl ?? ""}
+                    avatarFallback={post.creator?.fullName ?? ""}
+                    createdAt={post.createdAt || new Date().toISOString()}
+                    title={post.title ?? ""}
+                    content={parse(post.content ?? "")}
+                    likes={post.likesCount ?? 0}
+                    userLikes={post.userLikes || []}
+                    userId={auth.user?.userId || ""}
+                    onLikeClick={() => handleLikeToggle(post.id || "")}
+                    views={post.views ?? 0}
+                  />
+                ))}
               </div>
-            </Card>
 
-            {/* Article 2 */}
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="relative flex flex-col items-center text-center">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>NA</AvatarFallback>
-                  </Avatar>
+              {posts.length > 3 && !showAllPosts && (
+                <div className="flex justify-end">
+                  <button
+                    className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+                    onClick={() => setShowAllPosts(true)}
+                  >
+                    Xem thêm bài viết
+                  </button>
                 </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-semibold text-lg">Nhật Anh</h3>
-                      <p className="text-gray-500 text-sm">5 ngày trước</p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      className="text-gray-500 hover:bg-transparent"
-                    >
-                      <HeartIcon className="h-4 w-4 mr-1" />
-                      <span>145</span>
-                    </Button>
-                  </div>
-                  <h4 className="font-bold mb-2">Nghệ thuật tối giản là gì?</h4>
-                  <p className="text-gray-700">
-                    Một trong nghệ thuật trừu tượng nhất đó là...
-                  </p>
+              )}
+              {posts.length > 3 && showAllPosts && (
+                <div className="flex justify-end">
+                  <button
+                    className="mt-2 px-4 py-2 rounded bg-transparent hover:bg-transparent text-violet-700 font-medium shadow-none border-none"
+                    onClick={() => setShowAllPosts(false)}
+                  >
+                    Ẩn bớt bài viết
+                  </button>
                 </div>
-              </div>
-            </Card>
-          </div>
+              )}
+            </>
+          )}
         </div>
       </div>
       {/* Review Input Modal */}
