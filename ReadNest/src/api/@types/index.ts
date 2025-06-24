@@ -201,6 +201,23 @@ export type CreatePostRequest = {
   userId?: string | undefined;
 }
 
+export type CreateTradingPostImageRequest = {
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
+export type CreateTradingPostRequest = {
+  userId?: string | undefined;
+  bookId?: string | undefined;
+  condition?: string | null | undefined;
+  shortDescription?: string | null | undefined;
+  externalBookUrl?: string | null | undefined;
+  message?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
+  images?: CreateTradingPostImageRequest[] | null | undefined;
+  title?: string | null | undefined;
+}
+
 export type DetailError = {
   field?: string | null | undefined;
   value?: string | null | undefined;
@@ -400,6 +417,38 @@ export type GetBookSearchResponsePagingResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetBookSearchResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetBookTradingPostResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  condition?: string | null | undefined;
+  tradingRequestIds?: string[] | null | undefined;
+}
+
+export type GetBookTradingPostResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookTradingPostResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetBookTradingPostResponsePagingResponse = {
+  items?: GetBookTradingPostResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetBookTradingPostResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookTradingPostResponsePagingResponse | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -772,10 +821,26 @@ export type TradingPost = {
   owner?: User | undefined;
   offeredBookId?: string | undefined;
   offeredBook?: Book | undefined;
+  title?: string | null | undefined;
   status?: string | null | undefined;
   condition?: string | null | undefined;
   shortDesc?: string | null | undefined;
+  externalBookUrl?: string | null | undefined;
+  message?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
   tradingRequests?: TradingRequest[] | null | undefined;
+  images?: TradingPostImage[] | null | undefined;
+}
+
+export type TradingPostImage = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  tradingPostId?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+  tradingPost?: TradingPost | undefined;
 }
 
 export type TradingRequest = {
