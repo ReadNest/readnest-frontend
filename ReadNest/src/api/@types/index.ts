@@ -82,6 +82,8 @@ export type ChatMessage = {
   receiverId?: string | undefined;
   receiver?: User | undefined;
   message?: string | null | undefined;
+  sentAt?: string | undefined;
+  isRead?: boolean | undefined;
 }
 
 export type Comment = {
@@ -678,6 +680,24 @@ export type ProblemDetails = {
   status?: number | null | undefined;
   detail?: string | null | undefined;
   instance?: string | null | undefined;
+}
+
+export type RecentChatterResponse = {
+  userId?: string | undefined;
+  userName?: string | null | undefined;
+  fullName?: string | null | undefined;
+  avatarUrl?: string | null | undefined;
+  lastMessageTime?: string | undefined;
+  unreadMessagesCount?: number | undefined;
+  lastMessage?: string | null | undefined;
+}
+
+export type RecentChatterResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: RecentChatterResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type RegisterRequest = {

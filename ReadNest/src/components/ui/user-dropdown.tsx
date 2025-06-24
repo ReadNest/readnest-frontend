@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { BookMarked, FileText, List, LogOut, User } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 interface UserDropDownProps {
   username: string;
@@ -27,17 +28,17 @@ const getDropDownItems = (username: string) => [
   {
     icon: <BookMarked className="mr-2 h-4 w-4" />,
     content: "Sách yêu thích",
-    to: "/favorites",
+    to: ROUTE_PATHS.FAVOURITE,
   },
   {
     icon: <FileText className="mr-2 h-4 w-4" />,
     content: "Bài viết đã viết",
-    to: "/my-posts",
+    to: ROUTE_PATHS.MY_POSTS,
   },
   {
     icon: <List className="mr-2 h-4 w-4" />,
     content: "Danh sách trao đổi",
-    to: "/trades",
+    to: ROUTE_PATHS.MY_BOOKS,
   },
 ];
 

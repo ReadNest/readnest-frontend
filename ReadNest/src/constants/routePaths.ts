@@ -24,4 +24,6 @@ export const ROUTE_PATHS = {
   POSTS: "/posts",
   MY_POSTS: "my-posts",
   EVENT: "/events",
+  MY_BOOKS: "/my-books",
+  MANAGE_TRADING_POST: "/trading-posts/create",
 };

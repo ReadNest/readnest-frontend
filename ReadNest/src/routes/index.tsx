@@ -17,6 +17,8 @@ import UserPostsPage from "@/pages/post/UserPostsPage";
 import EditBookPage from "@/pages/book/UpdateBookPage";
 import UpdatePostPage from "@/pages/post/UpdatePostPage";
 import EventPage from "@/pages/event/EventPage";
+import MyBooksPage from "@/pages/bookExchange/MyBooksPage";
+import CreateTradingPostPage from "@/pages/bookExchange/CreateTradingPostPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -285,11 +287,25 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       layout: adminLayout,
     },
     {
+      path: ROUTE_PATHS.MY_BOOKS,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER],
+      element: <MyBooksPage />,
+      layout: defaultLayout,
+    },
+    {
       path: ROUTE_PATHS.EVENT,
       isPrivate: true,
       allowedRoles: [RoleEnum.ADMIN],
       element: <EventPage />,
       layout: adminLayout,
+    },
+    {
+      path: ROUTE_PATHS.MANAGE_TRADING_POST,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER],
+      element: <CreateTradingPostPage />,
+      layout: defaultLayout,
     },
   ];
 

@@ -19,6 +19,7 @@ import badgeReducer from "@/features/badge/badgeSlice";
 import userBadgeReducer from "@/features/userBadge/userBadgeSlice";
 import eventReducer from "@/features/event/eventSlice";
 import leaderboardReducer from "@/features/leaderboard/leaderboardSlice";
+import tradingPostReducer from "@/features/bookExchange/tradingPostSlice";
 
 const appReducer = combineReducers({
   error: errorReducer,
@@ -39,6 +40,7 @@ const appReducer = combineReducers({
   userBadge: userBadgeReducer,
   event: eventReducer,
   leaderboard: leaderboardReducer,
+  tradingPost: tradingPostReducer,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

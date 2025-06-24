@@ -16,6 +16,7 @@ import badgeSaga from "@/features/badge/badgeSaga";
 import userBadgeSaga from "@/features/userBadge/userBadgeSaga";
 import eventSaga from "@/features/event/eventSaga";
 import leaderboardSaga from "@/features/leaderboard/leaderboardSaga";
+import tradingPostSaga from "@/features/bookExchange/tradingPostSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -36,5 +37,6 @@ export default function* rootSaga() {
     call(userBadgeSaga),
     call(eventSaga),
     call(leaderboardSaga),
+    call(tradingPostSaga),
   ]);
 }

@@ -60,21 +60,29 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
     dispatch(logout());
     dispatch(clearErrors());
     toast.success("Logout successfully!");
-    navigate("/");
+    navigate(ROUTE_PATHS.DEFAULT);
   };
 
   const navItems = [
-    { to: "/", label: "Trang chủ", icon: <Home className="w-5 h-5" /> },
     {
-      to: "/posts",
+      to: ROUTE_PATHS.DEFAULT,
+      label: "Trang chủ",
+      icon: <Home className="w-5 h-5" />,
+    },
+    {
+      to: ROUTE_PATHS.POSTS,
       label: "Khám phá",
       icon: <Compass className="w-5 h-5" />,
     },
-    { to: "/trade", label: "Trao đổi", icon: <Repeat className="w-5 h-5" /> },
+    {
+      to: ROUTE_PATHS.BOOK_EXCHANGE,
+      label: "Trao đổi",
+      icon: <Repeat className="w-5 h-5" />,
+    },
     {
       to: ROUTE_PATHS.RANK,
       label: "Bảng xếp hạng",
-      icon: <Trophy className="w-5 h-5" />,
+      icon: <Users className="w-5 h-5" />,
     },
   ];
 
@@ -83,7 +91,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
       <div
         className="flex items-center gap-2 hover:cursor-pointer"
         onClick={() => {
-          navigate("/");
+          navigate(ROUTE_PATHS.DEFAULT);
         }}
       >
         <img src={readnestLogo} alt="Logo" className="w-8 h-8" />
@@ -193,7 +201,10 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
               </>
             ) : (
               <>
-                <Link to="/create-post" onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/create-post"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
                   <Button
                     variant="default"
                     className="w-full rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold"
