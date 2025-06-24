@@ -82,7 +82,7 @@ export const Header = ({ isAuthenticated, user }: HeaderProps) => {
     {
       to: ROUTE_PATHS.RANK,
       label: "Bảng xếp hạng",
-      icon: <Users className="w-5 h-5" />,
+      icon: <Trophy className="w-5 h-5" />,
     },
   ];
 
