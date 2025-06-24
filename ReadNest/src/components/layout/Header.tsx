@@ -1,5 +1,5 @@
 import readnestLogo from "@/assets/readnest_logo.svg";
-import { Bell, Home, Compass, Repeat, Users } from "lucide-react";
+import { Bell, Home, Compass, Repeat, Trophy } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
 import { useState } from "react";

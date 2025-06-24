@@ -22,7 +22,8 @@ export const ROUTE_PATHS = {
   COMMENT_REPORT: "/comment-reports",
   DETAIL_POST: "/post/:postId",
   POSTS: "/posts",
-  MY_POSTS: "/my-posts",
+  MY_POSTS: "my-posts",
+  EVENT: "/events",
   MY_BOOKS: "/my-books",
   MANAGE_TRADING_POST: "/trading-posts/create",
 };

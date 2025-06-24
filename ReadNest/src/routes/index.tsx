@@ -16,6 +16,7 @@ import PostsPage from "@/pages/post/PostsPage";
 import UserPostsPage from "@/pages/post/UserPostsPage";
 import EditBookPage from "@/pages/book/UpdateBookPage";
 import UpdatePostPage from "@/pages/post/UpdatePostPage";
+import EventPage from "@/pages/event/EventPage";
 import MyBooksPage from "@/pages/bookExchange/MyBooksPage";
 import CreateTradingPostPage from "@/pages/bookExchange/CreateTradingPostPage";
 
@@ -291,6 +292,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       allowedRoles: [RoleEnum.USER],
       element: <MyBooksPage />,
       layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.EVENT,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.ADMIN],
+      element: <EventPage />,
+      layout: adminLayout,
     },
     {
       path: ROUTE_PATHS.MANAGE_TRADING_POST,
