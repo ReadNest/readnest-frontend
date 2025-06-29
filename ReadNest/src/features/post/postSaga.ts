@@ -165,6 +165,7 @@ function* fetchPostsByUserId(action: PayloadAction<{ userId: any; paging: Paging
       );
       yield put(setSuccess(true));
     } else {
+      yield put(setPostsV1([]));
       yield put(setSuccess(false));
     }
   } catch (error) {
