@@ -17,8 +17,10 @@ import bookSearchPageReducer from "@/features/search/bookSearchPageSlice";
 import categoryFilterReducer from "@/features/search/categoryFilterSlice";
 import badgeReducer from "@/features/badge/badgeSlice";
 import userBadgeReducer from "@/features/userBadge/userBadgeSlice";
+import eventReducer from "@/features/event/eventSlice";
+import leaderboardReducer from "@/features/leaderboard/leaderboardSlice";
+import tradingPostReducer from "@/features/bookExchange/tradingPostSlice";
 import chatMessageReducer from "@/features/chat/chatMessageSlice";
-
 
 const appReducer = combineReducers({
   error: errorReducer,
@@ -37,6 +39,9 @@ const appReducer = combineReducers({
   categoryFilter: categoryFilterReducer,
   badge: badgeReducer,
   userBadge: userBadgeReducer,
+  event: eventReducer,
+  leaderboard: leaderboardReducer,
+  tradingPost: tradingPostReducer,
   chatMessage: chatMessageReducer,
 });
 
