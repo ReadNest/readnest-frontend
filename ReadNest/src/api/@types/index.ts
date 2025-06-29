@@ -24,6 +24,7 @@ export type Badge = {
   name?: string | null | undefined;
   description?: string | null | undefined;
   userBadges?: UserBadge[] | null | undefined;
+  eventRewards?: EventReward[] | null | undefined;
 }
 
 export type Book = {
@@ -202,6 +203,15 @@ export type CreateCommentRequest = {
   userId?: string | undefined;
 }
 
+export type CreateEventRequest = {
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
+  type?: string | null | undefined;
+  status?: string | null | undefined;
+}
+
 export type CreatePostRequest = {
   title?: string | null | undefined;
   content?: string | null | undefined;
@@ -209,11 +219,114 @@ export type CreatePostRequest = {
   userId?: string | undefined;
 }
 
+export type CreateTradingPostImageRequest = {
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
+export type CreateTradingPostRequest = {
+  userId?: string | undefined;
+  bookId?: string | undefined;
+  condition?: string | null | undefined;
+  shortDescription?: string | null | undefined;
+  externalBookUrl?: string | null | undefined;
+  message?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
+  images?: CreateTradingPostImageRequest[] | null | undefined;
+  title?: string | null | undefined;
+}
+
 export type DetailError = {
   field?: string | null | undefined;
   value?: string | null | undefined;
   messageId?: string | null | undefined;
   message?: string | null | undefined;
+}
+
+export type Event = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
+  type?: string | null | undefined;
+  status?: string | null | undefined;
+  leaderboards?: Leaderboard[] | null | undefined;
+  rewards?: EventReward[] | null | undefined;
+}
+
+export type EventResponse = {
+  id?: string | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
+  type?: string | null | undefined;
+  status?: string | null | undefined;
+}
+
+export type EventResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: EventResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type EventResponseIEnumerableApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: EventResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type EventResponsePagingResponse = {
+  items?: EventResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type EventResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: EventResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type EventReward = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  conditionType?: string | null | undefined;
+  threshold?: number | undefined;
+  badgeId?: string | undefined;
+  eventId?: string | undefined;
+  badge?: Badge | undefined;
+  event?: Event | undefined;
+}
+
+export type EventRewardResponse = {
+  id?: string | undefined;
+  conditionType?: string | null | undefined;
+  threshold?: number | undefined;
+  badgeId?: string | undefined;
+  eventId?: string | undefined;
+  badge?: GetBadgeResponse | undefined;
+}
+
+export type EventRewardResponseIEnumerableApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: EventRewardResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
 }
 
 export type FavoriteBook = {
@@ -322,6 +435,38 @@ export type GetBookSearchResponsePagingResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetBookSearchResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetBookTradingPostResponse = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  condition?: string | null | undefined;
+  tradingRequestIds?: string[] | null | undefined;
+}
+
+export type GetBookTradingPostResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookTradingPostResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetBookTradingPostResponsePagingResponse = {
+  items?: GetBookTradingPostResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetBookTradingPostResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookTradingPostResponsePagingResponse | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -515,6 +660,61 @@ export type GetUserResponsePagingResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type Leaderboard = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  totalPosts?: number | undefined;
+  totalLikes?: number | undefined;
+  totalViews?: number | undefined;
+  score?: number | undefined;
+  rank?: number | undefined;
+  userId?: string | undefined;
+  user?: User | undefined;
+  eventId?: string | undefined;
+  event?: Event | undefined;
+}
+
+export type LeaderboardRankResponse = {
+  userId?: string | undefined;
+  rank?: number | undefined;
+}
+
+export type LeaderboardRankResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: LeaderboardRankResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type LeaderboardResponse = {
+  userId?: string | undefined;
+  user?: GetUserResponse | undefined;
+  totalPosts?: number | undefined;
+  totalLikes?: number | undefined;
+  totalViews?: number | undefined;
+  score?: number | undefined;
+  rank?: number | undefined;
+}
+
+export type LeaderboardResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: LeaderboardResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type LeaderboardResponseIEnumerableApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: LeaderboardResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type LikePostRequest = {
   userId?: string | undefined;
   postId?: string | undefined;
@@ -639,10 +839,26 @@ export type TradingPost = {
   owner?: User | undefined;
   offeredBookId?: string | undefined;
   offeredBook?: Book | undefined;
+  title?: string | null | undefined;
   status?: string | null | undefined;
   condition?: string | null | undefined;
   shortDesc?: string | null | undefined;
+  externalBookUrl?: string | null | undefined;
+  message?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
   tradingRequests?: TradingRequest[] | null | undefined;
+  images?: TradingPostImage[] | null | undefined;
+}
+
+export type TradingPostImage = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  tradingPostId?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+  tradingPost?: TradingPost | undefined;
 }
 
 export type TradingRequest = {
@@ -692,6 +908,16 @@ export type UpdateCommentRequest = {
   content?: string | null | undefined;
 }
 
+export type UpdateEventRequest = {
+  id?: string | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
+  type?: string | null | undefined;
+  status?: string | null | undefined;
+}
+
 export type UpdatePostRequest = {
   id?: string | undefined;
   title?: string | null | undefined;
@@ -735,6 +961,7 @@ export type User = {
   receivedMessages?: ChatMessage[] | null | undefined;
   tradingPosts?: TradingPost[] | null | undefined;
   tradingRequests?: TradingRequest[] | null | undefined;
+  leaderboards?: Leaderboard[] | null | undefined;
 }
 
 export type UserBadge = {
