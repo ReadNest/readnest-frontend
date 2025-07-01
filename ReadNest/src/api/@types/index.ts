@@ -236,6 +236,11 @@ export type CreateTradingPostRequest = {
   title?: string | null | undefined;
 }
 
+export type CreateTradingRequest = {
+  userId?: string | undefined;
+  tradingPostId?: string | undefined;
+}
+
 export type DetailError = {
   field?: string | null | undefined;
   value?: string | null | undefined;
@@ -470,6 +475,26 @@ export type GetBookTradingPostResponsePagingResponseApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetBookTradingPostV2Response = {
+  id?: string | undefined;
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  ownerName?: string | null | undefined;
+  userName?: string | null | undefined;
+  imageUrl?: string | null | undefined;
+  condition?: string | null | undefined;
+  numberOfTradingRequests?: number | undefined;
+  images?: GetTradingPostImageResponse[] | null | undefined;
+}
+
+export type GetBookTradingPostV2ResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookTradingPostV2Response[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetCategoryResponse = {
   id?: string | undefined;
   name?: string | null | undefined;
@@ -597,6 +622,12 @@ export type GetReportedCommentsResponseListApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetTradingPostImageResponse = {
+  id?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
 export type GetUserProfileResponse = {
   userId?: string | undefined;
   fullName?: string | null | undefined;
@@ -621,6 +652,22 @@ export type GetUserProfileResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetUserProfileResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetUserRequestResponse = {
+  userId?: string | undefined;
+  tradingRequestId?: string | undefined;
+  fullName?: string | null | undefined;
+  avatarUrl?: string | null | undefined;
+  status?: string | null | undefined;
+}
+
+export type GetUserRequestResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetUserRequestResponse[] | null | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -924,6 +971,10 @@ export type UpdatePostRequest = {
   content?: string | null | undefined;
   bookId?: string | undefined;
   userId?: string | undefined;
+}
+
+export type UpdateStatusTradingRequest = {
+  status?: string | null | undefined;
 }
 
 export type UpdateUserRequest = {

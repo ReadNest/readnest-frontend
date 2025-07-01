@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import BookRequestsModal from "@/features/bookExchange/components/BookRequestsModal";
+import type { GetUserRequestResponse } from "@/api/@types";
 
 interface MyBookCardProps {
   book: {
@@ -12,12 +13,7 @@ interface MyBookCardProps {
     condition: string;
     owner: string;
     requestCount: number;
-    requests?: Array<{
-      id: number;
-      name: string;
-      avatarUrl?: string;
-      status: "pending" | "completed";
-    }>;
+    requests?: GetUserRequestResponse[];
   };
   onShowRequests?: (bookId: string) => void;
   onEdit?: (bookId: string) => void;
@@ -31,6 +27,7 @@ export default function MyBookCard({
   onDelete,
 }: MyBookCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const requests = book.requests || [
     {
@@ -66,7 +63,10 @@ export default function MyBookCard({
           variant="outline"
           size="sm"
           className="w-full hover:text-[#5a4bff] hover:border-[#5a4bff]"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setShowModal(true);
+            onShowRequests?.(book.id);
+          }}
         >
           Xem yêu cầu trao đổi ({book.requestCount})
         </Button>
@@ -83,7 +83,7 @@ export default function MyBookCard({
             variant="outline"
             size="icon"
             className="flex-1 border-gray-300 text-gray-500 hover:text-[#5a4bff] hover:border-[#5a4bff]"
-            onClick={() => onDelete?.(book.id)}
+            onClick={() => setShowDeleteModal(true)}
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -102,6 +102,36 @@ export default function MyBookCard({
           // TODO: handle complete request
         }}
       />
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs">
+            <h2 className="text-lg font-semibold mb-2 text-red-600">
+              Chắc chắn bạn muốn xóa?
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Sau khi xóa không thể phục hồi được dữ liệu đã bị xóa!
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Hủy
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  onDelete?.(book.id);
+                  setShowDeleteModal(false);
+                }}
+              >
+                Xóa
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
