@@ -1,4 +1,7 @@
-import type { GetCommentResponse } from "@/api/@types";
+import type {
+  GetBookTradingPostV2Response,
+  GetCommentResponse,
+} from "@/api/@types";
 import { Button } from "@/components/ui/button";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import TradingBookCard from "@/features/bookExchange/components/TradingBookCard";
@@ -7,12 +10,14 @@ import ReviewCard from "@/features/home/components/ReviewCard";
 import { WelcomePopup } from "@/features/home/components/WelcomePopup";
 import { PremiumFeatureCard } from "@/features/premium/components/PremiumFeatureCard";
 import { fetchTop3MostLikedCommentsRequested } from "@/features/review/commentSlice";
+import client from "@/lib/api/axiosClient";
 import { formatTimeAgo } from "@/lib/utils";
 import type { RootState } from "@/store";
 import { Bookmark, ChartLine, Search, Star, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -20,58 +25,16 @@ function HomePage() {
   const comment = useSelector((state: RootState) => state.comment);
   const [showWelcome, setShowWelcome] = useState(false);
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
-  const tradingBooks = [
-    {
-      id: 1,
-      imageUrl:
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
-      title: "Đắc Nhân Tâm",
-      author: "Dale Carnegie",
-      condition: "Như mới",
-      owner: "Nguyễn Văn A",
-      requestCount: 5,
-    },
-    {
-      id: 2,
-      imageUrl:
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
-      title: "Nhà Giả Kim",
-      author: "Paulo Coelho",
-      condition: "Đồ qua sử dụng",
-      owner: "Trần Thị B",
-      requestCount: 3,
-    },
-    {
-      id: 3,
-      imageUrl:
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
-      title: "Tuổi Trẻ Đáng Giá Bao Nhiêu",
-      author: "Rosie Nguyễn",
-      condition: "Như mới",
-      owner: "Lê Văn C",
-      requestCount: 2,
-    },
-    {
-      id: 4,
-      imageUrl:
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
-      title: "Tư Duy Phản Biện",
-      author: "Richard Paul",
-      condition: "Đồ qua sử dụng",
-      owner: "Phạm Thị D",
-      requestCount: 0,
-    },
-    {
-      id: 5,
-      imageUrl:
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llk4ubz24f5if9",
-      title: "Dune",
-      author: "Frank Herbert",
-      condition: "Đồ qua sử dụng",
-      owner: "Nguyễn A",
-      requestCount: 1,
-    },
-  ];
+  const userName = useSelector((state: RootState) => state.auth.user?.userName);
+  const [tradingBooks, setTradingBooks] = useState<
+    GetBookTradingPostV2Response[]
+  >([]);
+
+  useEffect(() => {
+    client.api.v1.trading_posts.top.$get().then((res) => {
+      setTradingBooks(res.data ?? []);
+    });
+  }, []);
 
   const features = [
     {
@@ -224,7 +187,28 @@ function HomePage() {
           {/* Grid hiển thị 5 sách một hàng */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {tradingBooks.map((book) => (
-              <TradingBookCard key={book.id} book={book} />
+              <TradingBookCard
+                key={book.id}
+                book={book}
+                onRequestExchange={(id) => {
+                  client.api.v1.trading_requests
+                    .$post({
+                      body: {
+                        tradingPostId: id,
+                        userId: userId ?? "",
+                      },
+                    })
+                    .then((res) => {
+                      if (res.success) {
+                        toast.success(
+                          "Yêu cầu trao đổi đã được gửi thành công!"
+                        );
+                      }
+                    });
+                }}
+                disableExchange={userName === book.userName}
+                currentUserName={userName ?? undefined}
+              />
             ))}
           </div>
         </div>
