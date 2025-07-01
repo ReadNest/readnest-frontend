@@ -61,7 +61,7 @@ export default function BookRequestsModal({
                   </div>
                   <div className="text-xs text-gray-500">
                     Trạng thái:{" "}
-                    {user.status === "pending" ? "Đang chờ" : "Hoàn thành"}
+                    {user.status === "InProgress" ? "Đang chờ" : "Hoàn thành"}
                   </div>
                 </div>
                 <Button
