@@ -43,7 +43,6 @@ export default function BookRequestsModal({
           ) : (
             requests.map((user) => (
               <div key={user.userId} className="flex items-center gap-3 py-4">
-                {/* Avatar */}
                 {user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}

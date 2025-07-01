@@ -70,20 +70,23 @@ export default function MyBookCard({
         >
           Xem yêu cầu trao đổi ({book.requestCount})
         </Button>
-        <div className="flex gap-2 mt-3 w-full">
+
+        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="flex-1 border-gray-300 text-gray-500 hover:text-[#5a4bff] hover:border-[#5a4bff]"
+            className="text-gray-500 hover:text-[#5a4bff]"
             onClick={() => onEdit?.(book.id)}
+            title="Chỉnh sửa"
           >
             <Pencil className="w-4 h-4" />
           </Button>
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="flex-1 border-gray-300 text-gray-500 hover:text-[#5a4bff] hover:border-[#5a4bff]"
+            className="text-gray-400 hover:text-red-500"
             onClick={() => setShowDeleteModal(true)}
+            title="Xóa sách"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -95,12 +98,9 @@ export default function MyBookCard({
         bookTitle={book.title}
         requests={requests}
         onContact={(userId) => {
-          // TODO: handle contact user
           setShowModal(false);
         }}
-        onComplete={(userId) => {
-          // TODO: handle complete request
-        }}
+        onComplete={(userId) => {}}
       />
 
       {showDeleteModal && (
