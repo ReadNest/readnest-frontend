@@ -1183,6 +1183,16 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
             /**
              * @returns OK
              */
+            get: (option?: { query?: Methods_12pld7f['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+              fetch<Methods_12pld7f['get']['resBody'], BasicHeaders, Methods_12pld7f['get']['status']>(prefix, PATH49, GET, option).json(),
+            /**
+             * @returns OK
+             */
+            $get: (option?: { query?: Methods_12pld7f['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+              fetch<Methods_12pld7f['get']['resBody'], BasicHeaders, Methods_12pld7f['get']['status']>(prefix, PATH49, GET, option).json().then(r => r.body),
+            /**
+             * @returns OK
+             */
             post: (option: { body: Methods_12pld7f['post']['reqBody'], config?: T | undefined }) =>
               fetch<Methods_12pld7f['post']['resBody'], BasicHeaders, Methods_12pld7f['post']['status']>(prefix, PATH49, POST, option).json(),
             /**
@@ -1190,7 +1200,8 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
              */
             $post: (option: { body: Methods_12pld7f['post']['reqBody'], config?: T | undefined }) =>
               fetch<Methods_12pld7f['post']['resBody'], BasicHeaders, Methods_12pld7f['post']['status']>(prefix, PATH49, POST, option).json().then(r => r.body),
-            $path: () => `${prefix}${PATH49}`,
+            $path: (option?: { method?: 'get' | undefined; query: Methods_12pld7f['get']['query'] } | undefined) =>
+              `${prefix}${PATH49}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
           },
           /**
            * @returns OK

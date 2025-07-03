@@ -503,6 +503,21 @@ export type GetBookTradingPostV2ResponseListApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetBookTradingPostV2ResponsePagingResponse = {
+  items?: GetBookTradingPostV2Response[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetBookTradingPostV2ResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetBookTradingPostV2ResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetCategoryResponse = {
   id?: string | undefined;
   name?: string | null | undefined;
