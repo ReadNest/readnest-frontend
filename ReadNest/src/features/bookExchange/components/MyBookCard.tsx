@@ -24,7 +24,7 @@ interface MyBookCardProps {
 
 export default function MyBookCard({
   book,
-  onShowRequests,
+  // onShowRequests,
   onEdit,
   onDelete,
 }: MyBookCardProps) {
@@ -116,7 +116,6 @@ export default function MyBookCard({
         onClose={() => setShowModal(false)}
         bookTitle={book.title}
         requests={requests}
-
         onContact={(username) => {
           handleContact(username);
           setShowModal(false);

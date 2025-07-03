@@ -22,7 +22,7 @@ export default function BookRequestsModal({
   open,
   onClose,
   bookTitle,
-  bookImage,
+  // bookImage,
   requests,
   onContact,
   onComplete,
