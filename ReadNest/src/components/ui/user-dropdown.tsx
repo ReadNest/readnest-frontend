@@ -17,6 +17,7 @@ interface UserDropDownProps {
   fullName: string;
   avatarUrl?: string;
   onClickLogout: () => void;
+  onlyLogout?: boolean;
 }
 
 const getDropDownItems = (username: string) => [
@@ -42,7 +43,7 @@ const getDropDownItems = (username: string) => [
   },
 ];
 
-function UserDropDown({ ...props }: UserDropDownProps) {
+function UserDropDown({ onlyLogout, ...props }: UserDropDownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -74,14 +75,15 @@ function UserDropDown({ ...props }: UserDropDownProps) {
 
         <DropdownMenuSeparator />
 
-        {getDropDownItems(props.username).map((item, index) => (
-          <DropdownMenuItem key={index} asChild>
-            <Link to={item.to} className="flex items-center cursor-pointer">
-              {item.icon}
-              <span>{item.content}</span>
-            </Link>
-          </DropdownMenuItem>
-        ))}
+        {!onlyLogout &&
+          getDropDownItems(props.username).map((item, index) => (
+            <DropdownMenuItem key={index} asChild>
+              <Link to={item.to} className="flex items-center cursor-pointer">
+                {item.icon}
+                <span>{item.content}</span>
+              </Link>
+            </DropdownMenuItem>
+          ))}
 
         <DropdownMenuSeparator />
 
