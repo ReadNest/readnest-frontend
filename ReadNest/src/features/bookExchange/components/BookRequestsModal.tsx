@@ -27,7 +27,6 @@ export default function BookRequestsModal({
   onContact,
   onComplete,
 }: BookRequestsModalProps) {
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
