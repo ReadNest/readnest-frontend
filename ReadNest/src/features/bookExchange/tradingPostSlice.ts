@@ -90,6 +90,11 @@ const tradingPostSlice = createSlice({
         ...post,
       }));
     },
+    deleteTradingPostById: (state, action: PayloadAction<string>) => {
+      state.tradingPostByUserId = state.tradingPostByUserId.filter(
+        (post) => post.id !== action.payload
+      );
+    },
     setPagingInfo: (
       state,
       action: PayloadAction<{
@@ -119,6 +124,7 @@ export const {
   setTradingPostByUserId,
   setPagingInfo,
   resetState,
+  deleteTradingPostById,
 } = tradingPostSlice.actions;
 
 export default tradingPostSlice.reducer;

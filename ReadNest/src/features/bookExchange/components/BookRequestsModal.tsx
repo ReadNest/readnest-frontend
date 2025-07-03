@@ -5,28 +5,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User as UserIcon, ArrowRightLeft } from "lucide-react";
-interface RequestUser {
-  id: number;
-  name: string;
-  username?: string;
-  avatarUrl?: string;
-  status: "pending" | "completed";
-  theirBook?: {
-    id: number;
-    title: string;
-    imageUrl?: string;
-  };
-}
+import { User as UserIcon } from "lucide-react";
+import type { GetUserRequestResponse } from "@/api/@types";
 
 interface BookRequestsModalProps {
   open: boolean;
   onClose: () => void;
   bookTitle: string;
   bookImage?: string;
-  requests: RequestUser[];
+  requests: GetUserRequestResponse[];
   onContact: (username: string) => void;
-  onComplete: (userId: number) => void;
+  onComplete: (userId: string) => void;
 }
 
 export default function BookRequestsModal({
@@ -54,12 +43,11 @@ export default function BookRequestsModal({
             </div>
           ) : (
             requests.map((user) => (
-              <div key={user.id} className="flex items-center gap-3 py-4">
-                {/* Avatar */}
+              <div key={user.userId} className="flex items-center gap-3 py-4">
                 {user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
-                    alt={user.name}
+                    alt={user.fullName ?? "Người dùng"}
                     className="w-10 h-10 rounded-full object-cover border"
                   />
                 ) : (
@@ -69,38 +57,18 @@ export default function BookRequestsModal({
                 )}
                 <div className="flex-1">
                   <div className="font-semibold flex items-center gap-2">
-                    {user.name}
-                    <ArrowRightLeft className="w-4 h-4 text-gray-400" />
-                    {/* Sách đối phương muốn đổi */}
-                    {user.theirBook ? (
-                      <span className="inline-flex items-center gap-1">
-                        {user.theirBook.imageUrl ? (
-                          <img
-                            src={user.theirBook.imageUrl}
-                            alt={user.theirBook.title}
-                            className="w-7 h-7 rounded object-cover border"
-                          />
-                        ) : null}
-                        <span className="text-xs text-gray-600 font-normal">
-                          {user.theirBook.title}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="text-xs text-gray-400">
-                        (Chưa chọn sách đổi)
-                      </span>
-                    )}
+                    {user.fullName || "Người dùng"}{" "}
                   </div>
                   <div className="text-xs text-gray-500">
                     Trạng thái:{" "}
-                    {user.status === "pending" ? "Đang chờ" : "Hoàn thành"}
+                    {user.status === "InProgress" ? "Đang chờ" : "Hoàn thành"}
                   </div>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
                   className="hover:text-[#5a4bff] hover:border-[#5a4bff] mr-2"
-                  onClick={() => onContact(user.username ?? "")}
+                  onClick={() => onContact(user.userId ?? "")}
                 >
                   Liên hệ
                 </Button>
@@ -108,7 +76,7 @@ export default function BookRequestsModal({
                   variant="default"
                   size="sm"
                   disabled={user.status === "completed"}
-                  onClick={() => onComplete(user.id)}
+                  onClick={() => onComplete(user.userId ?? "")}
                 >
                   Hoàn thành
                 </Button>
