@@ -5,6 +5,8 @@ import BookRequestsModal from "@/features/bookExchange/components/BookRequestsMo
 import type { GetUserRequestResponse } from "@/api/@types";
 import { useDispatch } from "react-redux";
 import { openChatWithUsername } from "@/features/chat/chatUiSlice";
+import client from "@/lib/api/axiosClient";
+import { toast } from "react-toastify";
 
 interface MyBookCardProps {
   book: {
@@ -37,31 +39,24 @@ export default function MyBookCard({
     }
   };
 
-  const requests = book.requests || [
-    {
-      id: 1,
-      name: "Nguyễn Văn A",
-      username: "nguyenvana",
-      avatarUrl: undefined,
-      status: "pending" as const,
-    },
-    {
-      id: 2,
-      name: "Trần Thị B",
-      username: "tranthib",
-      avatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
-      status: "completed" as const,
-    },
+  const handleComplete = (tradingRequestId: string, tradingPostId: string) => {
+    client.api.v1.trading_posts
+      ._tradingPostId(tradingPostId)
+      .trading_requests._tradingRequestId(tradingRequestId)
+      .$patch({
+        body: {
+          status: "COMPLETED",
+        },
+      })
+      .then(() => {
+        toast.success("Yêu cầu trao đổi đã được hoàn thành!");
+      })
+      .catch((error) => {
+        console.error("Error completing request:", error);
+      });
+  };
 
-    {
-      id: 3,
-      name: "Vũ Đạt",
-      username: "vxdat2k3",
-      avatarUrl: "",
-      status: "pending" as const,
-    },
-
-  ];
+  const requests = book.requests;
 
   return (
     <>
@@ -115,13 +110,19 @@ export default function MyBookCard({
         open={showModal}
         onClose={() => setShowModal(false)}
         bookTitle={book.title}
-        requests={requests}
-
+        requests={requests ?? []}
         onContact={(username) => {
           handleContact(username);
           setShowModal(false);
         }}
-        onComplete={(userId) => { }}
+        onComplete={(userId) => {
+          const tradingRequestId =
+            requests?.find((request) => request.userId === userId)
+              ?.tradingRequestId ?? "";
+
+          handleComplete(tradingRequestId, book.id);
+          setShowModal(false);
+        }}
       />
 
       {showDeleteModal && (

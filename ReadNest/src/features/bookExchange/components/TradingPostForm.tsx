@@ -271,7 +271,6 @@ export default function TradingPostForm({
         }}
       />
 
-      {/* Modal yêu cầu admin tạo sách mới */}
       <Dialog
         open={showRequestBookModal}
         onOpenChange={setShowRequestBookModal}

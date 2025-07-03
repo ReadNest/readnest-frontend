@@ -1,23 +1,35 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo, type FormEvent } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircleMoreIcon, MoveLeftIcon, SendIcon, XCircle, XIcon } from 'lucide-react';
+import { useState, useEffect, useMemo, type FormEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  MessageCircleMoreIcon,
+  MoveLeftIcon,
+  SendIcon,
+  XCircle,
+  XIcon,
+} from "lucide-react";
 import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '@/store';
-import { fetchNewChatterByIdRequested, fetchNewChatterRequested, fetchOldMessagesRequested, fetchRecentChattersRequested, receiveMessageOnSignalR } from '@/features/chat/chatMessageSlice';
-import { useNavigate } from 'react-router-dom';
-import type { ChatMessageCacheModel } from '@/api/@types';
-import { resetActiveChatUsername } from '@/features/chat/chatUiSlice';
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import {
+  fetchNewChatterByIdRequested,
+  fetchNewChatterRequested,
+  fetchOldMessagesRequested,
+  fetchRecentChattersRequested,
+  receiveMessageOnSignalR,
+} from "@/features/chat/chatMessageSlice";
+import { useNavigate } from "react-router-dom";
+import type { ChatMessageCacheModel } from "@/api/@types";
+import { resetActiveChatUsername } from "@/features/chat/chatUiSlice";
 
 export function ChatWidget() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeChat, setActiveChat] = useState<string | null>(null);
-  const [newChatUser, setNewChatUser] = useState('');
+  const [newChatUser, setNewChatUser] = useState("");
   const [connection, setConnection] = useState<HubConnection | null>(null);
   // State để lưu username đang chờ load
   const [pendingUsername, setPendingUsername] = useState<string | null>(null);
@@ -29,11 +41,15 @@ export function ChatWidget() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isConnected = connection?.state === 'Connected';
+  const isConnected = connection?.state === "Connected";
 
   useEffect(() => {
     const conn = new HubConnectionBuilder()
-      .withUrl(`${import.meta.env.VITE_BASE_URL_SIGNALR}?userId=${auth.user?.userId}`)
+      .withUrl(
+        `${import.meta.env.VITE_BASE_URL_SIGNALR}chatHub?userId=${
+          auth.user?.userId
+        }`
+      )
       .withAutomaticReconnect()
       .build();
 
@@ -56,13 +72,15 @@ export function ChatWidget() {
   }, [chatUi.activeChatUsername]);
 
   const activeChatUser = useMemo(() => {
-    const fromRecent = chat.recentChatters.find(u => u.userId === activeChat);
-    return fromRecent ?? (chat.newChatUser?.userId === activeChat ? chat.newChatUser : undefined);
+    const fromRecent = chat.recentChatters.find((u) => u.userId === activeChat);
+    return (
+      fromRecent ??
+      (chat.newChatUser?.userId === activeChat ? chat.newChatUser : undefined)
+    );
   }, [chat.recentChatters, chat.newChatUser, activeChat]);
 
-
   const startNewChat = (username: string) => {
-    let user = chat.recentChatters.find(u => u.userName === username);
+    let user = chat.recentChatters.find((u) => u.userName === username);
 
     if (user) {
       setActiveChat(user.userId ?? "");
@@ -77,10 +95,7 @@ export function ChatWidget() {
 
   // useEffect sẽ theo dõi redux state thay đổi
   useEffect(() => {
-    if (
-      pendingUsername &&
-      !chat.isNewChatUserLoading
-    ) {
+    if (pendingUsername && !chat.isNewChatUserLoading) {
       const user = chat.newChatUser;
 
       if (user && user.userName === pendingUsername) {
@@ -96,7 +111,7 @@ export function ChatWidget() {
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const input = form.elements.namedItem('message') as HTMLInputElement;
+    const input = form.elements.namedItem("message") as HTMLInputElement;
     const message = input.value.trim();
 
     if (message && isConnected && auth.user?.userId && activeChat) {
@@ -106,7 +121,7 @@ export function ChatWidget() {
           receiverId: activeChat,
           message,
         });
-        input.value = '';
+        input.value = "";
       } catch (err) {
         console.error("Send message error:", err);
       }
@@ -117,10 +132,11 @@ export function ChatWidget() {
     if (!connection) return;
 
     const handleReceiveMessage = (message: ChatMessageCacheModel) => {
-      const otherUserId = message.senderId === auth.user?.userId
-        ? message.receiverId
-        : message.senderId;
-      const exists = chat.recentChatters.some(c => c.userId === otherUserId);
+      const otherUserId =
+        message.senderId === auth.user?.userId
+          ? message.receiverId
+          : message.senderId;
+      const exists = chat.recentChatters.some((c) => c.userId === otherUserId);
       console.log("Exists in recent chatters:", exists);
       if (!exists) {
         // Nếu chưa có user này → fetch user info
@@ -130,7 +146,12 @@ export function ChatWidget() {
         message.senderId === auth.user?.userId ||
         message.receiverId === auth.user?.userId
       ) {
-        dispatch(receiveMessageOnSignalR({ message, currentUserId: auth.user.userId ?? "" }));
+        dispatch(
+          receiveMessageOnSignalR({
+            message,
+            currentUserId: auth.user.userId ?? "",
+          })
+        );
       }
       // dispatch(receiveMessageOnSignalR(message));
     };
@@ -149,10 +170,12 @@ export function ChatWidget() {
   // Khi activeChat thay đổi, fetch tin nhắn cũ
   useEffect(() => {
     if (activeChat && auth.user?.userId) {
-      dispatch(fetchOldMessagesRequested({
-        userAId: auth.user.userId,
-        userBId: activeChat
-      }));
+      dispatch(
+        fetchOldMessagesRequested({
+          userAId: auth.user.userId,
+          userBId: activeChat,
+        })
+      );
     }
   }, [activeChat, auth.user?.userId, dispatch]);
 
@@ -169,11 +192,15 @@ export function ChatWidget() {
                 <div className="flex items-center gap-2">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={activeChatUser?.avatarUrl ?? ""} />
-                    <AvatarFallback>{activeChatUser?.fullName?.charAt(0) ?? ''}</AvatarFallback>
+                    <AvatarFallback>
+                      {activeChatUser?.fullName?.charAt(0) ?? ""}
+                    </AvatarFallback>
                   </Avatar>
                   <span
                     className="font-medium hover:underline cursor-pointer"
-                    onClick={() => navigate(`/profile/${activeChatUser?.userName}`)}
+                    onClick={() =>
+                      navigate(`/profile/${activeChatUser?.userName}`)
+                    }
                   >
                     {activeChatUser?.fullName}
                   </span>
@@ -191,8 +218,13 @@ export function ChatWidget() {
               {/* Chat Messages */}
               <ScrollArea
                 className="flex-1 p-3"
-                style={{ minHeight: '256px', maxHeight: '256px', height: '256px', overflowY: 'auto' }}
-                ref={el => {
+                style={{
+                  minHeight: "256px",
+                  maxHeight: "256px",
+                  height: "256px",
+                  overflowY: "auto",
+                }}
+                ref={(el) => {
                   if (el) {
                     // Scroll to bottom when component mounts or messages change
                     el.scrollTop = el.scrollHeight;
@@ -200,15 +232,33 @@ export function ChatWidget() {
                 }}
               >
                 <div className="space-y-2">
-                  {(chat.oldMessagesHistory[activeChat ?? ""] ?? []).map((message) => (
-                    <div key={message.id || `${message.senderId}-${message.sentAt}`}>
-                      <div className={`flex ${message.senderId === auth.user?.userId ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`rounded-lg p-2 max-w-[80%] ${message.senderId === auth.user?.userId ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}>
-                          {message.message}
+                  {(chat.oldMessagesHistory[activeChat ?? ""] ?? []).map(
+                    (message) => (
+                      <div
+                        key={
+                          message.id || `${message.senderId}-${message.sentAt}`
+                        }
+                      >
+                        <div
+                          className={`flex ${
+                            message.senderId === auth.user?.userId
+                              ? "justify-end"
+                              : "justify-start"
+                          }`}
+                        >
+                          <div
+                            className={`rounded-lg p-2 max-w-[80%] ${
+                              message.senderId === auth.user?.userId
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-100"
+                            }`}
+                          >
+                            {message.message}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </ScrollArea>
 
@@ -240,7 +290,10 @@ export function ChatWidget() {
                   variant="ghost"
                   size="sm"
                   className="text-red-500 hover:text-white hover:bg-red-700"
-                  onClick={() => { setActiveChat(null); setIsExpanded(false); }}
+                  onClick={() => {
+                    setActiveChat(null);
+                    setIsExpanded(false);
+                  }}
                 >
                   <XIcon className="h-5 w-5" />
                 </Button>
@@ -252,16 +305,16 @@ export function ChatWidget() {
                   value={newChatUser}
                   onChange={(e) => setNewChatUser(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' && newChatUser.trim()) {
+                    if (e.key === "Enter" && newChatUser.trim()) {
                       startNewChat(newChatUser.trim());
-                      setNewChatUser('');
+                      setNewChatUser("");
                     }
                   }}
                   className="flex-1"
                 />
               </div>
 
-              <ScrollArea style={{ height: '256px', overflowY: 'auto' }}>
+              <ScrollArea style={{ height: "256px", overflowY: "auto" }}>
                 {chat.recentChatters.map((user) => (
                   <div
                     key={user.userId}
@@ -273,14 +326,20 @@ export function ChatWidget() {
                   >
                     <Avatar className="h-10 w-10 mr-3">
                       <AvatarImage src={user.avatarUrl ?? ""} />
-                      <AvatarFallback>{user.fullName?.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>
+                        {user.fullName?.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{user.fullName}</div>
+                      <div className="font-medium truncate">
+                        {user.fullName}
+                      </div>
                       <div className="text-sm text-gray-500 truncate">
-                        {user.userId === auth.user?.userId
-                          ? <>Bạn: {user.lastMessage}</>
-                          : user.lastMessage}
+                        {user.userId === auth.user?.userId ? (
+                          <>Bạn: {user.lastMessage}</>
+                        ) : (
+                          user.lastMessage
+                        )}
                       </div>
                     </div>
                     {/* {user.unreadMessagesCount ? (
@@ -293,22 +352,31 @@ export function ChatWidget() {
               </ScrollArea>
             </>
           ) : (
-            <div className="p-3 text-center text-gray-500">Đang tải tin nhắn...</div>
+            <div className="p-3 text-center text-gray-500">
+              Đang tải tin nhắn...
+            </div>
           )}
         </div>
       )}
 
       {/* Chat Toggle Button */}
       <Button
-        onClick={() => setIsExpanded(prev => !prev)}
+        onClick={() => setIsExpanded((prev) => !prev)}
         className="rounded-full w-12 h-12 p-0 shadow-lg bg-blue-500 text-white hover:bg-blue-600 flex items-center justify-center"
       >
         {isExpanded ? (
-          <XCircle width={48} height={48} className="bg-white text-red-500 rounded-full"
-            style={{ minWidth: '3rem', minHeight: '3rem' }} />
+          <XCircle
+            width={48}
+            height={48}
+            className="bg-white text-red-500 rounded-full"
+            style={{ minWidth: "3rem", minHeight: "3rem" }}
+          />
         ) : (
-          <MessageCircleMoreIcon width={48} height={48}
-            style={{ minWidth: '3rem', minHeight: '3rem' }} />
+          <MessageCircleMoreIcon
+            width={48}
+            height={48}
+            style={{ minWidth: "3rem", minHeight: "3rem" }}
+          />
         )}
       </Button>
     </div>

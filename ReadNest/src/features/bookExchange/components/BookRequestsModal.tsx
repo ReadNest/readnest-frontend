@@ -22,12 +22,11 @@ export default function BookRequestsModal({
   open,
   onClose,
   bookTitle,
-  bookImage,
+  // bookImage,
   requests,
   onContact,
   onComplete,
 }: BookRequestsModalProps) {
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
