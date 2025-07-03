@@ -6,8 +6,13 @@ import MyBookCard from "@/features/bookExchange/components/MyBookCard";
 import { Link } from "react-router-dom";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import { useDispatch, useSelector } from "react-redux";
-import { getTradingPostByUserIdStart } from "@/features/bookExchange/tradingPostSlice";
+import {
+  deleteTradingPostById,
+  getTradingPostByUserIdStart,
+} from "@/features/bookExchange/tradingPostSlice";
 import type { RootState } from "@/store";
+import type { GetUserRequestResponse } from "@/api/@types";
+import client from "@/lib/api/axiosClient";
 
 function MyBooksPage() {
   const dispatch = useDispatch();
@@ -17,10 +22,23 @@ function MyBooksPage() {
     (state: RootState) => state.tradingPost
   );
   const [activeTab, setActiveTab] = useState<"books" | "transactions">("books");
+  const [userRequests, setUserRequests] = useState<GetUserRequestResponse[]>(
+    []
+  );
+  const [selectedPostId, setSelectedPostId] = useState<string>("");
 
   useEffect(() => {
     dispatch(getTradingPostByUserIdStart({ pageIndex: currentPage, pageSize }));
   }, [dispatch, currentPage]);
+
+  useEffect(() => {
+    client.api.v1.trading_posts
+      ._tradingPostId(selectedPostId ?? "")
+      .trading_requests.$get()
+      .then((res) => {
+        setUserRequests(res.data ?? []);
+      });
+  }, [selectedPostId]);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -102,10 +120,24 @@ function MyBooksPage() {
                   requestCount: Array.isArray(book.tradingRequestIds)
                     ? book.tradingRequestIds.length
                     : 0,
-                  // requests: ... nếu cần
+                  requests: userRequests,
                 }}
-                onShowRequests={() => {
-                  /* TODO: show requests for this book */
+                onShowRequests={(selectedPostId) => {
+                  setSelectedPostId(selectedPostId);
+                }}
+                onDelete={(bookId) => {
+                  client.api.v1.trading_posts
+                    ._id(bookId)
+                    .$delete()
+                    .then(() => {
+                      dispatch(deleteTradingPostById(bookId));
+                      dispatch(
+                        getTradingPostByUserIdStart({
+                          pageIndex: currentPage,
+                          pageSize,
+                        })
+                      );
+                    });
                 }}
               />
             ))}

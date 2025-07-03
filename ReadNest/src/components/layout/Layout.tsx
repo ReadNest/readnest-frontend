@@ -1,8 +1,11 @@
+import { ChatWidget } from "@/pages/chat/ChatWidget";
+
 type LayoutOptions = {
   header: boolean;
   sidebar: boolean;
   footer: boolean;
   sidebarFullHeight?: boolean;
+  showChat?: boolean;
 };
 
 interface LayoutProps {
@@ -22,6 +25,7 @@ export const Layout = ({ ...props }: LayoutProps) => {
     sidebar: showSidebar,
     footer: showFooter,
     sidebarFullHeight,
+    showChat = true,
   } = props.options;
 
   if (sidebarFullHeight) {
@@ -61,6 +65,7 @@ export const Layout = ({ ...props }: LayoutProps) => {
 
         <main className="flex-1 overflow-y-auto bg-white">
           {props.children}
+          {showChat && props.isAuthenticated && <ChatWidget />}
         </main>
       </div>
 

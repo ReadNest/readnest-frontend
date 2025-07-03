@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import BookRequestsModal from "@/features/bookExchange/components/BookRequestsModal";
+import type { GetUserRequestResponse } from "@/api/@types";
+import { useDispatch } from "react-redux";
+import { openChatWithUsername } from "@/features/chat/chatUiSlice";
 
 interface MyBookCardProps {
   book: {
@@ -12,12 +15,7 @@ interface MyBookCardProps {
     condition: string;
     owner: string;
     requestCount: number;
-    requests?: Array<{
-      id: number;
-      name: string;
-      avatarUrl?: string;
-      status: "pending" | "completed";
-    }>;
+    requests?: GetUserRequestResponse[];
   };
   onShowRequests?: (bookId: string) => void;
   onEdit?: (bookId: string) => void;
@@ -31,20 +29,38 @@ export default function MyBookCard({
   onDelete,
 }: MyBookCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const dispatch = useDispatch();
+  const handleContact = (username: string) => {
+    if (username) {
+      dispatch(openChatWithUsername(username));
+    }
+  };
 
   const requests = book.requests || [
     {
       id: 1,
       name: "Nguyễn Văn A",
+      username: "nguyenvana",
       avatarUrl: undefined,
       status: "pending" as const,
     },
     {
       id: 2,
       name: "Trần Thị B",
+      username: "tranthib",
       avatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
       status: "completed" as const,
     },
+
+    {
+      id: 3,
+      name: "Vũ Đạt",
+      username: "vxdat2k3",
+      avatarUrl: "",
+      status: "pending" as const,
+    },
+
   ];
 
   return (
@@ -66,24 +82,30 @@ export default function MyBookCard({
           variant="outline"
           size="sm"
           className="w-full hover:text-[#5a4bff] hover:border-[#5a4bff]"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setShowModal(true);
+            onShowRequests?.(book.id);
+          }}
         >
           Xem yêu cầu trao đổi ({book.requestCount})
         </Button>
-        <div className="flex gap-2 mt-3 w-full">
+
+        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="flex-1 border-gray-300 text-gray-500 hover:text-[#5a4bff] hover:border-[#5a4bff]"
+            className="text-gray-500 hover:text-[#5a4bff]"
             onClick={() => onEdit?.(book.id)}
+            title="Chỉnh sửa"
           >
             <Pencil className="w-4 h-4" />
           </Button>
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="flex-1 border-gray-300 text-gray-500 hover:text-[#5a4bff] hover:border-[#5a4bff]"
-            onClick={() => onDelete?.(book.id)}
+            className="text-gray-400 hover:text-red-500"
+            onClick={() => setShowDeleteModal(true)}
+            title="Xóa sách"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -94,14 +116,42 @@ export default function MyBookCard({
         onClose={() => setShowModal(false)}
         bookTitle={book.title}
         requests={requests}
-        onContact={() => {
-          // TODO: handle contact user
+        onContact={(username) => {
+          handleContact(username);
           setShowModal(false);
         }}
-        onComplete={() => {
-          // TODO: handle complete request
-        }}
+        onComplete={(userId) => { }}
       />
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs">
+            <h2 className="text-lg font-semibold mb-2 text-red-600">
+              Chắc chắn bạn muốn xóa?
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Sau khi xóa không thể phục hồi được dữ liệu đã bị xóa!
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Hủy
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  onDelete?.(book.id);
+                  setShowDeleteModal(false);
+                }}
+              >
+                Xóa
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

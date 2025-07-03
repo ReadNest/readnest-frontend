@@ -69,13 +69,18 @@ export default function PostsPage() {
 
   // Handle filtering and fetching posts
   useEffect(() => {
+    if (pageIndex > totalPages && totalPages > 0) {
+      dispatch(setPagingInfo({ pageIndex: 1, pageSize }));
+      return;
+    }
+  
     const hasFilter = filters.keyword || filters.bookId || filters.sortBy;
     if (hasFilter) {
       dispatch(filterPostsStart({ ...filters, pageIndex, pageSize }));
     } else {
       dispatch(fetchPostsStart({ pageIndex, pageSize }));
     }
-  }, [filters.keyword, filters.bookId, filters.sortBy, pageIndex, pageSize, dispatch]);
+  }, [filters.keyword, filters.bookId, filters.sortBy, pageIndex, pageSize, totalPages, dispatch]);
 
   // Debounce keyword input
   useEffect(() => {

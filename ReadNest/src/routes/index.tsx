@@ -95,6 +95,7 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       sidebar: true,
       footer: false,
       sidebarFullHeight: true,
+      showChat: false, // Không hiển thị chat trong layout admin
     },
     header: (
       <Header
