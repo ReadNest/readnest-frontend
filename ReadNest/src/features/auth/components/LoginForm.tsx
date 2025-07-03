@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { showToastMessage } from "@/lib/utils";
 import { RoleEnum } from "@/constants/enum";
-import { Lock, User } from "lucide-react";
+import { EyeClosed, EyeIcon, Lock, User } from "lucide-react";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 
 export default function LoginForm() {
@@ -34,6 +34,7 @@ export default function LoginForm() {
   } = useForm<LoginRequest>();
 
   const auth = useSelector((state: RootState) => state.auth);
+  const [showPassword, setShowPassword] = useState(false);
   const errorFields = useSelector(
     (state: RootState) => state.error.detailErrors
   );
@@ -87,9 +88,8 @@ export default function LoginForm() {
       className="w-full max-w-sm space-y-4"
     >
       <div
-        className={`space-y-1 relative ${
-          errors.userName || errorFields["userName"] ? "mb-8" : ""
-        }`}
+        className={`space-y-1 relative ${errors.userName || errorFields["userName"] ? "mb-8" : ""
+          }`}
       >
         <Label htmlFor="userName" className="block text-left p-1">
           Tên đăng nhập
@@ -126,9 +126,8 @@ export default function LoginForm() {
       </div>
 
       <div
-        className={`space-y-1 relative ${
-          errors.password || errorFields["password"] ? "mb-8" : ""
-        }`}
+        className={`space-y-1 relative ${errors.password || errorFields["password"] ? "mb-8" : ""
+          }`}
       >
         <Label htmlFor="password" className="block text-left p-1">
           Mật khẩu
@@ -138,20 +137,49 @@ export default function LoginForm() {
             <TooltipTrigger asChild>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Nhập mật khẩu"
-                  {...register("password", {
-                    required: "Mật khẩu không được để trống",
-                  })}
-                  onChange={handlePasswordChange}
-                  className={
-                    errors.password || errorFields["password"]
-                      ? "border-red-500 pl-10"
-                      : "pl-10"
-                  }
-                />
+                {/* Password input with toggle eye */}
+                {(() => {
+                  // Local state for password visibility
+                  return (
+                    <>
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Nhập mật khẩu"
+                        {...register("password", {
+                          required: "Mật khẩu không được để trống",
+                        })}
+                        onChange={handlePasswordChange}
+                        className={
+                          (errors.password || errorFields["password"]
+                            ? "border-red-500 "
+                            : "") + "pl-10 pr-10"
+                        }
+                      />
+                      <button
+                        type="button"
+                        tabIndex={-1}
+                        aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        onClick={() => setShowPassword((v) => !v)}
+                      >
+                        {showPassword ? (
+                          <>
+                            <EyeIcon className="w-4 h-4" fill="none" />
+                          </>
+                        ) : (
+                          // Eye icon
+                          // <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          //   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z" />
+                          // </svg>
+                          <>
+                            <EyeClosed className="w-4 h-4" fill="none" />
+                          </>
+                        )}
+                      </button>
+                    </>
+                  );
+                })()}
               </div>
             </TooltipTrigger>
             <TooltipContent
