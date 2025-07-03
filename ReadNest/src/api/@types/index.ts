@@ -236,6 +236,12 @@ export type CreateTradingPostRequest = {
   title?: string | null | undefined;
 }
 
+export type CreateTradingPostRequestV2 = {
+  userId?: string | undefined;
+  externalBookUrl?: string | null | undefined;
+  message?: string | null | undefined;
+}
+
 export type CreateTradingRequest = {
   userId?: string | undefined;
   tradingPostId?: string | undefined;
@@ -483,6 +489,8 @@ export type GetBookTradingPostV2Response = {
   userName?: string | null | undefined;
   imageUrl?: string | null | undefined;
   condition?: string | null | undefined;
+  shortDesc?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
   numberOfTradingRequests?: number | undefined;
   images?: GetTradingPostImageResponse[] | null | undefined;
 }
