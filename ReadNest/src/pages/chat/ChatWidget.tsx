@@ -9,7 +9,7 @@ import { MessageCircleMoreIcon, MoveLeftIcon, SendIcon, XCircle, XIcon } from 'l
 import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store';
-import { fetchOldMessagesRequested, fetchRecentChattersRequested, receiveMessageOnSignalR } from '@/features/chat/chatMessageSlice';
+import { fetchNewChatterByIdRequested, fetchNewChatterRequested, fetchOldMessagesRequested, fetchRecentChattersRequested, receiveMessageOnSignalR } from '@/features/chat/chatMessageSlice';
 import { useNavigate } from 'react-router-dom';
 import type { ChatMessageCacheModel } from '@/api/@types';
 
@@ -18,6 +18,8 @@ export function ChatWidget() {
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [newChatUser, setNewChatUser] = useState('');
   const [connection, setConnection] = useState<HubConnection | null>(null);
+  // State để lưu username đang chờ load
+  const [pendingUsername, setPendingUsername] = useState<string | null>(null);
 
   const auth = useSelector((state: RootState) => state.auth);
   const chat = useSelector((state: RootState) => state.chatMessage);
@@ -28,7 +30,7 @@ export function ChatWidget() {
 
   useEffect(() => {
     const conn = new HubConnectionBuilder()
-      .withUrl(import.meta.env.VITE_BASE_URL_SIGNALR)
+      .withUrl(`${import.meta.env.VITE_BASE_URL_SIGNALR}?userId=${auth.user?.userId}`)
       .withAutomaticReconnect()
       .build();
 
@@ -42,15 +44,43 @@ export function ChatWidget() {
     }
   }, [auth.isAuthenticated, auth.user?.userId, dispatch]);
 
-  const activeChatUser = useMemo(() =>
-    chat.recentChatters.find(u => u.userId === activeChat), [chat.recentChatters, activeChat]
-  );
+  const activeChatUser = useMemo(() => {
+    const fromRecent = chat.recentChatters.find(u => u.userId === activeChat);
+    return fromRecent ?? (chat.newChatUser?.userId === activeChat ? chat.newChatUser : undefined);
+  }, [chat.recentChatters, chat.newChatUser, activeChat]);
+
 
   const startNewChat = (username: string) => {
-    const user = chat.recentChatters.find(u => u.userName === username);
-    if (user) setActiveChat(user.userId ?? "");
-    setIsExpanded(true);
+    let user = chat.recentChatters.find(u => u.userName === username);
+
+    if (user) {
+      setActiveChat(user.userId ?? "");
+      setIsExpanded(true);
+      return;
+    }
+
+    // Dispatch fetch
+    dispatch(fetchNewChatterRequested(username));
+    setPendingUsername(username); // lưu username chờ xử lý sau khi redux cập nhật
   };
+
+  // useEffect sẽ theo dõi redux state thay đổi
+  useEffect(() => {
+    if (
+      pendingUsername &&
+      !chat.isNewChatUserLoading
+    ) {
+      const user = chat.newChatUser;
+
+      if (user && user.userName === pendingUsername) {
+        setActiveChat(user.userId ?? "");
+        setIsExpanded(true);
+      }
+
+      // Reset sau khi xử lý xong
+      setPendingUsername(null);
+    }
+  }, [chat.isNewChatUserLoading, chat.newChatUser, pendingUsername]);
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,8 +106,22 @@ export function ChatWidget() {
     if (!connection) return;
 
     const handleReceiveMessage = (message: ChatMessageCacheModel) => {
-      // console.log("New message received:", message);
-      dispatch(receiveMessageOnSignalR(message));
+      const otherUserId = message.senderId === auth.user?.userId
+        ? message.receiverId
+        : message.senderId;
+      const exists = chat.recentChatters.some(c => c.userId === otherUserId);
+      console.log("Exists in recent chatters:", exists);
+      if (!exists) {
+        // Nếu chưa có user này → fetch user info
+        dispatch(fetchNewChatterByIdRequested(otherUserId ?? ""));
+      }
+      if (
+        message.senderId === auth.user?.userId ||
+        message.receiverId === auth.user?.userId
+      ) {
+        dispatch(receiveMessageOnSignalR({ message, currentUserId: auth.user.userId ?? "" }));
+      }
+      // dispatch(receiveMessageOnSignalR(message));
     };
 
     connection.on("ReceiveMessage", handleReceiveMessage);
@@ -124,10 +168,18 @@ export function ChatWidget() {
               </div>
 
               {/* Chat Messages */}
-              <ScrollArea className="flex-1 p-3"
-                style={{ minHeight: '256px', maxHeight: '256px', height: '256px', overflowY: 'auto' }}>
+              <ScrollArea
+                className="flex-1 p-3"
+                style={{ minHeight: '256px', maxHeight: '256px', height: '256px', overflowY: 'auto' }}
+                ref={el => {
+                  if (el) {
+                    // Scroll to bottom when component mounts or messages change
+                    el.scrollTop = el.scrollHeight;
+                  }
+                }}
+              >
                 <div className="space-y-2">
-                  {chat.oldMessagesHistory.map((message) => (
+                  {(chat.oldMessagesHistory[activeChat ?? ""] ?? []).map((message) => (
                     <div key={message.id || `${message.senderId}-${message.sentAt}`}>
                       <div className={`flex ${message.senderId === auth.user?.userId ? 'justify-end' : 'justify-start'}`}>
                         <div className={`rounded-lg p-2 max-w-[80%] ${message.senderId === auth.user?.userId ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}>
@@ -204,17 +256,17 @@ export function ChatWidget() {
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{user.fullName}</div>
-                        <div className="text-sm text-gray-500 truncate">
+                      <div className="text-sm text-gray-500 truncate">
                         {user.userId === auth.user?.userId
                           ? <>Bạn: {user.lastMessage}</>
                           : user.lastMessage}
-                        </div>
+                      </div>
                     </div>
-                    {user.unreadMessagesCount ? (
+                    {/* {user.unreadMessagesCount ? (
                       <div className="bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
                         {user.unreadMessagesCount}
                       </div>
-                    ) : null}
+                    ) : null} */}
                   </div>
                 ))}
               </ScrollArea>
