@@ -37,8 +37,18 @@ export default function CommunityRanking() {
     }
   }, [currentEvent, dispatch]);
 
-  const top3Sorted = [leaderboards[1], leaderboards[0], leaderboards[2]].filter(Boolean); // Top 2 - 1 - 3
-  const top45 = leaderboards.slice(3, 5);
+  const sortedTop = leaderboards
+    .filter((u) => typeof u.score === "number")
+    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+
+  // Hiển thị Top 1 ở giữa nếu có đủ 2–3 người
+  const top3Sorted = sortedTop.slice(0, 3);
+  const top3Reordered =
+    top3Sorted.length === 3
+      ? [top3Sorted[1], top3Sorted[0], top3Sorted[2]] // 2 - 1 - 3
+      : top3Sorted;
+
+  const top45 = sortedTop.slice(3, 5);
 
   if (!currentEvent || events.length === 0) {
     return (
@@ -58,17 +68,49 @@ export default function CommunityRanking() {
           </p>
         </div>
 
+        {/* Dropdown chọn sự kiện */}
+        <div className="flex items-center justify-end mb-4">
+          <label htmlFor="eventSelect" className="mr-2 text-sm text-gray-600">Sự kiện:</label>
+          <select
+            id="eventSelect"
+            className="border border-gray-300 rounded px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-amber-400"
+            value={currentEvent?.id}
+            onChange={(e) => {
+              dispatch(setSelectedEventId(e.target.value));
+            }}
+          >
+            {events.map((ev) => (
+              <option key={ev.id} value={ev.id}>
+                {ev.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="border-t my-6"></div>
 
         {/* TOP 1-3 */}
         {loading ? (
           <p className="text-center">Đang tải bảng xếp hạng...</p>
+        ) : top3Reordered.length === 0 ? (
+          <p className="text-center text-gray-500">Chưa có dữ liệu xếp hạng cho sự kiện này.</p>
         ) : (
-          <div className="grid grid-cols-3 gap-6 mb-10 place-items-center">
-            {top3Sorted.map((user, index) => {
-              const trueRank = index === 0 ? 2 : index === 1 ? 1 : 3;
-              const isTop1 = trueRank === 1;
+          <div
+            className={`mb-10 ${
+              top3Reordered.length < 3
+                ? "flex justify-center gap-6"
+                : "grid grid-cols-3 gap-6 place-items-center"
+            }`}
+          >
+            {top3Reordered.map((user, index) => {
+              let trueRank: number;
+              if (top3Reordered.length === 3) {
+                trueRank = index === 0 ? 2 : index === 1 ? 1 : 3;
+              } else {
+                trueRank = index + 1;
+              }
 
+              const isTop1 = trueRank === 1;
               const sizeClass = isTop1
                 ? "w-32 h-32 border-gold"
                 : trueRank === 2
@@ -118,28 +160,7 @@ export default function CommunityRanking() {
         {top45.length > 0 && (
           <Card>
             <CardHeader>
-              <div className="w-full flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Bảng Xếp Hạng Chi Tiết</h2>
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="eventSelect" className="text-sm text-gray-600">
-                    Sự kiện:
-                  </label>
-                  <select
-                    id="eventSelect"
-                    className="border border-gray-300 rounded px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-amber-400"
-                    value={currentEvent?.id}
-                    onChange={(e) => {
-                      dispatch(setSelectedEventId(e.target.value));
-                    }}
-                  >
-                    {events.map((ev) => (
-                      <option key={ev.id} value={ev.id}>
-                        {ev.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+              <h2 className="text-xl font-semibold">Bảng Xếp Hạng Chi Tiết</h2>
             </CardHeader>
             <CardContent>
               <Table>
