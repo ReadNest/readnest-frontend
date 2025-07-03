@@ -43,9 +43,18 @@ function* fetchOldMessages(action: PayloadAction<{ userAId: string; userBId: str
                 .$get()
         );
         if (response.success) {
-            const otherUserId = userAId === userBId ? userAId : (
-                response.data[0]?.senderId === userAId ? response.data[0]?.receiverId : response.data[0]?.senderId
-            ) ?? userBId;
+            // Mặc định là lấy userAId làm CurrentUser (AuthUser)
+            // Nếu userAId === userBId thì lấy userAId làm otherUserId (Tự mình trò chuyện với chính mình)
+            // ...
+            const otherUserId = userAId === userBId
+                ? userAId // Trường hợp tự trò chuyện với chính mình
+                : (
+                    // Trường hợp nhắn tin với người khác
+                    // Lấy message đầu tiên để xác định ai là OtherUser ai là CurrentUser (AuthUser)
+                    response.data[0]?.senderId === userAId 
+                        ? response.data[0]?.receiverId  //Nếu sender là userA thì otherUser là receiver
+                        : response.data[0]?.senderId    // Nếu sender là userB thì otherUser là sender
+                ) ?? userBId; // Dự phòng nếu không có message nào
             yield put(fetchOldMessagesSuccess({
                 userId: otherUserId,
                 messages: response.data,
@@ -54,7 +63,6 @@ function* fetchOldMessages(action: PayloadAction<{ userAId: string; userBId: str
         } else {
             yield put(fetchOldMessagesFailure());
         }
-
     } catch (error: any) {
         const errBody = error?.response.data || {};
         yield put(

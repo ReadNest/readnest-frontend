@@ -12,6 +12,7 @@ import type { RootState } from '@/store';
 import { fetchNewChatterByIdRequested, fetchNewChatterRequested, fetchOldMessagesRequested, fetchRecentChattersRequested, receiveMessageOnSignalR } from '@/features/chat/chatMessageSlice';
 import { useNavigate } from 'react-router-dom';
 import type { ChatMessageCacheModel } from '@/api/@types';
+import { resetActiveChatUsername } from '@/features/chat/chatUiSlice';
 
 export function ChatWidget() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -23,6 +24,8 @@ export function ChatWidget() {
 
   const auth = useSelector((state: RootState) => state.auth);
   const chat = useSelector((state: RootState) => state.chatMessage);
+  const chatUi = useSelector((state: RootState) => state.chatUi);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -43,6 +46,14 @@ export function ChatWidget() {
       dispatch(fetchRecentChattersRequested(auth.user?.userId ?? ""));
     }
   }, [auth.isAuthenticated, auth.user?.userId, dispatch]);
+
+  // Khi user bấm "Liên hệ", ta sẽ dispatch username → ở đây theo dõi và khởi động chat
+  useEffect(() => {
+    if (chatUi.activeChatUsername) {
+      startNewChat(chatUi.activeChatUsername);
+      dispatch(resetActiveChatUsername());
+    }
+  }, [chatUi.activeChatUsername]);
 
   const activeChatUser = useMemo(() => {
     const fromRecent = chat.recentChatters.find(u => u.userId === activeChat);
@@ -131,9 +142,19 @@ export function ChatWidget() {
     };
   }, [connection, dispatch]);
 
-  const handleOpenChatClick = (userAId: string, userBId: string) => {
-    dispatch(fetchOldMessagesRequested({ userAId, userBId }));
-  };
+  // const handleOpenChatClick = (userAId: string, userBId: string) => {
+  //   dispatch(fetchOldMessagesRequested({ userAId, userBId }));
+  // };
+
+  // Khi activeChat thay đổi, fetch tin nhắn cũ
+  useEffect(() => {
+    if (activeChat && auth.user?.userId) {
+      dispatch(fetchOldMessagesRequested({
+        userAId: auth.user.userId,
+        userBId: activeChat
+      }));
+    }
+  }, [activeChat, auth.user?.userId, dispatch]);
 
   if (!auth.isAuthenticated) return null;
 
@@ -247,7 +268,7 @@ export function ChatWidget() {
                     className="flex items-center p-3 hover:bg-blue-100 cursor-pointer"
                     onClick={() => {
                       setActiveChat(user.userId ?? "");
-                      handleOpenChatClick(auth.user?.userId ?? "", user.userId ?? "");
+                      // handleOpenChatClick(auth.user?.userId ?? "", user.userId ?? "");
                     }}
                   >
                     <Avatar className="h-10 w-10 mr-3">

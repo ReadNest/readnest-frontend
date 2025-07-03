@@ -6,10 +6,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { User as UserIcon, ArrowRightLeft } from "lucide-react";
-
 interface RequestUser {
   id: number;
   name: string;
+  username?: string;
   avatarUrl?: string;
   status: "pending" | "completed";
   theirBook?: {
@@ -25,7 +25,7 @@ interface BookRequestsModalProps {
   bookTitle: string;
   bookImage?: string;
   requests: RequestUser[];
-  onContact: (userId: number) => void;
+  onContact: (username: string) => void;
   onComplete: (userId: number) => void;
 }
 
@@ -38,6 +38,7 @@ export default function BookRequestsModal({
   onContact,
   onComplete,
 }: BookRequestsModalProps) {
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
@@ -99,7 +100,7 @@ export default function BookRequestsModal({
                   variant="outline"
                   size="sm"
                   className="hover:text-[#5a4bff] hover:border-[#5a4bff] mr-2"
-                  onClick={() => onContact(user.id)}
+                  onClick={() => onContact(user.username ?? "")}
                 >
                   Liên hệ
                 </Button>

@@ -21,6 +21,7 @@ import eventReducer from "@/features/event/eventSlice";
 import leaderboardReducer from "@/features/leaderboard/leaderboardSlice";
 import tradingPostReducer from "@/features/bookExchange/tradingPostSlice";
 import chatMessageReducer from "@/features/chat/chatMessageSlice";
+import chatUiReducer from "@/features/chat/chatUiSlice";
 
 const appReducer = combineReducers({
   error: errorReducer,
@@ -43,6 +44,7 @@ const appReducer = combineReducers({
   leaderboard: leaderboardReducer,
   tradingPost: tradingPostReducer,
   chatMessage: chatMessageReducer,
+  chatUi: chatUiReducer,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

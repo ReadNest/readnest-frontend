@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import BookRequestsModal from "@/features/bookExchange/components/BookRequestsModal";
+import { useDispatch } from "react-redux";
+import { openChatWithUsername } from "@/features/chat/chatUiSlice";
 
 interface MyBookCardProps {
   book: {
@@ -31,20 +33,37 @@ export default function MyBookCard({
   onDelete,
 }: MyBookCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+  const handleContact = (username: string) => {
+    if (username) {
+      dispatch(openChatWithUsername(username));
+    }
+  };
 
   const requests = book.requests || [
     {
       id: 1,
       name: "Nguyễn Văn A",
+      username: "nguyenvana",
       avatarUrl: undefined,
       status: "pending" as const,
     },
     {
       id: 2,
       name: "Trần Thị B",
+      username: "tranthib",
       avatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
       status: "completed" as const,
     },
+
+    {
+      id: 3,
+      name: "Vũ Đạt",
+      username: "vxdat2k3",
+      avatarUrl: "",
+      status: "pending" as const,
+    },
+
   ];
 
   return (
@@ -94,8 +113,9 @@ export default function MyBookCard({
         onClose={() => setShowModal(false)}
         bookTitle={book.title}
         requests={requests}
-        onContact={(userId) => {
+        onContact={(username) => {
           // TODO: handle contact user
+          handleContact(username);
           setShowModal(false);
         }}
         onComplete={(userId) => {
