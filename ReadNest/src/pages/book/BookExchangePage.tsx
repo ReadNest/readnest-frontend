@@ -19,24 +19,22 @@ export default function BookExchangePage() {
   });
 
   useEffect(() => {
-    client.api.v1.trading_posts.v2
+    client.api.v1.trading_posts.top
       .$get({
         query: {
-          PageIndex: pagingInfo.page,
-          PageSize: pagingInfo.pageSize,
+          limit: pagingInfo.pageSize,
         },
       })
       .then((response) => {
         if (response.data) {
-          setBooks(response.data.items ?? []);
-          setPagingInfo({
-            page: response.data.pageIndex || 1,
-            pageSize: response.data.pageSize || 8,
-            total: response.data.totalItems || 0,
-          });
+          setBooks(response.data ?? []);
+          setPagingInfo((prev) => ({
+            ...prev,
+            total: response?.data?.length ?? 0,
+          }));
         }
       });
-  }, [pagingInfo.page, pagingInfo.pageSize]);
+  }, [pagingInfo.pageSize]);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">

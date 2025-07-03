@@ -7039,6 +7039,10 @@
             "type": "string",
             "nullable": true
           },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
           "avatarUrl": {
             "type": "string",
             "nullable": true

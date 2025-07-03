@@ -659,6 +659,7 @@ export type GetUserRequestResponse = {
   userId?: string | undefined;
   tradingRequestId?: string | undefined;
   fullName?: string | null | undefined;
+  userName?: string | null | undefined;
   avatarUrl?: string | null | undefined;
   status?: string | null | undefined;
 }

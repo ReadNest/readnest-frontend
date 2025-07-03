@@ -68,7 +68,7 @@ export default function BookRequestsModal({
                   variant="outline"
                   size="sm"
                   className="hover:text-[#5a4bff] hover:border-[#5a4bff] mr-2"
-                  onClick={() => onContact(user.userId ?? "")}
+                  onClick={() => onContact(user.userName ?? "")}
                 >
                   Liên hệ
                 </Button>
