@@ -1,6 +1,14 @@
+import type { GetPaymentLinkResponseApiResponse } from "@/api/@types";
 import { Button } from "@/components/ui/button";
+import { ROUTE_PATHS } from "@/constants/routePaths";
+import client from "@/lib/api/axiosClient";
+import type { RootState } from "@/store";
 import { Bookmark, Users, ChartLine, Crown } from "lucide-react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const features = [
   {
@@ -23,6 +31,23 @@ const features = [
 
 export default function PremiumPage() {
   const navigate = useNavigate();
+  const userId = useSelector((state: RootState) => state.auth.user?.userId);
+  const [loading, setLoading] = useState(false);
+
+  const handleCreatePaymentLink = async () => {
+    const response: GetPaymentLinkResponseApiResponse =
+      await client.api.v1.payment.payment_links.$post({
+        body: {
+          userId: userId || "",
+          packageId: import.meta.env.VITE_PREMIUM_ID || "",
+        },
+      });
+
+    return (
+      response?.data?.checkoutUrl ??
+      `${ROUTE_PATHS.PREMIUM_PAYMENT_RETURN}?status=fail`
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-16 px-4 flex flex-col items-center">
@@ -67,11 +92,24 @@ export default function PremiumPage() {
       </div>
       <Button
         size="lg"
-        className="bg-gradient-to-r from-pink-500 to-indigo-500 text-white font-bold px-10 py-5 rounded-full shadow-xl hover:brightness-110 hover:scale-105 transition-all duration-300 text-lg flex items-center gap-2 mt-4 animate-bounce"
-        onClick={() => alert("Chức năng thanh toán sẽ được cập nhật!")}
+        disabled={loading}
+        className="bg-gradient-to-r from-pink-500 to-indigo-500 text-white font-bold px-10 py-5 rounded-full shadow-xl hover:brightness-110 hover:scale-105 transition-all duration-300 text-lg flex items-center gap-2 mt-4 animate-bounce disabled:opacity-70"
+        onClick={async () => {
+          if (!userId) {
+            toast.error("Bạn cần đăng nhập để nâng cấp Premium!");
+            return;
+          }
+          setLoading(true);
+          const paymentLink = await handleCreatePaymentLink();
+          window.location.href = paymentLink;
+        }}
       >
-        <Crown size={24} className="mr-2" />
-        Thanh toán & Nâng cấp Premium
+        {loading ? (
+          <Loader2 size={24} className="mr-2 animate-spin" />
+        ) : (
+          <Crown size={24} className="mr-2" />
+        )}
+        {loading ? "Đang chuyển hướng..." : "Thanh toán & Nâng cấp Premium"}
       </Button>
       <Button
         variant="ghost"
