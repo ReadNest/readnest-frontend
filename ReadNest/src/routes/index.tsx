@@ -178,14 +178,14 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.RANK,
-      isPrivate: true,
+      isPrivate: false,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <CommunityRanking />,
       layout: defaultLayout,
     },
     {
       path: ROUTE_PATHS.BOOK_EXCHANGE,
-      isPrivate: true,
+      isPrivate: false,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <BookExchangePage />,
       layout: defaultLayout,
