@@ -212,6 +212,28 @@ export type CreateEventRequest = {
   status?: string | null | undefined;
 }
 
+export type CreateFeatureRequest = {
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+}
+
+export type CreatePackageFeatureRequest = {
+  featureId?: string | undefined;
+}
+
+export type CreatePackageRequest = {
+  name?: string | null | undefined;
+  price?: number | undefined;
+  durationMonths?: number | undefined;
+  features?: string | null | undefined;
+  packageFeatures?: CreatePackageFeatureRequest[] | null | undefined;
+}
+
+export type CreatePaymentLinkRequest = {
+  packageId?: string | undefined;
+  userId?: string | undefined;
+}
+
 export type CreatePostRequest = {
   title?: string | null | undefined;
   content?: string | null | undefined;
@@ -349,6 +371,16 @@ export type FavoriteBook = {
   bookId?: string | undefined;
   user?: User | undefined;
   book?: Book | undefined;
+}
+
+export type Feature = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+  packageFeatures?: PackageFeature[] | null | undefined;
 }
 
 export type FilterPostRequest = {
@@ -584,6 +616,71 @@ export type GetCommentResponseListApiResponse = {
   listDetailError?: DetailError[] | null | undefined;
 }
 
+export type GetFeatureResponse = {
+  id?: string | undefined;
+  name?: string | null | undefined;
+  description?: string | null | undefined;
+}
+
+export type GetFeatureResponseListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetFeatureResponse[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetFeatureResponsePagingResponse = {
+  items?: GetFeatureResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetFeatureResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetFeatureResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetPackageResponse = {
+  id?: string | undefined;
+  name?: string | null | undefined;
+  price?: number | undefined;
+  durationMonths?: number | undefined;
+  features?: string | null | undefined;
+  featureNames?: string[] | null | undefined;
+}
+
+export type GetPackageResponsePagingResponse = {
+  items?: GetPackageResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetPackageResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPackageResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetPaymentLinkResponse = {
+  checkoutUrl?: string | null | undefined;
+}
+
+export type GetPaymentLinkResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetPaymentLinkResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetPostResponse = {
   id?: string | undefined;
   title?: string | null | undefined;
@@ -796,6 +893,31 @@ export type LoginRequest = {
   password?: string | null | undefined;
 }
 
+export type Package = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  name?: string | null | undefined;
+  price?: number | undefined;
+  durationMonths?: number | undefined;
+  features?: string | null | undefined;
+  userSubscriptions?: UserSubscription[] | null | undefined;
+  packageFeatures?: PackageFeature[] | null | undefined;
+  transactions?: Transaction[] | null | undefined;
+}
+
+export type PackageFeature = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  packageId?: string | undefined;
+  featureId?: string | undefined;
+  package?: Package | undefined;
+  feature?: Feature | undefined;
+}
+
 export type Post = {
   id?: string | undefined;
   createdAt?: string | undefined;
@@ -944,6 +1066,21 @@ export type TradingRequest = {
   status?: string | null | undefined;
 }
 
+export type Transaction = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  userId?: string | undefined;
+  packageId?: string | undefined;
+  orderCode?: number | undefined;
+  amount?: number | undefined;
+  paymentMethod?: string | null | undefined;
+  transactionStatus?: string | null | undefined;
+  user?: User | undefined;
+  package?: Package | undefined;
+}
+
 export type UpdateBadgeRequest = {
   code?: string | null | undefined;
   name?: string | null | undefined;
@@ -1001,6 +1138,20 @@ export type UpdateStatusTradingRequest = {
   status?: string | null | undefined;
 }
 
+export type UpdateTradingPostImageRequest = {
+  id?: string | undefined;
+  imageUrl?: string | null | undefined;
+  order?: number | undefined;
+}
+
+export type UpdateTradingPostRequest = {
+  title?: string | null | undefined;
+  condition?: string | null | undefined;
+  shortDescription?: string | null | undefined;
+  messageToRequester?: string | null | undefined;
+  images?: UpdateTradingPostImageRequest[] | null | undefined;
+}
+
 export type UpdateUserRequest = {
   userId?: string | undefined;
   fullName?: string | null | undefined;
@@ -1037,6 +1188,8 @@ export type User = {
   tradingPosts?: TradingPost[] | null | undefined;
   tradingRequests?: TradingRequest[] | null | undefined;
   leaderboards?: Leaderboard[] | null | undefined;
+  userSubscriptions?: UserSubscription[] | null | undefined;
+  transactions?: Transaction[] | null | undefined;
 }
 
 export type UserBadge = {
@@ -1059,4 +1212,45 @@ export type UserBadgeResponse = {
   badgeName?: string | null | undefined;
   badgeDescription?: string | null | undefined;
   isSelected?: boolean | undefined;
+}
+
+export type UserSubscription = {
+  id?: string | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  isDeleted?: boolean | undefined;
+  userId?: string | undefined;
+  packageId?: string | undefined;
+  startDate?: string | undefined;
+  endDate?: string | null | undefined;
+  status?: string | null | undefined;
+  user?: User | undefined;
+  package?: Package | undefined;
+}
+
+export type WebhookData = {
+  orderCode?: number | undefined;
+  amount?: number | undefined;
+  description?: string | null | undefined;
+  accountNumber?: string | null | undefined;
+  reference?: string | null | undefined;
+  transactionDateTime?: string | null | undefined;
+  currency?: string | null | undefined;
+  paymentLinkId?: string | null | undefined;
+  code?: string | null | undefined;
+  desc?: string | null | undefined;
+  counterAccountBankId?: string | null | undefined;
+  counterAccountBankName?: string | null | undefined;
+  counterAccountName?: string | null | undefined;
+  counterAccountNumber?: string | null | undefined;
+  virtualAccountName?: string | null | undefined;
+  virtualAccountNumber?: string | null | undefined;
+}
+
+export type WebhookType = {
+  code?: string | null | undefined;
+  desc?: string | null | undefined;
+  success?: boolean | undefined;
+  data?: WebhookData | undefined;
+  signature?: string | null | undefined;
 }
