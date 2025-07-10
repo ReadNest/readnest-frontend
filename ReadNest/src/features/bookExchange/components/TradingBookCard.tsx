@@ -11,6 +11,7 @@ import type { GetBookTradingPostV2Response } from "@/api/@types";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
+import { toast } from "react-toastify";
 
 export default function TradingBookCard({
   book,
@@ -89,7 +90,13 @@ export default function TradingBookCard({
         <Button
           variant="outline"
           className="w-full border-orange-500 text-orange-500 hover:bg-orange-50 hover:text-orange-600"
-          onClick={() => setShowConfirm(true)}
+          onClick={() => {
+            if (!currentUserName) {
+              toast.info("Vui lòng đăng nhập để thực hiện trao đổi.");
+              return;
+            }
+            setShowConfirm(true);
+          }}
           disabled={disableExchange}
         >
           Yêu cầu trao đổi

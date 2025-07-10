@@ -19,6 +19,8 @@ import UpdatePostPage from "@/pages/post/UpdatePostPage";
 import EventPage from "@/pages/event/EventPage";
 import MyBooksPage from "@/pages/bookExchange/MyBooksPage";
 import CreateTradingPostPage from "@/pages/bookExchange/CreateTradingPostPage";
+import PremiumPage from "@/pages/premium/PremiumPage";
+import PremiumPaymentReturnPage from "@/pages/premium/PremiumPaymentReturnPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -178,14 +180,14 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     },
     {
       path: ROUTE_PATHS.RANK,
-      isPrivate: true,
+      isPrivate: false,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <CommunityRanking />,
       layout: defaultLayout,
     },
     {
       path: ROUTE_PATHS.BOOK_EXCHANGE,
-      isPrivate: true,
+      isPrivate: false,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <BookExchangePage />,
       layout: defaultLayout,
@@ -306,6 +308,20 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       allowedRoles: [RoleEnum.USER],
       element: <CreateTradingPostPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.PREMIUM,
+      isPrivate: false,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <PremiumPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.PREMIUM_PAYMENT_RETURN,
+      isPrivate: false,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <PremiumPaymentReturnPage />,
       layout: defaultLayout,
     },
   ];
