@@ -19,6 +19,7 @@ import UpdatePostPage from "@/pages/post/UpdatePostPage";
 import EventPage from "@/pages/event/EventPage";
 import MyBooksPage from "@/pages/bookExchange/MyBooksPage";
 import CreateTradingPostPage from "@/pages/bookExchange/CreateTradingPostPage";
+import PremiumPage from "@/pages/premium/PremiumPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -306,6 +307,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       allowedRoles: [RoleEnum.USER],
       element: <CreateTradingPostPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.PREMIUM,
+      isPrivate: false,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <PremiumPage />,
       layout: defaultLayout,
     },
   ];

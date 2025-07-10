@@ -235,8 +235,9 @@ function HomePage() {
         <Button
           size="lg"
           className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold px-8 py-5 rounded-full shadow-lg hover:brightness-110 hover:shadow-xl transition duration-300"
+          onClick={() => navigate(ROUTE_PATHS.PREMIUM)}
         >
-          Mở khóa premium
+          Mở khóa gói Premium
         </Button>
       </section>
 
