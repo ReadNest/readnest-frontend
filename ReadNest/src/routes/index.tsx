@@ -195,7 +195,7 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
     {
       path: ROUTE_PATHS.BOOK,
       isPrivate: true,
-      allowedRoles: [RoleEnum.ADMIN, RoleEnum.USER],
+      allowedRoles: [RoleEnum.ADMIN],
       element: <BookPage />,
       layout: adminLayout,
     },
