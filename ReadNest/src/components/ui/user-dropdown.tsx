@@ -11,6 +11,8 @@ import { BookMarked, FileText, List, LogOut, User } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { ROUTE_PATHS } from "@/constants/routePaths";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
 
 interface UserDropDownProps {
   username: string;
@@ -44,13 +46,16 @@ const getDropDownItems = (username: string) => [
 ];
 
 function UserDropDown({ onlyLogout, ...props }: UserDropDownProps) {
+  const hasPurchasedPremium = useSelector(
+    (state: RootState) => state.auth.user?.hasPurchasedPremium
+  );
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           className="flex items-center gap-2 outline-none transition-all duration-150 
-             hover:ring-2 hover:ring-indigo-500 hover:bg-muted/50 hover:scale-105 rounded-full p-1 cursor-pointer hover:shadow-md hover:shadow-indigo-300
-"
+             hover:ring-2 hover:ring-indigo-500 hover:bg-muted/50 hover:scale-105 rounded-full p-1 cursor-pointer hover:shadow-md hover:shadow-indigo-300"
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src={props.avatarUrl} />
@@ -69,6 +74,12 @@ function UserDropDown({ onlyLogout, ...props }: UserDropDownProps) {
             <div className="text-start flex flex-col">
               <p className="text-sm font-medium">{props.fullName}</p>
               <p className="text-xs text-muted-foreground">@{props.username}</p>
+              {hasPurchasedPremium && (
+                <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-yellow-700 bg-yellow-100 border border-yellow-300 px-2 py-0.5 rounded w-fit">
+                  <span className="text-yellow-600">👑</span>
+                  <span>Thành viên Premium</span>
+                </div>
+              )}
             </div>
           </div>
         </DropdownMenuLabel>
