@@ -803,6 +803,7 @@ export type GetUserResponse = {
   roleId?: string | undefined;
   roleName?: string | null | undefined;
   selectedBadgeCode?: string | null | undefined;
+  hasPurchasedPremium?: boolean | undefined;
 }
 
 export type GetUserResponseApiResponse = {
@@ -825,6 +826,21 @@ export type GetUserResponsePagingResponseApiResponse = {
   messageId?: string | null | undefined;
   message?: string | null | undefined;
   data?: GetUserResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
+export type GetUserSubscriptionResponse = {
+  startDate?: string | undefined;
+  endDate?: string | null | undefined;
+  status?: string | null | undefined;
+  packageName?: string | null | undefined;
+}
+
+export type GetUserSubscriptionResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetUserSubscriptionResponse | undefined;
   listDetailError?: DetailError[] | null | undefined;
 }
 
@@ -1079,6 +1095,16 @@ export type Transaction = {
   transactionStatus?: string | null | undefined;
   user?: User | undefined;
   package?: Package | undefined;
+}
+
+export type UpdateAffiliateLink = {
+  id?: string | null | undefined;
+  partnerName?: string | null | undefined;
+  affilateLink?: string | null | undefined;
+}
+
+export type UpdateAffiliateLinkRequest = {
+  updateAffiliateLinks?: UpdateAffiliateLink[] | null | undefined;
 }
 
 export type UpdateBadgeRequest = {

@@ -32,6 +32,10 @@ const features = [
 export default function PremiumPage() {
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.auth.user?.userId);
+  const hasPurchasedPremium = useSelector(
+    (state: RootState) => state.auth.user?.hasPurchasedPremium
+  );
+
   const [loading, setLoading] = useState(false);
 
   const handleCreatePaymentLink = async () => {
@@ -65,7 +69,7 @@ export default function PremiumPage() {
         </p>
         <div className="flex flex-col items-center mt-2">
           <span className="inline-block bg-pink-100 text-pink-600 font-semibold px-3 py-1 rounded-full text-sm mb-2 animate-pulse">
-            Khuyến mãi đến 1/9/2025 🎉
+            Khuyến mãi đến 01/09/2025 🎉
           </span>
           <div className="flex items-end gap-2">
             <span className="text-2xl font-bold text-indigo-600">21.000đ</span>
@@ -92,9 +96,11 @@ export default function PremiumPage() {
       </div>
       <Button
         size="lg"
-        disabled={loading}
+        disabled={loading || hasPurchasedPremium}
         className="bg-gradient-to-r from-pink-500 to-indigo-500 text-white font-bold px-10 py-5 rounded-full shadow-xl hover:brightness-110 hover:scale-105 transition-all duration-300 text-lg flex items-center gap-2 mt-4 animate-bounce disabled:opacity-70"
         onClick={async () => {
+          if (hasPurchasedPremium) return;
+
           if (!userId) {
             toast.error("Bạn cần đăng nhập để nâng cấp Premium!");
             return;
@@ -104,13 +110,31 @@ export default function PremiumPage() {
           window.location.href = paymentLink;
         }}
       >
-        {loading ? (
-          <Loader2 size={24} className="mr-2 animate-spin" />
+        {hasPurchasedPremium ? (
+          <>
+            <Crown size={24} className="mr-2" />
+            Bạn đang là thành viên Premium 🎉
+          </>
+        ) : loading ? (
+          <>
+            <Loader2 size={24} className="mr-2 animate-spin" />
+            Đang chuyển hướng...
+          </>
         ) : (
-          <Crown size={24} className="mr-2" />
+          <>
+            <Crown size={24} className="mr-2" />
+            Thanh toán & Nâng cấp Premium
+          </>
         )}
-        {loading ? "Đang chuyển hướng..." : "Thanh toán & Nâng cấp Premium"}
       </Button>
+
+      <p className="text-sm text-gray-600 mt-4 text-center max-w-md">
+        Bạn có thể{" "}
+        <span className="text-indigo-600 font-medium">
+          trải nghiệm và hoàn tiền trong vòng 3 ngày
+        </span>{" "}
+        nếu cảm thấy không phù hợp.
+      </p>
       <Button
         variant="ghost"
         className="mt-6 text-indigo-500"
