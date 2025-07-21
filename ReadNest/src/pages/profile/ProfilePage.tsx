@@ -107,13 +107,15 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (profile.userId) {
-      dispatch(fetchPostsByUserIdStart({ 
-        userId: profile.userId, 
-        paging: { 
-          pageIndex: 1, 
-          pageSize: 3 
-        } 
-      }));
+      dispatch(
+        fetchPostsByUserIdStart({
+          userId: profile.userId,
+          paging: {
+            pageIndex: 1,
+            pageSize: 3,
+          },
+        })
+      );
     }
   }, [profile.userId]);
 
@@ -143,7 +145,9 @@ export default function ProfilePage() {
                   <AvatarImage
                     src={profile.avatarUrl ?? "https://github.com/shadcn.png"}
                   />
-                  <AvatarFallback className="text-5xl font-bold">{profile.fullName?.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-5xl font-bold">
+                    {profile.fullName?.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
               )}
               {selectedBadge?.badgeCode === "PIONEER_001" && (
@@ -190,7 +194,6 @@ export default function ProfilePage() {
                 </>
               )}
             </div>
-
 
             {user.userId == profile.userId && (
               <Button
@@ -283,25 +286,25 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {posts && posts.length > 0 ? (
-                posts.map((post) => (
-                  <RecentPostCard
-                    key={post.id}
-                    postId={post.id ?? ""}
-                    bookImage={post.book?.imageUrl ?? ""}
-                    postTitle={post.title ?? ""}
-                    content={parse(post.content ?? "")}
-                    likes={post.likesCount ?? 0}
-                    views={post.views ?? 0}
-                  />
-                ))
-              ) : (
-                <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
-                  Hiện tại chưa có bài post nào được đăng tải gần đây
-                </div>
-              )}
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {posts && posts.length > 0 ? (
+                  posts.map((post) => (
+                    <RecentPostCard
+                      key={post.id}
+                      postId={post.id ?? ""}
+                      bookImage={post.book?.imageUrl ?? ""}
+                      postTitle={post.title ?? ""}
+                      content={parse(post.content ?? "")}
+                      likes={post.likesCount ?? 0}
+                      views={post.views ?? 0}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-3 text-center text-gray-500 text-lg py-8 font-semibold">
+                    Hiện tại chưa có bài post nào được đăng tải gần đây
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -323,6 +326,7 @@ export default function ProfilePage() {
                   Hiện tại chưa có review nào được đăng tải gần đây
                 </div>
               ) : (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 comment.top3RecentComments.map((review: any) => (
                   <RecentReviewCard
                     key={review.commentId}
@@ -365,7 +369,9 @@ export default function ProfilePage() {
                     onChange={handleAvatarChange}
                   />
                 </label>
-                <BadgeSelectionButton canSelectedBadgeList={profile.ownedBadges ?? []} />
+                <BadgeSelectionButton
+                  canSelectedBadgeList={profile.ownedBadges ?? []}
+                />
               </div>
               {showModalAvatar && (
                 <div className="flex flex-col items-center space-y-4">
@@ -373,9 +379,15 @@ export default function ProfilePage() {
                     {selectedBadge?.badgeCode === "DEFAULT" && (
                       <Avatar className="h-40 w-40 mb-4">
                         <AvatarImage
-                          src={avatarPreview ?? profile.avatarUrl ?? "https://github.com/shadcn.png"}
+                          src={
+                            avatarPreview ??
+                            profile.avatarUrl ??
+                            "https://github.com/shadcn.png"
+                          }
                         />
-                        <AvatarFallback className="text-5xl font-bold">{profile.fullName?.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="text-5xl font-bold">
+                          {profile.fullName?.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
                     )}
                     {selectedBadge?.badgeCode === "PIONEER_001" && (

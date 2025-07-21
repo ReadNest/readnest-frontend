@@ -9,4 +9,11 @@ export type Methods = DefineMethods<{
     resBody: Types.StringApiResponse;
     reqBody: Types.CreateAffiliateLinkRequest;
   };
+
+  put: {
+    status: 200;
+    /** OK */
+    resBody: Types.StringApiResponse;
+    reqBody: Types.UpdateAffiliateLinkRequest;
+  };
 }>;
