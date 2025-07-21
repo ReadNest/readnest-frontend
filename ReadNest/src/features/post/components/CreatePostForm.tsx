@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Book, Check, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function CreatePostForm() {
   const dispatch = useDispatch();
@@ -56,7 +57,13 @@ export default function CreatePostForm() {
 
   const handleSubmit = () => {
     if (!title.trim() || !content.trim() || !bookId) {
-      alert("Vui lòng điền đầy đủ tiêu đề, nội dung và chọn sách.");
+      toast.info("Vui lòng điền đầy đủ thông tin bài viết.");
+      return;
+    }
+
+    // Check if content > 600 characters
+    if (content.length > 600) {
+      toast.info("Nội dung bài viết không được vượt quá 600 ký tự.");
       return;
     }
 
