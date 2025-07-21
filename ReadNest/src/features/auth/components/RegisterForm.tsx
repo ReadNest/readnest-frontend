@@ -8,7 +8,10 @@ import type { RegisterRequest } from "@/api/@types";
 import FormField from "@/components/ui/form-field";
 import FormDateField from "@/components/ui/form-date-field";
 import { showToastMessage } from "@/lib/utils";
-import { registerStart } from "@/features/auth/authSlice";
+import {
+  registerStart,
+  resetInitialRegisterState,
+} from "@/features/auth/authSlice";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, MapPin, Lock, ShieldCheck, Signature } from "lucide-react";
@@ -60,6 +63,7 @@ export default function RegisterForm() {
       reset();
       navigate("/login");
       dispatch(clearErrors());
+      dispatch(resetInitialRegisterState());
     }
   }, [isRegisterSuccess, reset, navigate, dispatch]);
 
@@ -74,6 +78,12 @@ export default function RegisterForm() {
         placeholder="Nhập tên đăng nhập"
         error={errors.userName?.message || errorFields["userName"]}
         register={register}
+        validation={{
+          pattern: {
+            value: /^[A-Za-z0-9]+$/,
+            message: "Tên đăng nhập chỉ chứa chữ cái và số, không khoảng trắng",
+          },
+        }}
         icon={<User className="w-4 h-4" />}
         required
       />

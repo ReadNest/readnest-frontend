@@ -19,6 +19,7 @@ interface FormFieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   icon?: React.ReactNode;
   required?: boolean;
+  validation?: object;
 }
 
 export default function FormField({
@@ -31,6 +32,7 @@ export default function FormField({
   className = "",
   onChange,
   icon,
+  validation,
   required = false, // default false
 }: FormFieldProps) {
   return (
@@ -56,7 +58,7 @@ export default function FormField({
                 id={id}
                 type={type}
                 placeholder={placeholder}
-                {...(register ? register(id) : {})}
+                {...(register ? register(id, validation) : {})}
                 onChange={onChange}
                 className={`${icon ? "pl-10" : ""} ${
                   error ? "border-red-500" : ""
