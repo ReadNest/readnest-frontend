@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { UserLoader } from "./components/ui/user-loader";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import AnimatedCursor from "./components/ui/AnimatedCursor";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <>
+      <AnimatedCursor />
       <UserLoader loading={auth.loading}>
         <Routes>
           {routes.map(({ path, element }) => (

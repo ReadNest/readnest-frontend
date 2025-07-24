@@ -4309,6 +4309,60 @@
         }
       }
     },
+    "/api/v1/recommendations/{userId}": {
+      "get": {
+        "tags": ["Recommendation"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "PageIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookSearchResponsePagingResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookSearchResponsePagingResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookSearchResponsePagingResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/trading-posts": {
       "get": {
         "tags": ["TradingPost"],
@@ -5397,7 +5451,51 @@
         }
       }
     },
-    "/api/user-subscriptions": {
+    "/api/v1/UserBadges/assign-badge-to-users": {
+      "post": {
+        "tags": ["UserBadges"],
+        "parameters": [
+          {
+            "name": "badgeCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user-subscriptions/{userId}": {
       "get": {
         "tags": ["UserSubscription"],
         "parameters": [

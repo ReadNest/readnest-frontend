@@ -20,6 +20,7 @@ import {
 import { FilterSidebar } from "@/features/search/components/FilterSidebar";
 import { fetchCategoriesRequest } from "@/features/search/categoryFilterSlice";
 import { getFavoritesStart } from "@/features/favouriteBooks/favoriteSlice";
+import { motion } from "framer-motion";
 
 type SearchResultData = {
   items: GetBookSearchResponse[];
@@ -108,23 +109,49 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
     );
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-1/4 space-y-8">
-          <Card className="p-4">
+      <motion.div
+        className="flex flex-col md:flex-row gap-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Filter Sidebar */}
+        <motion.div
+          className="w-full md:w-1/4 space-y-8"
+          initial={{ x: -30, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Bộ lọc</h2>
-              <div>
-                <FilterSidebar
-                  genres={results}
-                  languages={languagesFromApi}
-                  onFilterChange={handleOnChange}
-                />
-              </div>
+              <FilterSidebar
+                genres={results}
+                languages={languagesFromApi}
+                onFilterChange={handleOnChange}
+              />
             </div>
           </Card>
-        </div>
+        </motion.div>
 
         {/* Book Results */}
         <div className="w-full md:w-3/4">
@@ -134,25 +161,42 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
               : "Không tìm thấy kết quả nào"}
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {books.map((book) => (
-              <Card key={book.id}>
-                <BookSearchResult
-                  bookId={book.id ?? ""}
-                  bookImage={book.imageUrl ?? ""}
-                  bookName={book.title ?? ""}
-                  bookAuthor={book.author ?? ""}
-                  rating={book.averageRating ?? 0}
-                  isFavorite={book.isFavorite ?? false}
-                  onClick={() => navigate(`/book-detail/${book.id}`)}
-                />
-              </Card>
+              <motion.div
+                key={book.id}
+                variants={cardVariants}
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Card className="shadow-sm border border-indigo-50 hover:shadow-xl transition-shadow duration-300">
+                  <BookSearchResult
+                    bookId={book.id ?? ""}
+                    bookImage={book.imageUrl ?? ""}
+                    bookName={book.title ?? ""}
+                    bookAuthor={book.author ?? ""}
+                    rating={book.averageRating ?? 0}
+                    isFavorite={book.isFavorite ?? false}
+                    onClick={() => navigate(`/book-detail/${book.id}`)}
+                  />
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="mt-8 flex justify-center">
+            <motion.div
+              className="mt-8 flex justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -250,10 +294,10 @@ export default function SearchPage({ searchResult }: SearchPageProps) {
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
-            </div>
+            </motion.div>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
