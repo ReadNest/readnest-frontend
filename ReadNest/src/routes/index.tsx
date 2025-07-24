@@ -22,6 +22,7 @@ import CreateTradingPostPage from "@/pages/bookExchange/CreateTradingPostPage";
 import PremiumPage from "@/pages/premium/PremiumPage";
 import PremiumPaymentReturnPage from "@/pages/premium/PremiumPaymentReturnPage";
 import RecommendationPage from "@/pages/recommendations/RecommendationPage";
+import RecommendDiscoverySlider from "@/pages/recommendations/RecommendDiscoverySlider";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -330,6 +331,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       isPrivate: true,
       allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
       element: <RecommendationPage />,
+      layout: defaultLayout,
+    },
+    {
+      path: ROUTE_PATHS.RECOMMEND_DISCOVERY_SLIDER,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <RecommendDiscoverySlider />,
       layout: defaultLayout,
     },
   ];

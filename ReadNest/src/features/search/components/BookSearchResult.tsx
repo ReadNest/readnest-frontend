@@ -9,6 +9,7 @@ interface BookSearchResultProps {
   bookAuthor: string;
   rating: number;
   isFavorite: boolean;
+  needToShowFavorite?: boolean;
   onClick?: () => void;
 }
 
@@ -19,6 +20,7 @@ export function BookSearchResult({
   bookAuthor,
   rating,
   onClick,
+  needToShowFavorite = true,
 }: BookSearchResultProps) {
   if (rating < 0) {
     rating = 0;
@@ -39,7 +41,7 @@ export function BookSearchResult({
             (e.target as HTMLImageElement).src = "/default-book-cover.jpg";
           }}
         />
-        <BookFavoriteButton bookId={bookId} />
+        {needToShowFavorite && <BookFavoriteButton bookId={bookId} />}{" "}
       </div>
 
       <div className="">

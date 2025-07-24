@@ -29,4 +29,5 @@ export const ROUTE_PATHS = {
   PREMIUM: "/premium",
   PREMIUM_PAYMENT_RETURN: "/premium/payment-return",
   RECOMMENDATIONS: "/recommendations",
+  RECOMMEND_DISCOVERY_SLIDER: "/recommend-discovery",
 };
