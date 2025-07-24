@@ -27,6 +27,7 @@ import { ReportDialog } from "./ReportDialog";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FirstParticipantAvatar } from "@/features/badge/components/avatarBadge/FirstParticipantAvatar";
+import { TopUserBadge } from "@/features/badge/components/avatarBadge/TopUserBadgeProps ";
 
 interface UserCommentCardProps {
   avatarSrc?: string;
@@ -144,6 +145,27 @@ export function UserCommentCard({
               />
             </div>
           )}
+          {badgeCode === "PREMIUM" && (
+            <div
+              onClick={onNavigateToCreatorProfile}
+              style={{ cursor: "pointer" }}
+            >
+              <TopUserBadge
+                avatarUrl={avatarSrc || "/default-avatar.png"}
+                avatarClassName="sm:h-10 sm:w-10 md:h-14 md:w-14"
+                badgePosClassName="-top-2 right-0 transform translate-x-1/4 -translate-y-1/4 z-10"
+                badgeClassName="font-medium px-2 py-0.5 text-[10px]"
+                badgeTitleClassName="min-w-[90px]"
+                decorativeLeftClassName="sm:h-5 sm:w-5 md:h-6 md:w-6"
+                decorativeRightClassName="sm:h-4 sm:w-4 md:h-5 md:w-5"
+                valueIndicatorClassName="text-xs font-bold px-2 py-0"
+                type="premiumUser"
+                value={0}
+                className="mb-3"
+              />
+            </div>
+          )}
+
         </div>
         <div className="flex-1">
           <div className="flex justify-between items-start mb-2">
@@ -166,11 +188,10 @@ export function UserCommentCard({
                   onClick={onLikeClick}
                 >
                   <HeartIcon
-                    className={`h-4 w-4 mr-1 ${
-                      userLikes.includes(user.userId ?? "")
+                    className={`h-4 w-4 mr-1 ${userLikes.includes(user.userId ?? "")
                         ? "text-red-500 fill-red-500"
                         : ""
-                    }`}
+                      }`}
                   />
                   <span>{likeCount}</span>
                 </Button>

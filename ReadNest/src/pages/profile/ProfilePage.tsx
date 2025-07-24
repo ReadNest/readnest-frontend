@@ -25,6 +25,7 @@ import parse from "html-react-parser";
 import { BadgeSelectionButton } from "@/features/badge/components/BadgeButton/BadgeSelectionButton";
 import type { UserBadgeResponse } from "@/api/@types";
 import { FirstParticipantAvatar } from "@/features/badge/components/avatarBadge/FirstParticipantAvatar";
+import { TopUserBadge } from "@/features/badge/components/avatarBadge/TopUserBadgeProps ";
 
 export default function ProfilePage() {
   const [showModalAvatar, setShowModalAvatar] = useState(false);
@@ -183,14 +184,14 @@ export default function ProfilePage() {
                   /> */}
                 </>
               )}
-              {selectedBadge?.badgeCode === "MOST_ACTIVE" && (
+              {selectedBadge?.badgeCode === "PREMIUM" && (
                 <>
-                  {/* <TopUserBadge
+                  <TopUserBadge
                     avatarUrl={profile.avatarUrl ?? ""}
-                    type="mostActive"
-                    value={1250}
+                    type="premiumUser"
+                    value={150}
                     className="mx-2"
-                  /> */}
+                  />
                 </>
               )}
             </div>
@@ -266,10 +267,10 @@ export default function ProfilePage() {
                 <Calendar className="h-4 w-4 mr-2 text-gray-500" />
                 {profile.dateOfBirth
                   ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
                   : "Chưa cập nhật ngày sinh"}
               </li>
             </ul>
@@ -423,14 +424,14 @@ export default function ProfilePage() {
                         /> */}
                       </>
                     )}
-                    {selectedBadge?.badgeCode === "MOST_ACTIVE" && (
+                    {selectedBadge?.badgeCode === "PREMIUM" && (
                       <>
-                        {/* <TopUserBadge
+                        <TopUserBadge
                           avatarUrl={profile.avatarUrl ?? ""}
-                          type="mostActive"
-                          value={1250}
+                          type="premiumUser"
+                          value={150}
                           className="mx-2"
-                        /> */}
+                        />
                       </>
                     )}
                   </div>
