@@ -40,6 +40,9 @@ function* toggleFavoriteSaga(action: PayloadAction<ToggleFavoriteBookRequest>) {
     } else {
       yield put(setSuccess(false));
       yield put(setDetailErrors(res.listDetailError ?? []));
+      if (res.message == "Cannot add more favorite book.") {
+        toast.info("Mua gói Premium để lưu yêu thích nhiều sách hơn.");
+      }
       // Optional: rollback optimistic nếu lỗi
     }
   } catch (error: any) {

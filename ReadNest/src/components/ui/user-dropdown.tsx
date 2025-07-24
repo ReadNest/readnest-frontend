@@ -7,7 +7,14 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { BookMarked, FileText, List, LogOut, User } from "lucide-react";
+import {
+  BookMarked,
+  FileText,
+  List,
+  LogOut,
+  User,
+  Compass,
+} from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { ROUTE_PATHS } from "@/constants/routePaths";
@@ -42,6 +49,11 @@ const getDropDownItems = (username: string) => [
     icon: <List className="mr-2 h-4 w-4" />,
     content: "Danh sách trao đổi",
     to: ROUTE_PATHS.MY_BOOKS,
+  },
+  {
+    icon: <Compass className="mr-2 h-4 w-4" />,
+    content: "Gợi ý sách thông minh",
+    to: ROUTE_PATHS.RECOMMENDATIONS,
   },
 ];
 

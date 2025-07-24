@@ -40,7 +40,7 @@ export function BadgeSelectionButton({ canSelectedBadgeList }: { canSelectedBadg
         TOP1: <TopContributorBadge avatarUrl={auth.user.avatarUrl || ""} rank={1} contributionCount={100} />,
         TOP2: <TopContributorBadge avatarUrl={auth.user.avatarUrl || ""} rank={2} contributionCount={80} />,
         TOP3: <TopContributorBadge avatarUrl={auth.user.avatarUrl || ""} rank={3} contributionCount={60} />,
-        MOST_LIKED: <TopUserBadge avatarUrl={auth.user.avatarUrl || ""} type="mostLiked" value={150} />,
+        PREMIUM: <TopUserBadge avatarUrl={auth.user.avatarUrl || ""} type="premiumUser" value={150} />,
         MOST_ACTIVE: <TopUserBadge avatarUrl={auth.user.avatarUrl || ""} type="mostActive" value={200} />,
         TOP_TRENDING: <TopUserBadge avatarUrl={auth.user.avatarUrl || ""} type="trending" value={50} />,
         // ... các badge khác
