@@ -24,6 +24,7 @@ import PremiumPaymentReturnPage from "@/pages/premium/PremiumPaymentReturnPage";
 // import PremiumHistoryPage from "@/pages/premium/PremiumHistoryPage";
 import RecommendationPage from "@/pages/recommendations/RecommendationPage";
 import RecommendDiscoverySlider from "@/pages/recommendations/RecommendDiscoverySlider";
+import TransactionHistoryPage from "@/pages/transaction/TransactionHistoryPage";
 
 // Dùng lazy import cho các page
 const NotFoundPage = lazy(() => import("@/pages/404/NotFoundPage"));
@@ -341,13 +342,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       element: <RecommendDiscoverySlider />,
       layout: defaultLayout,
     },
-    // {
-    //   path: ROUTE_PATHS.TRANSACTION_HISTORY,
-    //   isPrivate: true,
-    //   allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
-    //   element: <PremiumHistoryPage />,
-    //   layout: defaultLayout,
-    // },
+    {
+      path: ROUTE_PATHS.TRANSACTION_HISTORY,
+      isPrivate: true,
+      allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+      element: <TransactionHistoryPage />,
+      layout: defaultLayout,
+    },
   ];
 
   return routeConfigs.map(
