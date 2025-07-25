@@ -21,6 +21,7 @@ import MyBooksPage from "@/pages/bookExchange/MyBooksPage";
 import CreateTradingPostPage from "@/pages/bookExchange/CreateTradingPostPage";
 import PremiumPage from "@/pages/premium/PremiumPage";
 import PremiumPaymentReturnPage from "@/pages/premium/PremiumPaymentReturnPage";
+// import PremiumHistoryPage from "@/pages/premium/PremiumHistoryPage";
 import RecommendationPage from "@/pages/recommendations/RecommendationPage";
 import RecommendDiscoverySlider from "@/pages/recommendations/RecommendDiscoverySlider";
 
@@ -340,6 +341,13 @@ export const AppRoutes = (user: GetUserResponse, isAuthenticated: boolean) => {
       element: <RecommendDiscoverySlider />,
       layout: defaultLayout,
     },
+    // {
+    //   path: ROUTE_PATHS.TRANSACTION_HISTORY,
+    //   isPrivate: true,
+    //   allowedRoles: [RoleEnum.USER, RoleEnum.ADMIN],
+    //   element: <PremiumHistoryPage />,
+    //   layout: defaultLayout,
+    // },
   ];
 
   return routeConfigs.map(
