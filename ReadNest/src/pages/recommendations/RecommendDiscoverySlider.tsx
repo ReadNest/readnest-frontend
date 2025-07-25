@@ -103,7 +103,13 @@ const questions = [
   },
 ];
 
+import BookSuggestionLoading from "./BookSuggestionLoading";
+import BookSuggestionList from "./BookSuggestionList";
+import type { BookSuggestion, UserAnswer } from "@/api/@types";
+import { toast } from "react-toastify";
+
 export default function RecommendDiscoverySliderGamified() {
+  const [apiDone, setApiDone] = useState(false);
   const [width, height] = useWindowSize();
   const [current, setCurrent] = useState(-1);
   const [answers, setAnswers] = useState<{ [key: string]: string | string[] }>(
@@ -111,6 +117,8 @@ export default function RecommendDiscoverySliderGamified() {
   );
   const [genreOptions, setGenreOptions] = useState<string[]>([]);
   const [showPremiumPopup, setShowPremiumPopup] = useState(false);
+  const [step, setStep] = useState<"quiz" | "loading" | "result">("quiz");
+  const [suggestions, setSuggestions] = useState<BookSuggestion[]>([]);
   const navigate = useNavigate();
   const hasPremium = useSelector(
     (state: RootState) => state.auth?.user.hasPurchasedPremium ?? false
@@ -134,15 +142,43 @@ export default function RecommendDiscoverySliderGamified() {
     setAnswers((prev) => ({ ...prev, [id]: value }));
   };
 
-  const next = () => {
+  const next = async () => {
     if (!hasPremium && current === 3) {
       setShowPremiumPopup(true);
+
+      const partialAnswers = Object.entries(answers)
+        .slice(0, 4)
+        .map(([id, value]) => ({
+          question: id,
+          answer: Array.isArray(value) ? value.join(", ") : value,
+        }));
+
+      setStep("loading");
+      await handleCallApi(partialAnswers);
       return;
     }
+
     if (current < questions.length - 1) setCurrent(current + 1);
   };
 
   const prev = () => current > 0 && setCurrent(current - 1);
+
+  const handleCallApi = async (payload: UserAnswer[]) => {
+    setApiDone(false);
+    client.api.v1.recommendations.recommend
+      .$post({
+        body: payload,
+      })
+      .then((res) => {
+        const data = res.data;
+        setSuggestions(data ?? []);
+        setApiDone(true);
+      })
+      .catch((error) => {
+        toast.error("Lỗi khi tìm các sách gợi ý từ AI", error);
+        setApiDone(true);
+      });
+  };
 
   const renderQuestion = (q: (typeof questions)[number]) => {
     if (q.type === "multi-select") {
@@ -209,175 +245,227 @@ export default function RecommendDiscoverySliderGamified() {
     return null;
   };
 
-  const progress = current >= 0 ? ((current + 1) / questions.length) * 100 : 0;
+  // Quiz step
+  if (step === "quiz") {
+    const progress =
+      current >= 0 ? ((current + 1) / questions.length) * 100 : 0;
+    return (
+      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-indigo-50 to-purple-200 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <motion.div
+              key={`cloud-${i}`}
+              className="absolute bg-blue-100/60 rounded-full shadow-md"
+              style={{
+                width: 180 + Math.random() * 120,
+                height: 70 + Math.random() * 50,
+                top: `${Math.random() * 80}%`,
+                left: `${Math.random() * 80}%`,
+                filter: "blur(30px)",
+              }}
+              animate={{ x: [0, 60, 0] }}
+              transition={{
+                duration: 25 + i * 5,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          ))}
+        </div>
 
-  return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-indigo-50 to-purple-200 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <motion.div
-            key={`cloud-${i}`}
-            className="absolute bg-blue-100/60 rounded-full shadow-md"
-            style={{
-              width: 180 + Math.random() * 120,
-              height: 70 + Math.random() * 50,
-              top: `${Math.random() * 80}%`,
-              left: `${Math.random() * 80}%`,
-              filter: "blur(30px)",
-            }}
-            animate={{ x: [0, 60, 0] }}
-            transition={{
-              duration: 25 + i * 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
+        {/* Cat with books */}
+        <div className="absolute bottom-4 left-4 w-40 h-40">
+          <Lottie
+            loop
+            animationData={catAnimation}
+            play
+            style={{ width: 150, height: 150 }}
           />
-        ))}
-      </div>
+        </div>
 
-      {/* Cat with books */}
-      <div className="absolute bottom-4 left-4 w-40 h-40">
-        <Lottie
-          loop
-          animationData={catAnimation}
-          play
-          style={{ width: 150, height: 150 }}
-        />
-      </div>
-
-      {/* Quiz Card */}
-      <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-sm z-10 border border-indigo-100">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={current}
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -100, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col items-center"
-          >
-            {current === -1 ? (
-              <>
-                <h2 className="text-3xl font-bold text-indigo-700 mb-4 text-center">
-                  Khám phá sở thích đọc sách
-                </h2>
-                <p className="text-gray-600 text-center mb-6">
-                  Trả lời vài câu hỏi để nhận gợi ý sách được cá nhân hóa.
-                </p>
-                <button
-                  className="px-8 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
-                  onClick={() => setCurrent(0)}
-                >
-                  Bắt đầu
-                </button>
-              </>
-            ) : (
-              <>
-                <h2 className="text-2xl font-bold text-indigo-700 mb-4 text-center">
-                  {questions[current].question}
-                </h2>
-                <p className="text-sm text-gray-500 italic mb-4">
-                  {questions[current].hint}
-                </p>
-
-                {renderQuestion(questions[current])}
-
-                {current >= 7 && (
-                  <Confetti
-                    width={width}
-                    height={height + 300}
-                    numberOfPieces={150}
-                    gravity={0.18}
-                    recycle={false}
-                    colors={["#c7d2fe", "#fbcfe8", "#fde68a", "#bbf7d0"]}
-                  />
-                )}
-
-                <div className="flex gap-4 mt-8">
+        {/* Quiz Card */}
+        <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-sm z-10 border border-indigo-100">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -100, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center"
+            >
+              {current === -1 ? (
+                <>
+                  <h2 className="text-3xl font-bold text-indigo-700 mb-4 text-center">
+                    Khám phá sở thích đọc sách
+                  </h2>
+                  <p className="text-gray-600 text-center mb-6">
+                    Trả lời vài câu hỏi để nhận gợi ý sách được cá nhân hóa.
+                  </p>
                   <button
-                    className="px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold shadow hover:bg-gray-300"
-                    onClick={prev}
-                    disabled={current === 0}
+                    className="px-8 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
+                    onClick={() => setCurrent(0)}
                   >
-                    Quay lại
+                    Bắt đầu
                   </button>
-                  {current < questions.length - 1 ? (
-                    <button
-                      className="px-6 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow hover:scale-105 transition-transform duration-200"
-                      onClick={next}
-                      disabled={
-                        !answers[questions[current].id] ||
-                        (Array.isArray(answers[questions[current].id]) &&
-                          answers[questions[current].id].length === 0)
-                      }
-                    >
-                      Tiếp tục
-                    </button>
-                  ) : (
-                    <button
-                      className="px-6 py-2 rounded-full bg-green-500 text-white font-semibold shadow hover:scale-105 transition-transform duration-200"
-                      onClick={() => navigate("/recommendations")}
-                    >
-                      Hoàn tất
-                    </button>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-2xl font-bold text-indigo-700 mb-4 text-center">
+                    {questions[current].question}
+                  </h2>
+                  <p className="text-sm text-gray-500 italic mb-4">
+                    {questions[current].hint}
+                  </p>
+
+                  {renderQuestion(questions[current])}
+
+                  {current >= 7 && (
+                    <Confetti
+                      width={width}
+                      height={height + 300}
+                      numberOfPieces={150}
+                      gravity={0.18}
+                      recycle={false}
+                      colors={["#c7d2fe", "#fbcfe8", "#fde68a", "#bbf7d0"]}
+                    />
                   )}
-                </div>
 
-                {/* Progress bar */}
-                <div className="w-full mt-6 bg-gray-200 rounded-full h-2 overflow-hidden">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
-                    style={{ width: `${progress}%` }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.4 }}
-                  />
-                </div>
-                <div className="mt-2 text-sm text-gray-400">
-                  Câu hỏi {current + 1} / {questions.length}
-                </div>
-              </>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+                  <div className="flex gap-4 mt-8">
+                    <button
+                      className="px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold shadow hover:bg-gray-300"
+                      onClick={prev}
+                      disabled={current === 0}
+                    >
+                      Quay lại
+                    </button>
+                    {current < questions.length - 1 ? (
+                      <button
+                        className="px-6 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow hover:scale-105 transition-transform duration-200"
+                        onClick={next}
+                        disabled={
+                          !answers[questions[current].id] ||
+                          (Array.isArray(answers[questions[current].id]) &&
+                            answers[questions[current].id].length === 0)
+                        }
+                      >
+                        Tiếp tục
+                      </button>
+                    ) : (
+                      <button
+                        className="px-6 py-2 rounded-full bg-green-500 text-white font-semibold shadow hover:scale-105 transition-transform duration-200"
+                        onClick={async () => {
+                          setStep("loading");
 
-      {/* Popup Premium */}
-      {showPremiumPopup && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-          onClick={() => setShowPremiumPopup(false)}
-        >
+                          const payload = Object.entries(answers).map(
+                            ([id, value]) => ({
+                              question: id,
+                              answer: Array.isArray(value)
+                                ? value.join(", ")
+                                : value,
+                            })
+                          );
+
+                          await handleCallApi(payload);
+                        }}
+                        disabled={
+                          !answers[questions[current].id] ||
+                          (Array.isArray(answers[questions[current].id]) &&
+                            answers[questions[current].id].length === 0)
+                        }
+                      >
+                        Hoàn tất
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="w-full mt-6 bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                      style={{ width: `${progress}%` }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.4 }}
+                    />
+                  </div>
+                  <div className="mt-2 text-sm text-gray-400">
+                    Câu hỏi {current + 1} / {questions.length}
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Popup Premium */}
+        {showPremiumPopup && (
           <div
-            className="bg-white rounded-xl shadow-lg p-6 max-w-sm text-center relative"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={() => setShowPremiumPopup(false)}
           >
-            <h3 className="text-xl font-bold text-indigo-600 mb-4">
-              Nâng cấp để tiếp tục quiz!
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Bạn đã trả lời 4 câu hỏi. Hãy nâng cấp để trải nghiệm đầy đủ.
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                className="px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
-                onClick={() => navigate(ROUTE_PATHS.PREMIUM)}
-              >
-                Nâng cấp
-              </button>
-              <button
-                className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
-                onClick={() => {
-                  setShowPremiumPopup(false);
-                  setCurrent(current + 1);
-                }}
-              >
-                Tiếp tục với giới hạn
-              </button>
+            <div
+              className="bg-white rounded-xl shadow-lg p-6 max-w-sm text-center relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-bold text-indigo-600 mb-4">
+                Nâng cấp để tiếp tục quiz!
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Bạn đã trả lời 4 câu hỏi. Hãy nâng cấp để trải nghiệm đầy đủ.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  className="px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"
+                  onClick={() => navigate(ROUTE_PATHS.PREMIUM)}
+                >
+                  Nâng cấp
+                </button>
+                <button
+                  className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  onClick={() => {
+                    setShowPremiumPopup(false);
+                    setCurrent(current + 1);
+                  }}
+                >
+                  Tiếp tục với giới hạn
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+    );
+  }
+
+  // Loading step
+  if (step === "loading") {
+    return (
+      <BookSuggestionLoading
+        isApiDone={apiDone}
+        onDone={() => setStep("result")}
+      />
+    );
+  }
+
+  // Result step
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-100 via-indigo-50 to-purple-200 py-10 relative">
+      <Confetti
+        width={width}
+        height={height + 300}
+        numberOfPieces={180}
+        gravity={0.18}
+        recycle={false}
+        colors={["#c7d2fe", "#fbcfe8", "#fde68a", "#bbf7d0"]}
+      />
+      <BookSuggestionList books={suggestions} />
+      <button
+        className="mt-8 px-8 py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
+        onClick={() => navigate(ROUTE_PATHS.RECOMMENDATIONS)}
+      >
+        Về trang gợi ý sách
+      </button>
     </div>
   );
 }

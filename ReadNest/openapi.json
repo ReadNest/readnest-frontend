@@ -4363,6 +4363,61 @@
         }
       }
     },
+    "/api/v1/recommendations/recommend": {
+      "post": {
+        "tags": ["Recommendation"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UserAnswer"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UserAnswer"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UserAnswer"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookSuggestionListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookSuggestionListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookSuggestionListApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/trading-posts": {
       "get": {
         "tags": ["TradingPost"],
@@ -5795,6 +5850,67 @@
           },
           "book": {
             "$ref": "#/components/schemas/Book"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookSuggestion": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "author": {
+            "type": "string",
+            "nullable": true
+          },
+          "genre": {
+            "type": "string",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          },
+          "infoLink": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookSuggestionListApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "messageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookSuggestion"
+            },
+            "nullable": true
+          },
+          "listDetailError": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailError"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9823,6 +9939,20 @@
             "items": {
               "$ref": "#/components/schemas/Transaction"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserAnswer": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "nullable": true
+          },
+          "answer": {
+            "type": "string",
             "nullable": true
           }
         },

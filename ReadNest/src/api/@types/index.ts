@@ -62,6 +62,23 @@ export type BookImage = {
   book?: Book | undefined;
 }
 
+export type BookSuggestion = {
+  title?: string | null | undefined;
+  author?: string | null | undefined;
+  genre?: string | null | undefined;
+  reason?: string | null | undefined;
+  image?: string | null | undefined;
+  infoLink?: string | null | undefined;
+}
+
+export type BookSuggestionListApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: BookSuggestion[] | null | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type Category = {
   id?: string | undefined;
   createdAt?: string | undefined;
@@ -1216,6 +1233,11 @@ export type User = {
   leaderboards?: Leaderboard[] | null | undefined;
   userSubscriptions?: UserSubscription[] | null | undefined;
   transactions?: Transaction[] | null | undefined;
+}
+
+export type UserAnswer = {
+  question?: string | null | undefined;
+  answer?: string | null | undefined;
 }
 
 export type UserBadge = {
