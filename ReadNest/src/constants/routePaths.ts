@@ -28,6 +28,7 @@ export const ROUTE_PATHS = {
   MANAGE_TRADING_POST: "/trading-posts/create",
   PREMIUM: "/premium",
   PREMIUM_PAYMENT_RETURN: "/premium/payment-return",
+  TRANSACTION_HISTORY: "/transaction-history",
   RECOMMENDATIONS: "/recommendations",
   RECOMMEND_DISCOVERY_SLIDER: "/recommend-discovery",
 };

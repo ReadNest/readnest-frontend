@@ -765,6 +765,31 @@ export type GetTradingPostImageResponse = {
   order?: number | undefined;
 }
 
+export type GetTransactionResponse = {
+  id?: string | undefined;
+  orderCode?: number | undefined;
+  amount?: number | undefined;
+  paymentMethod?: string | null | undefined;
+  transactionStatus?: string | null | undefined;
+  packageName?: string | null | undefined;
+  updatedAt?: string | undefined;
+}
+
+export type GetTransactionResponsePagingResponse = {
+  items?: GetTransactionResponse[] | null | undefined;
+  totalItems?: number | undefined;
+  pageIndex?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export type GetTransactionResponsePagingResponseApiResponse = {
+  success?: boolean | undefined;
+  messageId?: string | null | undefined;
+  message?: string | null | undefined;
+  data?: GetTransactionResponsePagingResponse | undefined;
+  listDetailError?: DetailError[] | null | undefined;
+}
+
 export type GetUserProfileResponse = {
   userId?: string | undefined;
   fullName?: string | null | undefined;

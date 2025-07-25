@@ -55,6 +55,11 @@ const getDropDownItems = (username: string) => [
     content: "Gợi ý sách thông minh",
     to: ROUTE_PATHS.RECOMMENDATIONS,
   },
+  {
+    icon: <FileText className="mr-2 h-4 w-4" />,
+    content: "Lịch sử giao dịch",
+    to: ROUTE_PATHS.TRANSACTION_HISTORY,
+  },
 ];
 
 function UserDropDown({ onlyLogout, ...props }: UserDropDownProps) {
