@@ -38,7 +38,7 @@ export default function BookSuggestionLoading({
   }, [onDone, isApiDone]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] py-10">
+    <div className="flex flex-col items-center justify-center min-h-screen py-10">
       <Lottie
         loop
         animationData={aiAnimation}
