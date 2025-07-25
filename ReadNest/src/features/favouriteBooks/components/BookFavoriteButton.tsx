@@ -23,17 +23,17 @@ export function BookFavoriteButton({ bookId, className }: Props) {
 
   return (
     <div className="absolute top-2 right-2 bg-white/70 backdrop-blur-sm rounded-full p-1 shadow-md">
-        <Heart
-            onClick={handleToggle}
-            className={cn(
-            "h-5 w-5 cursor-pointer transition-all duration-200 ease-in-out",
-            "hover:scale-110",
-            isFavorite
-                ? "text-red-500 fill-current animate-beat"
-                : "text-gray-600 hover:text-red-400",
-            className
-            )}
-        />
+      <Heart
+        onClick={handleToggle}
+        className={cn(
+          "h-5 w-5 cursor-pointer transition-all duration-200 ease-in-out",
+          "hover:scale-110",
+          isFavorite
+            ? "text-red-500 fill-current animate-beat"
+            : "text-gray-600 hover:text-red-400",
+          className
+        )}
+      />
     </div>
   );
 }

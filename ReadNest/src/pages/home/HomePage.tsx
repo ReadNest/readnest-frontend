@@ -13,7 +13,7 @@ import { fetchTop3MostLikedCommentsRequested } from "@/features/review/commentSl
 import client from "@/lib/api/axiosClient";
 import { formatTimeAgo } from "@/lib/utils";
 import type { RootState } from "@/store";
-import { Bookmark, ChartLine, Search, Star, Users } from "lucide-react";
+import { Award, Bookmark, ChartLine, Search, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -43,10 +43,10 @@ function HomePage() {
       description: "Lưu sách vào danh sách yêu thích không giới hạn",
     },
     {
-      icon: <Users size={20} />,
-      title: "Sự kiện của nền tảng",
+      icon: <Award size={20} />,
+      title: "Danh hiệu & Khung ủng hộ",
       description:
-        "Được tham gia các sự kiện do nền tảng tổ chức không mất phí",
+        "Nhận danh hiệu đặc biệt và khung avatar thể hiện sự ủng hộ của bạn",
     },
     {
       icon: <ChartLine size={20} />,
