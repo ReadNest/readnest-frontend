@@ -16,6 +16,7 @@ import client from "@/lib/api/axiosClient";
 import type { GetBookSearchResponse } from "@/api/@types";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
+import { ROUTE_PATHS } from "@/constants/routePaths";
 
 export default function RecommendationPage() {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ export default function RecommendationPage() {
         </p>
         <button
           className="mt-4 px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-200"
-          onClick={() => navigate("/recommend-discovery")}
+          onClick={() => navigate(ROUTE_PATHS.RECOMMEND_DISCOVERY_SLIDER)}
         >
           Khám phá sách với AI
         </button>
@@ -112,6 +113,7 @@ export default function RecommendationPage() {
                   bookAuthor={book.author ?? ""}
                   rating={book.averageRating ?? 0}
                   isFavorite={book.isFavorite ?? false}
+                  needToShowFavorite={false}
                   onClick={() => navigate(`/book-detail/${book.id}`)}
                 />
               </Card>

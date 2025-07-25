@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ROUTE_PATHS } from "@/constants/routePaths";
 import client from "@/lib/api/axiosClient";
 import type { RootState } from "@/store";
-import { Bookmark, Users, ChartLine, Crown } from "lucide-react";
+import { Bookmark, ChartLine, Crown, Award } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,9 +17,10 @@ const features = [
     description: "Lưu sách vào danh sách yêu thích không giới hạn",
   },
   {
-    icon: <Users size={28} className="text-purple-500" />,
-    title: "Sự kiện của nền tảng",
-    description: "Được tham gia các sự kiện do nền tảng tổ chức không mất phí",
+    icon: <Award size={28} className="text-purple-500" />,
+    title: "Danh hiệu & Khung ủng hộ",
+    description:
+      "Nhận danh hiệu đặc biệt và khung avatar thể hiện sự ủng hộ của bạn",
   },
   {
     icon: <ChartLine size={28} className="text-pink-500" />,
